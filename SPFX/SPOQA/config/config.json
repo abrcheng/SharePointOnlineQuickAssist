@@ -1,0 +1,18 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "share-point-online-quick-assist-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/sharePointOnlineQuickAssist/SharePointOnlineQuickAssistWebPart.js",
+          "manifest": "./src/webparts/sharePointOnlineQuickAssist/SharePointOnlineQuickAssistWebPart.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {},
+  "localizedResources": {
+    "SharePointOnlineQuickAssistWebPartStrings": "lib/webparts/sharePointOnlineQuickAssist/loc/{locale}.js"
+  }
+}

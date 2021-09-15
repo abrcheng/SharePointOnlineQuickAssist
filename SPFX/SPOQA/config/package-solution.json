@@ -5,6 +5,21 @@
     "id": "029e4fc2-a440-4f5f-a358-b34a0eca54b5",
     "version": "1.0.0.0",
     "includeClientSideAssets": true,
+    "webApiPermissionRequests": [
+          {  
+            "resource": "Microsoft Graph",  
+            "scope": "User.ReadBasic.All"  
+          }, 
+          {  
+              "resource": "Microsoft Graph",  
+              "scope": "User.Read.All"  
+          }, {  
+              "resource": "Microsoft Graph",  
+              "scope": "Group.Read.All"  
+          }, {  
+              "resource": "Microsoft Graph",  
+              "scope": "GroupMember.Read.All"  
+          }],
     "isDomainIsolated": true,
     "developer": {
       "name": "",

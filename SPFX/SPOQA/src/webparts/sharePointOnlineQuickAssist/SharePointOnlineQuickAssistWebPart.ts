@@ -10,13 +10,18 @@ import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 import * as strings from 'SharePointOnlineQuickAssistWebPartStrings';
 import SharePointOnlineQuickAssist from './components/SharePointOnlineQuickAssist';
 import { ISharePointOnlineQuickAssistProps } from './components/ISharePointOnlineQuickAssistProps';
+import { SPComponentLoader } from '@microsoft/sp-loader';
 
 export interface ISharePointOnlineQuickAssistWebPartProps {
   description: string;
 }
 
 export default class SharePointOnlineQuickAssistWebPart extends BaseClientSideWebPart<ISharePointOnlineQuickAssistWebPartProps> {
-
+  constructor() {
+    super();
+    SPComponentLoader.loadCss('https://static2.sharepointonline.com/files/fabric/office-ui-fabric-core/6.0.0/css/fabric-6.0.0.scoped.css');
+  }
+  
   public render(): void {
     const element: React.ReactElement<ISharePointOnlineQuickAssistProps> = React.createElement(
       SharePointOnlineQuickAssist,

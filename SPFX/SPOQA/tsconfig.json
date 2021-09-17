@@ -19,7 +19,9 @@
       "./node_modules/@microsoft"
     ],
     "types": [
-      "webpack-env"
+      "webpack-env",
+      "microsoft-ajax",
+      "sharepoint"
     ],
     "lib": [
       "es5",

@@ -20,7 +20,7 @@
               "resource": "Microsoft Graph",  
               "scope": "GroupMember.Read.All"  
           }],
-    "isDomainIsolated": true,
+    "isDomainIsolated": false,
     "developer": {
       "name": "",
       "websiteUrl": "",

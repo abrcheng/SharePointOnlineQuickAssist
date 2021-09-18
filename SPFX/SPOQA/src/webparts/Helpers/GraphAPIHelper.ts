@@ -12,7 +12,7 @@ export default class GraphAPIHelper
       }
       else
       {
-        var message = "Failed to get data from graph API";
+        var message = `Failed to get uesr ${user} from graph API`;
         console.log(message);
         Promise.reject(message);
       }

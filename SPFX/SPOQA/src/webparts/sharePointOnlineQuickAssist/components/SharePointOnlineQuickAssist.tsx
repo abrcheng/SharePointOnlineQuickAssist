@@ -8,9 +8,11 @@ import {
   Fabric,
   IComboBox,
   IComboBoxOption,
-  mergeStyles,
-  //PrimaryButton,
-  SelectableOptionMenuItemType
+  mergeStyles, 
+  SelectableOptionMenuItemType,
+  Spinner,
+  MessageBar,
+  MessageBarType
 } from 'office-ui-fabric-react/lib/index';
 import SearchDocumentQA from './SearchDocument';
 import SearchLibraryQA from './SearchLibrary';
@@ -23,6 +25,7 @@ import UserProfileDepartmentQA from './UserProfileDepartment';
 import SearchPeopleQA from './SearchPeople';
 import { WebPartContext } from "@microsoft/sp-webpart-base"; 
 import { SPComponentLoader } from '@microsoft/sp-loader';
+import SPOQAHelper from '../../Helpers/SPOQAHelper';
 
 //import { Button } from 'office-ui-fabric-react/lib/Button';
 // https://developer.microsoft.com/en-us/fluentui?fabricVer=6#/controls/web/combobox
@@ -114,7 +117,8 @@ export default class SharePointOnlineQuickAssist extends React.Component<IShareP
                       label="Please select issue which you want to check"
                       allowFreeform
                       autoComplete="on"
-                      options={INITIAL_OPTIONS}                     
+                      options={INITIAL_OPTIONS} 
+                      required={true}                    
                       onChange ={(ev: React.FormEvent<IComboBox>, option?: IComboBoxOption): void => {
                         this.setState({ selectedKey: option.key});}} 
                     />                  
@@ -125,6 +129,33 @@ export default class SharePointOnlineQuickAssist extends React.Component<IShareP
           <div className={ styles.row } id="SPOQADetailContainer">
             <div className={ styles.column }>
               {sPOQADetail()}
+            </div>
+          </div>
+          <div className={ styles.row } id="SPOQAStatusContainer">
+            <div className={ styles.column }>
+              <div>        
+                <Spinner id="SPOQASpinner" label="Checking..." ariaLive="assertive" labelPosition="left" style={{display:"none"}} />
+                <div id="SPOQAErrorMessageBarContainer" style={{display:"none"}}>
+                  <MessageBar id="SPOQAErrorMessageBar" messageBarType={MessageBarType.error} isMultiline={false} onDismiss={()=>{SPOQAHelper.Hide("SPOQAErrorMessageBarContainer");}} dismissButtonAriaLabel="Close" >
+                              SPOQAErrorMessageBar
+                  </MessageBar>
+                </div>
+                <div id="SPOQASuccessMessageBarContainer" style={{display:"none"}}>
+                  <MessageBar id="SPOQASuccessMessageBar" messageBarType={MessageBarType.success} isMultiline={false} onDismiss={()=>{SPOQAHelper.Hide("SPOQASuccessMessageBarContainer");}} dismissButtonAriaLabel="Close" >
+                          SPOQASuccessMessageBar
+                  </MessageBar>
+                </div>
+                <div id="SPOQAWarningMessageBarContainer" style={{display:"none"}}>
+                  <MessageBar id="SPOQAWarningMessageBar" messageBarType={MessageBarType.warning} isMultiline={false} onDismiss={()=>{SPOQAHelper.Hide("SPOQAWarningMessageBarContainer");}} dismissButtonAriaLabel="Close">
+                          SPOQAWarningMessageBar
+                  </MessageBar>
+                </div>
+                <div id="SPOQAInfoMessageBarContainer" style={{display:"none"}}>
+                  <MessageBar id="SPOQAInfoMessageBar" messageBarType={MessageBarType.info} isMultiline={false} onDismiss={()=>{SPOQAHelper.Hide("SPOQAInfoMessageBarContainer");}} dismissButtonAriaLabel="Close">
+                        SPOQAInfoMessageBar
+                  </MessageBar>
+                </div>
+              </div>
             </div>
           </div>
         </div>

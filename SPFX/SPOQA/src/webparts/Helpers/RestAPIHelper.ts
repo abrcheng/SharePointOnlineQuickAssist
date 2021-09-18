@@ -7,8 +7,7 @@ export default class RestAPIHelper
         var apiUrl = `${webAbsoluteUrl}/_api/SP.UserProfiles.PeopleManager/GetPropertiesFor(accountName=@v)?@v='i:0%23.f|membership|${user}'`;
         var res = await RestAPIHelper.CallGetRest(apiUrl, spHttpClient);
         return await res;
-    }    
-    
+    }
     
     public static async GetUserFromUserInfoList(user:string, spHttpClient:SPHttpClient, webAbsoluteUrl:string)
     {
@@ -27,47 +26,39 @@ export default class RestAPIHelper
     }
     
     // SP.Data.UserInfoItem
-    public static async FixJobTitleInUserInfoList(userId:number, spHttpClient:SPHttpClient, webAbsoluteUrl:string, newJobTitle:string, successCallBack:Function, failedCallback:Function) {
-       /*var userItem = {
-        "__metadata": {"type":"SP.Data.UserInfoItem"},        
-        "Title":"SPOQA",
-         "JobTitle": newJobTitle,        
-         "Department":"UpdateBySPOQA"
-       };
-       
-       var userItemBody =  JSON.stringify(userItem);
-       // const apiUrl = `${webAbsoluteUrl}/_api/Web/SiteUserInfoList/Items(${userId})`;
-       const apiUrl = `${webAbsoluteUrl}/_api/web/siteusers/getbyid(${userId})`;
-       const options: ISPHttpClientOptions = {     
-        headers: {
-          "Accept": "application/json;odata=verbose",
-          "Content-Type": "application/json;odata=verbose",
-          "OData-Version": "" ,//Really important to specify,
-          "X-HTTP-Method": 'MERGE',
-          'IF-MATCH': '*'
-        },
-        body: userItemBody
-      };
-
-      var res = await spHttpClient.post(apiUrl, SPHttpClient.configurations.v1, options);
-      if(res.ok)
-      {
-        var responseJson = await res.json();
-        console.log(`FixJobTitleInUserInfoList done for API url ${apiUrl}`);          
-        return await responseJson;
-      }
-      else
-      {
-        var message = `Failed FixJobTitleInUserInfoList for API url ${apiUrl}`;
-        console.log(message);
-        Promise.reject(message);
-      }*/    
-
+    public static async FixJobTitleInUserInfoList(userId:number, spHttpClient:SPHttpClient, webAbsoluteUrl:string, newJobTitle:string, successCallBack:Function, failedCallback:Function) 
+    {    
       const context: SP.ClientContext = new SP.ClientContext(webAbsoluteUrl);     
       const userItem: SP.ListItem = context.get_web().get_lists().getByTitle("User Information List").getItemById(userId); 
       userItem.set_item('JobTitle', newJobTitle);      
       userItem.update();
       context.executeQueryAsync((sender: any, args: SP.ClientRequestSucceededEventArgs): void => {successCallBack();}, (sender: any, args: SP.ClientRequestSucceededEventArgs): void => {failedCallback();});      
+    }
+
+    public static async FixJobTitleInUserProfile(user:string,spHttpClient:SPHttpClient, webAbsoluteUrl:string, newJobTitle:string)
+    {
+        let apiUrl = webAbsoluteUrl + "/_api/SP.UserProfiles.PeopleManager/SetSingleValueProfileProperty";  
+        let userData = {  
+            'accountName': "i:0#.f|membership|" + user,  
+            'propertyName': "SPS-JobTitle", 
+            'propertyValue': newJobTitle  
+        };
+      
+        let spOpts = {  
+            headers: {  
+                'Accept': 'application/json;odata=nometadata',  
+                'Content-type': 'application/json;odata=verbose',  
+                'odata-version': '',  
+            },  
+            body: JSON.stringify(userData)  
+        };  
+        var res = await spHttpClient.post(apiUrl, SPHttpClient.configurations.v1, spOpts); 
+        if(res.ok)
+        {
+          var responseJson = await res.json();
+          console.log(`FixJobTitleInUserProfile done for API url ${apiUrl}`);          
+          return await responseJson;
+        }       
     }
 
     public static async GetUserInfoFromSite(user:string, spHttpClient:SPHttpClient, webAbsoluteUrl:string)
@@ -92,9 +83,6 @@ export default class RestAPIHelper
         var message = `Failed GetUserInfoFromSite for API url ${apiUrl}`;
         console.log(message);
         Promise.reject(message);
-      }      
+      }
     }
-    
-    // https://chengc.sharepoint.com/_api/web/lists/getByTitle('User Information List')/items?$filter=Name eq 'i:0#.f|membership|abc@chengc.onmicrosoft.com'
-    
 }

@@ -85,4 +85,11 @@ export default class RestAPIHelper
         Promise.reject(message);
       }
     }
+
+    public static async GetSiteSearchResult(spHttpClient:SPHttpClient, webAbsoluteUrl:string)
+    { 
+      var apiUrl = `${webAbsoluteUrl}/_api/search/query?querytext=%27path:%22${webAbsoluteUrl}%22%20ContentClass:STS_Web%27`;
+      var res = await RestAPIHelper.CallGetRest(apiUrl, spHttpClient);
+      return res;
+    }
 }

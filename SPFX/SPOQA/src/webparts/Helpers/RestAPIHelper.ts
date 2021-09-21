@@ -12,7 +12,7 @@ export default class RestAPIHelper
     public static async GetUserFromUserInfoList(user:string, spHttpClient:SPHttpClient, webAbsoluteUrl:string)
     {
       var account =  `i:0#.f|membership|${user}`;
-      var apiUrl = `${webAbsoluteUrl}/_api/web/lists/getByTitle('User Information List')/items?$filter=Name eq '${encodeURIComponent(account)}'`;      
+      var apiUrl = `${webAbsoluteUrl}/_api/web/SiteUserInfoList/items?$filter=Name eq '${encodeURIComponent(account)}'`;      
       var res = await RestAPIHelper.CallGetRest(apiUrl, spHttpClient);
       if(res.value.length>=1)
       {
@@ -29,10 +29,20 @@ export default class RestAPIHelper
     public static async FixJobTitleInUserInfoList(userId:number, spHttpClient:SPHttpClient, webAbsoluteUrl:string, newJobTitle:string, successCallBack:Function, failedCallback:Function) 
     {    
       const context: SP.ClientContext = new SP.ClientContext(webAbsoluteUrl);     
-      const userItem: SP.ListItem = context.get_web().get_lists().getByTitle("User Information List").getItemById(userId); 
+      const userItem: SP.ListItem = context.get_web().get_siteUserInfoList().getItemById(userId); 
       userItem.set_item('JobTitle', newJobTitle);      
       userItem.update();
       context.executeQueryAsync((sender: any, args: SP.ClientRequestSucceededEventArgs): void => {successCallBack();}, (sender: any, args: SP.ClientRequestSucceededEventArgs): void => {failedCallback();});      
+    }    
+    
+    public static TestConnectMySite(spHttpClient:SPHttpClient, mySiteHost:string)
+    {
+      const context: SP.ClientContext = new SP.ClientContext(mySiteHost);  
+      let userPhotoLib:SP.List = context.get_web().get_lists().getByTitle("User Photos");
+      context.load(userPhotoLib);
+      context.executeQueryAsync(
+        (sender: any, args: SP.ClientRequestSucceededEventArgs): void => {console.log(userPhotoLib.get_title()+" loaded in TestConnectMySite");}, 
+        (sender: any, args: SP.ClientRequestSucceededEventArgs): void => {console.log("Failed to run TestConnectMySite");});
     }
 
     public static async FixJobTitleInUserProfile(user:string,spHttpClient:SPHttpClient, webAbsoluteUrl:string, newJobTitle:string)

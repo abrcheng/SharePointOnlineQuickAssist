@@ -1,7 +1,6 @@
 import * as React from 'react';
 import {  
-    PrimaryButton,
-    Text,
+    PrimaryButton,    
     TextField,
     Label
   } from 'office-ui-fabric-react/lib/index';

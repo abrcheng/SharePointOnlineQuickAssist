@@ -17,4 +17,18 @@ export default class GraphAPIHelper
         Promise.reject(message);
       }
     }
+
+    public static async GetUserPhoto(user:string, msGraphClient:MSGraphClient)
+    {
+      var res = await msGraphClient.api(`/users/${user}/photo/$value`).responseType('blob').get();
+      if(res)
+      {               
+        console.log(`GraphAPIHelper.GetUserPhoto for user ${user} done.`);
+        return await res;
+      }
+      else
+      {
+        console.log("GraphAPIHelper.GetUserPhoto failed");
+      }
+    }
 }

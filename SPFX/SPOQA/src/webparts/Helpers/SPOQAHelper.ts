@@ -24,7 +24,7 @@ export default class SPOQAHelper
         const barTypes:String[] = ["Error", "Success", "Warning", "Info"]; 
         if(barTypes.indexOf(barType) >=0)
         {
-            document.querySelector(`#SPOQA${barType}MessageBar`).innerHTML = `<span>${message}</span>`;
+            document.querySelector(`#SPOQA${barType}MessageBar`).innerHTML = `<span style="white-space:normal">${message}</span>`;
             SPOQAHelper.Show(`SPOQA${barType}MessageBarContainer`);
         }
         else

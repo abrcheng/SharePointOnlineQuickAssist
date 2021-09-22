@@ -38,9 +38,9 @@ const INITIAL_OPTIONS: IComboBoxOption[] = [
   { key: 'UserProfile', text: 'User Profile Issues', itemType: SelectableOptionMenuItemType.Header },
   { key: 'UserProfilePhoto', text: 'Photo sync issue' },
   { key: 'UserProfileTitle', text: 'Job Title sync issue'},
-  { key: 'UserProfileEmail', text: 'Email sync issue' },
-  { key: 'UserProfileManager', text: 'Manager sync issue' },
-  { key: 'UserProfileDepartment', text: 'Department sync issue' }  
+  // { key: 'UserProfileEmail', text: 'Email sync issue' },
+  // { key: 'UserProfileManager', text: 'Manager sync issue' },
+  // { key: 'UserProfileDepartment', text: 'Department sync issue' }  
 ];
 
 const wrapperClassName = mergeStyles({
@@ -75,13 +75,8 @@ export default class SharePointOnlineQuickAssist extends React.Component<IShareP
         globalExportsName: 'SP'
       });
     });
-    /*.then((): void => {
-      this.setState((prevState: ISharePointListsState, props: ISharePointListsProps): ISharePointListsState => {
-        prevState.loadingScripts = false;
-        return prevState;
-      });
-    });*/
   }
+
   public render(): React.ReactElement<ISharePointOnlineQuickAssistProps> {
     // this.props.webPartContext
     const sPOQADetail = () => {
@@ -136,22 +131,22 @@ export default class SharePointOnlineQuickAssist extends React.Component<IShareP
               <div>        
                 <Spinner id="SPOQASpinner" label="Checking..." ariaLive="assertive" labelPosition="left" style={{display:"none"}} />
                 <div id="SPOQAErrorMessageBarContainer" style={{display:"none"}}>
-                  <MessageBar id="SPOQAErrorMessageBar" messageBarType={MessageBarType.error} isMultiline={false} onDismiss={()=>{SPOQAHelper.Hide("SPOQAErrorMessageBarContainer");}} dismissButtonAriaLabel="Close" >
+                  <MessageBar id="SPOQAErrorMessageBar" messageBarType={MessageBarType.error} isMultiline={true} onDismiss={()=>{SPOQAHelper.Hide("SPOQAErrorMessageBarContainer");}} dismissButtonAriaLabel="Close" >
                               SPOQAErrorMessageBar
                   </MessageBar>
                 </div>
                 <div id="SPOQASuccessMessageBarContainer" style={{display:"none"}}>
-                  <MessageBar id="SPOQASuccessMessageBar" messageBarType={MessageBarType.success} isMultiline={false} onDismiss={()=>{SPOQAHelper.Hide("SPOQASuccessMessageBarContainer");}} dismissButtonAriaLabel="Close" >
+                  <MessageBar id="SPOQASuccessMessageBar" messageBarType={MessageBarType.success} isMultiline={true} onDismiss={()=>{SPOQAHelper.Hide("SPOQASuccessMessageBarContainer");}} dismissButtonAriaLabel="Close" >
                           SPOQASuccessMessageBar
                   </MessageBar>
                 </div>
                 <div id="SPOQAWarningMessageBarContainer" style={{display:"none"}}>
-                  <MessageBar id="SPOQAWarningMessageBar" messageBarType={MessageBarType.warning} isMultiline={false} onDismiss={()=>{SPOQAHelper.Hide("SPOQAWarningMessageBarContainer");}} dismissButtonAriaLabel="Close">
+                  <MessageBar id="SPOQAWarningMessageBar" messageBarType={MessageBarType.warning} isMultiline={true} onDismiss={()=>{SPOQAHelper.Hide("SPOQAWarningMessageBarContainer");}} dismissButtonAriaLabel="Close">
                           SPOQAWarningMessageBar
                   </MessageBar>
                 </div>
                 <div id="SPOQAInfoMessageBarContainer" style={{display:"none"}}>
-                  <MessageBar id="SPOQAInfoMessageBar" messageBarType={MessageBarType.info} isMultiline={false} onDismiss={()=>{SPOQAHelper.Hide("SPOQAInfoMessageBarContainer");}} dismissButtonAriaLabel="Close">
+                  <MessageBar id="SPOQAInfoMessageBar" messageBarType={MessageBarType.info} isMultiline={true} onDismiss={()=>{SPOQAHelper.Hide("SPOQAInfoMessageBarContainer");}} dismissButtonAriaLabel="Close">
                         SPOQAInfoMessageBar
                   </MessageBar>
                 </div>

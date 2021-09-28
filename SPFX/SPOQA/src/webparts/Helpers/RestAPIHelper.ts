@@ -96,10 +96,27 @@ export default class RestAPIHelper
       }
     }
 
-    public static async GetSiteSearchResult(spHttpClient:SPHttpClient, webAbsoluteUrl:string)
+    public static async GetSerchResults(spHttpClient:SPHttpClient, webAbsoluteUrl:string, contentClass:string)
     { 
-      var apiUrl = `${webAbsoluteUrl}/_api/search/query?querytext=%27path:%22${webAbsoluteUrl}%22%20ContentClass:STS_Web%27`;
-      var res = await RestAPIHelper.CallGetRest(apiUrl, spHttpClient);
-      return res;
+      var contentClassStr = `*`;
+      if(contentClass == "Site")
+      {
+        contentClassStr = `ContentClass:STS_Site Path:"${webAbsoluteUrl}"`;
+      }
+      var apiUrl = `${webAbsoluteUrl}/_api/search/query?querytext='${contentClassStr}'&SelectProperties='Title'&rowlimit=10`;
+
+      var res = await spHttpClient.get(apiUrl, SPHttpClient.configurations.v1);
+      if(res.ok)
+      {
+        var responseJson = await res.json();
+        console.log(`GetSerchResults done for API url ${apiUrl}`);          
+        return await responseJson;
+      }
+      else
+      {
+        var message = `Failed GetSerchResults for API url ${apiUrl}`;
+        console.log(message);
+        Promise.reject(message);
+      }
     }
 }

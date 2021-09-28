@@ -96,14 +96,14 @@ export default class RestAPIHelper
       }
     }
 
-    public static async GetSerchResults(spHttpClient:SPHttpClient, webAbsoluteUrl:string, contentClass:string)
+    public static async GetSerchResults(spHttpClient:SPHttpClient, siteAbsoluteUrl:string, targetwebAbsoluteUrl:string, contentClass:string)
     { 
       var contentClassStr = `*`;
       if(contentClass == "Site")
       {
-        contentClassStr = `ContentClass:STS_Site Path:"${webAbsoluteUrl}"`;
+        contentClassStr = `ContentClass:STS_Site Path:"${targetwebAbsoluteUrl}"`;
       }
-      var apiUrl = `${webAbsoluteUrl}/_api/search/query?querytext='${contentClassStr}'&SelectProperties='Title'&rowlimit=10`;
+      var apiUrl = `${siteAbsoluteUrl}/_api/search/query?querytext='${contentClassStr}'&SelectProperties='Path,Title'&rowlimit=10`;
 
       var res = await spHttpClient.get(apiUrl, SPHttpClient.configurations.v1);
       if(res.ok)

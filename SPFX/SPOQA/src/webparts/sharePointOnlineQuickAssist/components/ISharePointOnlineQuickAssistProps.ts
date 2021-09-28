@@ -5,4 +5,5 @@ export interface ISharePointOnlineQuickAssistProps {
   spHttpClient:SPHttpClient;
   webAbsoluteUrl:string;
   webUrl:string;
+  rootUrl:string;
 }

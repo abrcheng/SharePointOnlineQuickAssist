@@ -14,7 +14,8 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
 {
     public state = {
         affectedSite:this.props.webAbsoluteUrl
-      };
+    };
+
     public render():React.ReactElement<ISharePointOnlineQuickAssistProps>
     {        
         return (
@@ -58,7 +59,7 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
     {
         try
         {
-          var userInfoSite = await RestAPIHelper.GetSerchResults(this.props.spHttpClient, this.state.affectedSite, "Site");
+          var userInfoSite = await RestAPIHelper.GetSerchResults(this.props.spHttpClient, this.props.rootUrl, this.state.affectedSite, "Site");
           console.log(userInfoSite);
 
           var sum = await this.GetJsonResults(userInfoSite);
@@ -71,8 +72,15 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
               SPOQAHelper.ShowMessageBar("Error", "No Serach Result for the site."); 
 
               //Site is not searchable. Proceed to check more
+              //1. Check if the site exists
+              //2. Check if the user has permissions
+              //3. Check if the site is crawled/indexed
+              //4. Try searching the site with a different keyword
 
               
+
+
+
             }
             else
             {

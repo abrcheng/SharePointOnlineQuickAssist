@@ -53,5 +53,6 @@ gulp serve
 * gulp package-solution --ship
 * Upload .sppkg file from sharepoint\solution to your tenant App Catalog
 	* E.g.: https://&lt;tenant&gt;.sharepoint.com/sites/AppCatalog/AppCatalog
-* Approve API access requests in SharePoint admin center  https://&lt;tenant&gt;-admin.sharepoint.com/_layouts/15/online/AdminHome.aspx#/webApiPermissionManagement 
+* Approve API access requests in SharePoint admin center  
+        * https://&lt;tenant&gt;-admin.sharepoint.com/_layouts/15/online/AdminHome.aspx#/webApiPermissionManagement 
 * Add the web part to a site collection, and test it on a page

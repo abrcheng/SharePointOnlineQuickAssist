@@ -46,8 +46,7 @@ export default class SharePointOnlineQuickAssistWebPart extends BaseClientSideWe
         spHttpClient:this.context.spHttpClient,
         webAbsoluteUrl:this.context.pageContext.web.absoluteUrl,
         webUrl:this.context.pageContext.legacyPageContext["webServerRelativeUrl"],
-        //rootUrl:this.context.pageContext.site.absoluteUrl.substring(0,this.context.pageContext.site.absoluteUrl.indexOf(".sharepoint.com")+(".sharepoint.com").length)
-        rootUrl:"https://m365x063492.sharepoint.com"
+        rootUrl:this.context.pageContext.site.absoluteUrl.substring(0,this.context.pageContext.site.absoluteUrl.indexOf(".sharepoint.com")+(".sharepoint.com").length)
       }     
     );
 

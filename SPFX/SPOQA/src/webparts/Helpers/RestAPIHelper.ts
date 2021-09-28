@@ -103,7 +103,7 @@ export default class RestAPIHelper
       {
         contentClassStr = `ContentClass:STS_Site Path:"${targetwebAbsoluteUrl}"`;
       }
-      var apiUrl = `${siteAbsoluteUrl}/_api/search/query?querytext='${contentClassStr}'&SelectProperties='Path,Title'&rowlimit=10`;
+      var apiUrl = `${siteAbsoluteUrl}/search/_api/search/query?querytext='${contentClassStr}'&SelectProperties='Path,Title'&rowlimit=10`;
 
       var res = await spHttpClient.get(apiUrl, SPHttpClient.configurations.v1);
       if(res.ok)

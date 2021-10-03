@@ -58,4 +58,20 @@ export default class SPOQAHelper
 
         return pattern.test(url);
     }
+
+    public static ParseQueryString(queryString?: string): any {
+        // if the query string is NULL or undefined
+        if (!queryString) {
+            queryString = window.location.search.substring(1);
+        }
+        const params = {};
+        const queries = queryString.split("&");
+        queries.forEach((indexQuery: string) => {
+            const indexPair = indexQuery.split("=");
+            const queryKey = decodeURIComponent(indexPair[0]);
+            const queryValue = decodeURIComponent(indexPair.length > 1 ? indexPair[1] : "");
+            params[queryKey] = queryValue;
+        });
+        return params;
+    }
 }

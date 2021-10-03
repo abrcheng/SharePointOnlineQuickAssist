@@ -1,4 +1,6 @@
 import {SPHttpClient,ISPHttpClientOptions} from '@microsoft/sp-http';
+import { format } from 'office-ui-fabric-react';
+import SPOQAHelper from './SPOQAHelper';
 
 export default class RestAPIHelper
 {
@@ -119,4 +121,97 @@ export default class RestAPIHelper
         Promise.reject(message);
       }
     }
+
+    public static async GetLists(spHttpClient:SPHttpClient, siteAbsoluteUrl:string)
+    {
+        console.log(`Start to load list for the site ${siteAbsoluteUrl}`);
+        var apiUrl = `${siteAbsoluteUrl}/_api/web/Lists?$select=Title,BaseTemplate,BaseType&rowlimit=5000`;
+        var res = await spHttpClient.get(apiUrl, SPHttpClient.configurations.v1);
+        var resJson = await res.json();
+        return resJson.value;
+    }
+
+    public static async SearchDocumentByFullPath(spHttpClient:SPHttpClient, siteAbsoluteUrl:string, fullPath:string)
+    {
+        var queryText = `Path:"${fullPath}"`;
+        var apiUrl = `${siteAbsoluteUrl}/_api/search/query?querytext='${queryText}'&SelectProperties='Path,Title'`;
+        var res = await spHttpClient.get(apiUrl, SPHttpClient.configurations.v1);
+        var resJson = await res.json();
+        return resJson.PrimaryQueryResult.RelevantResults;
+    }
+
+    public static async IsWebNoCrawl(spHttpClient:SPHttpClient, siteAbsoluteUrl:string)
+    {
+        var apiUrl = `${siteAbsoluteUrl}/_api/web`;
+        var res = await spHttpClient.get(apiUrl, SPHttpClient.configurations.v1);
+        var resJson = await res.json();
+        return resJson.NoCrawl;
+    }
+
+    public static async IsListNoCrawl(spHttpClient:SPHttpClient, siteAbsoluteUrl:string, listTitle:string)
+    {
+      var apiUrl = `${siteAbsoluteUrl}/_api/web/Lists/getByTitle('${listTitle}')`;
+      var res = await spHttpClient.get(apiUrl, SPHttpClient.configurations.v1);
+      var resJson = await res.json();
+      return resJson.NoCrawl;
+    }
+
+    public static async IsListMissDisplayForm(spHttpClient:SPHttpClient, siteAbsoluteUrl:string, listTitle:string)
+    {
+      var apiUrl = `${siteAbsoluteUrl}/_api/web/Lists/getByTitle('${listTitle}')/Forms`;
+      var res = await spHttpClient.get(apiUrl, SPHttpClient.configurations.v1);
+      var resJson = await res.json();
+      let hasDisplayForm:boolean = false;
+      let displayFormUrl = "";
+      resJson.value.forEach(form => {
+        if(form.FormType == 4)
+        {
+          if(form.ServerRelativeUrl)
+          {
+            displayFormUrl = form.ServerRelativeUrl;            
+          }
+        }
+      });
+
+      if(displayFormUrl && displayFormUrl !="")
+      {
+        try
+        {
+          apiUrl = `${siteAbsoluteUrl}/_api/web/GetFileByUrl('${displayFormUrl}')`;
+          res = await spHttpClient.get(apiUrl, SPHttpClient.configurations.v1);
+          resJson = await res.json();
+          hasDisplayForm = true;
+        }
+        catch(err)
+        {
+          console.log(err);
+        }
+      }
+
+      return !hasDisplayForm;
+    }
+
+    public static async IsDocumentInDraftVersion(spHttpClient:SPHttpClient, siteAbsoluteUrl:string, isDocument:boolean, listTitle:string, fullDocmentPath:string)
+    {
+        // https://chengc.sharepoint.com/_api/web/Lists/getByTitle('TestMMList')/items(1)
+        // https://chengc.sharepoint.com/_api/web/GetFileByUrl('/test123/Document.docx')/ListItemAllFields
+        var apiUrl = `${siteAbsoluteUrl}/_api/web/`;
+        if(isDocument)
+        {
+           var relativeDocPath = fullDocmentPath.replace(`https://${document.location.hostname}`, "");
+           apiUrl += `GetFileByUrl('${relativeDocPath}')/ListItemAllFields`; 
+        }
+        else
+        {       
+          var urlParas = SPOQAHelper.ParseQueryString((fullDocmentPath.split(".aspx?"))[1]);   
+          var itemId = urlParas["Id"]||urlParas["ID"];
+          apiUrl+=`Lists/getByTitle('${listTitle}')/items(${itemId})`;
+        }
+        console.log(`Will call API ${apiUrl}`);
+        var res = await spHttpClient.get(apiUrl, SPHttpClient.configurations.v1);
+        var resJson = await res.json();
+        var versionStr = resJson.OData__UIVersionString;
+        var minVersion = (versionStr.split("."))[1];
+        return minVersion > '0';
+    }    
 }

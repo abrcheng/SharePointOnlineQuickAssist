@@ -213,5 +213,90 @@ export default class RestAPIHelper
         var versionStr = resJson.OData__UIVersionString;
         var minVersion = (versionStr.split("."))[1];
         return minVersion > '0';
-    }    
+    } 
+    
+    public static async FixListNoCrawl(spHttpClient:SPHttpClient, siteAbsoluteUrl:string, listTitle:string)
+    {      
+      let apiUrl:string = `${siteAbsoluteUrl}/_api/web/Lists/getByTitle('${listTitle}')`;  
+      let listData = { 
+          __metadata:
+          {
+              type: "SP.List"
+          },       
+          NoCrawl: false
+        };
+    
+      let spOpts = {  
+            headers: {              
+              "Accept": "application/json;odata=verbose",            
+              "Content-Type": "application/json;odata=verbose",            
+              "IF-MATCH": "*",            
+              "X-HTTP-Method": "MERGE"            
+            },  
+            body: JSON.stringify(listData)  
+        };  
+      var res = await spHttpClient.post(apiUrl, SPHttpClient.configurations.v1, spOpts); 
+      var resJson = await res.json();
+      return resJson;
+    }
+  
+    public static async FixWebNoCrawl(spHttpClient:SPHttpClient, siteAbsoluteUrl:string)
+    {
+      let apiUrl = `${siteAbsoluteUrl}/_api/web`;  
+      let listData = { 
+          __metadata:
+          {
+              type: "SP.Web"
+          },       
+          NoCrawl: false
+        };
+    
+      let spOpts = {  
+            headers: {              
+              "Accept": "application/json;odata=verbose",            
+              "Content-Type": "application/json;odata=verbose",            
+              "IF-MATCH": "*",            
+              "X-HTTP-Method": "MERGE"            
+            },  
+            body: JSON.stringify(listData)  
+        };  
+      var res = await spHttpClient.post(apiUrl, SPHttpClient.configurations.v1, spOpts); 
+      var resJson = await res.json();
+      return resJson;
+    }
+
+    public static async FixMissDisForm(spHttpClient:SPHttpClient, siteAbsoluteUrl:string, listTitle:string)
+    {
+      // Get list ID
+      var apiUrl = `${siteAbsoluteUrl}/_api/web/Lists/getByTitle('${listTitle}')`;
+      var res = await spHttpClient.get(apiUrl, SPHttpClient.configurations.v1);
+      var resJson = await res.json();
+
+      // 
+    }
+
+    public static async FixDraftVersion(spHttpClient:SPHttpClient, siteAbsoluteUrl:string, isDocument:boolean, listTitle:string, fullDocmentPath:string)
+    {
+        // Only document will have the draft version 
+        if(!isDocument)
+        {
+          console.log("Only document will have the draft version, ignore fix request for isDocument===false");
+        }
+        
+        // /_api/web/getfilebyserverrelativeurl('Server Relative URL%')/CheckIn(comment='Check-in by SharePointOnlineQuickAssist',checkintype=1)
+        // "X-HTTP-Method": "PATCH",
+        var relativeDocPath = fullDocmentPath.replace(`https://${document.location.hostname}`, "");
+        let apiUrl:string = `${siteAbsoluteUrl}/_api/web/GetFileByUrl('${relativeDocPath}/CheckIn(comment='Check-in by SharePointOnlineQuickAssist',checkintype=1)`;
+        let spOpts = {  
+          headers: {              
+            "Accept": "application/json;odata=verbose",            
+            "Content-Type": "application/json;odata=verbose",            
+            "IF-MATCH": "*",            
+            "X-HTTP-Method": "PATCH"            
+          }          
+        };  
+      var res = await spHttpClient.post(apiUrl, SPHttpClient.configurations.v1, spOpts); 
+      var resJson = await res.json();
+      return resJson;
+    }
 }

@@ -32,7 +32,7 @@ import SPOQAHelper from '../../Helpers/SPOQAHelper';
 const INITIAL_OPTIONS: IComboBoxOption[] = [
   { key: 'Search', text: 'Search Issues', itemType: SelectableOptionMenuItemType.Header },
   { key: 'SearchDocument', text: 'Specified Document' },
-  { key: 'SearchPeople', text: 'People' },
+  // { key: 'SearchPeople', text: 'People' },
   { key: 'SearchLibrary', text: 'Specified Library' },
   { key: 'SearchSite', text: 'Specified Site' },  
   { key: 'UserProfile', text: 'User Profile Issues', itemType: SelectableOptionMenuItemType.Header },

@@ -116,6 +116,7 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
     
     public async CheckSearchDocument()
     {
+        SPOQAHelper.ResetFormStaus();
         this.setState({isChecked:false});
         let hasError:boolean = false;
         SPOQASpinner.Show("Checking document search issue ......");
@@ -197,6 +198,7 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
 
     public async FixIssues()
     {
+        SPOQAHelper.ResetFormStaus();
         SPOQASpinner.Show("Fix detected document search issues ......");
         let hasError:boolean = false;
         if(this.state.isListNoIndex)
@@ -253,6 +255,8 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
         if(!hasError)
         {
             SPOQAHelper.ShowMessageBar("Success", `Fixed all detected issues please try to reindex the affected library/site and wait for 20~30 minutes then verify it`);
+            this.setState({isChecked:false});
+            
         }
 
         SPOQASpinner.Hide();

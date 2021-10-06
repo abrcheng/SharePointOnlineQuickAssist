@@ -13,7 +13,11 @@ import { ISharePointOnlineQuickAssistProps } from './ISharePointOnlineQuickAssis
 export default class SearchSiteQA extends React.Component<ISharePointOnlineQuickAssistProps>
 {
     public state = {
-        affectedSite:this.props.webAbsoluteUrl
+        affectedSite:this.props.webAbsoluteUrl,
+        affectedUser:this.props.currentUser.email,
+        isWebThere:false,
+        isWebNoIndex:false,
+        isChecked:false
     };
 
     public render():React.ReactElement<ISharePointOnlineQuickAssistProps>
@@ -23,10 +27,29 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
                   <TextField
                         label="Affected Site:"
                         multiline={false}
-                        onChange={(e)=>{let text:any = e.target; this.setState({affectedSite:text.value});}}
+                        onChange={(e)=>{let text:any = e.target; this.setState({affectedSite:text.value}); this.setState({isChecked:false});}}
                         value={this.state.affectedSite}
                         required={true}                                                
-                  />  
+                  />
+                  <TextField
+                        label="Affected User:"
+                        multiline={false}
+                        onChange={(e)=>{let text:any = e.target; this.setState({affectedUser:text.value});}}
+                        value={this.state.affectedUser}
+                        required={true}                                                
+                  /> 
+                    {this.state.affectedSite!="" && this.state.isChecked? 
+                        <div id="SearchSiteResultSection">
+                            <Label>Diagnose result:</Label>
+                            {this.state.isWebThere?<Label style={{"color":"Green",marginLeft:20}}>Found site with URL {this.state.affectedSite}</Label>:
+                                <Label style={{"color":"Red",marginLeft:20}} >Site with URL {this.state.affectedSite} doesn't exist</Label>}
+                            {this.state.isWebThere?
+                            <div>
+                            {this.state.isWebNoIndex?<Label style={{"color":"Red",marginLeft:20}}>The nocrawl has been enabled for site {this.state.affectedSite}</Label>:
+                                <Label style={{"color":"Green",marginLeft:20}}>Site {this.state.affectedSite} is searchable</Label>}
+                            </div>:null}
+                        </div>:null
+                    }
                   <PrimaryButton
                       text="Check Site"
                       style={{ display: 'inline', marginTop: '10px' }}
@@ -48,21 +71,29 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
         queryModifcation: "string",
         total: JsonStr['PrimaryQueryResult'].RelevantResults.TotalRows,
         totalNoDup: JsonStr['PrimaryQueryResult'].RelevantResults.TotalRowsIncludingDuplicates
-      }
+      };
       console.log(sumObj);
 
       return sumObj;
 
     }
 
+    private async getUserIDByEmail(email:string,siteUrl:string):Promise<number>
+    {
+        var url = `${siteUrl}/_api/web/siteusers?$filter=Email eq '${email}'`;
+        var userData:any = await RestAPIHelper.GetQueryUser(siteUrl,this.props.spHttpClient);
+        return userData.value[0].Id;
+    }
+
     public async CheckSiteSearchSettings()
     {
+        this.setState({isChecked:false});
         try
         {
-          var userInfoSite = await RestAPIHelper.GetSerchResults(this.props.spHttpClient, this.props.rootUrl, this.state.affectedSite, "Site");
-          console.log(userInfoSite);
+          var siteSearch = await RestAPIHelper.GetSerchResults(this.props.spHttpClient, this.props.rootUrl, this.state.affectedSite, "Site");
+          console.log(siteSearch);
 
-          var sum = await this.GetJsonResults(userInfoSite);
+          var sum = await this.GetJsonResults(siteSearch);
 
           if(sum.total == 0)
           {
@@ -73,14 +104,50 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
 
               //Site is not searchable. Proceed to check more
               //1. Check if the site exists
-              //2. Check if the user has permissions
-              //3. Check if the site is crawled/indexed
+              //2. Check if the site is crawled/indexed
+              //3. Check if the user has permissions
               //4. Try searching the site with a different keyword
 
-              
+              //Check if the site exists
+              try{
+                var webInfo = await RestAPIHelper.GetWeb(this.props.spHttpClient, this.state.affectedSite);
+                this.setState({isWebThere:webInfo});
+              }
+              catch(err)
+              {
+                SPOQAHelper.ShowMessageBar("Error",`Get exception when try to get web with error message ${err}`);
+                return;
+              }
+              if(webInfo)
+              {
+                //Check if the site is crawled/indexed
+                try
+                {
+                  var noCrawl = await RestAPIHelper.IsWebNoCrawl(this.props.spHttpClient, this.state.affectedSite);
+                  this.setState({isWebNoIndex:noCrawl});
+                }
+                catch(err)
+                {
+                  SPOQAHelper.ShowMessageBar("Error",`Get exception when try to check IsWebNoCrawl with error message ${err}`);
+                  return;
+                }
 
+                //Check if the user has permissions
+                try
+                {
+                  //Get User Login Id by Email
+                  //var userLoginId = this.getUserIDByEmail(this.state.affectedUser, this.state.affectedSite);
 
-
+                  var userInfoSite = await RestAPIHelper.GetUserFromUserInfoList(this.state.affectedUser, this.props.spHttpClient, this.state.affectedSite);
+                  //↑ Get error if user email contains "'"
+                  console.log(`User info is ${userInfoSite.Email}`);
+                }
+                catch(err)
+                {
+                  SPOQAHelper.ShowMessageBar("Error",`Get exception when try to get user info with error message ${err}`);
+                  return;
+                }
+              }
             }
             else
             {
@@ -100,6 +167,6 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
            console.log(`Error`);
         }
 
-        
+        this.setState({isChecked:true});
     }
 }

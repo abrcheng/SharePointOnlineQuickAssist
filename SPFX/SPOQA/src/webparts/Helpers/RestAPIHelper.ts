@@ -98,6 +98,10 @@ export default class RestAPIHelper
       }
     }
 
+    public static async GetQueryUser(url:string, spHttpClient:SPHttpClient) {
+      
+    }
+
     public static async GetSerchResults(spHttpClient:SPHttpClient, siteAbsoluteUrl:string, targetwebAbsoluteUrl:string, contentClass:string)
     { 
       var contentClassStr = `*`;
@@ -120,6 +124,18 @@ export default class RestAPIHelper
         console.log(message);
         Promise.reject(message);
       }
+    }
+
+    public static async GetWeb(spHttpClient:SPHttpClient, webAbsoluteUrl:string)
+    { 
+      var apiUrl = `${webAbsoluteUrl}/_api/web`;
+
+      var res = await spHttpClient.get(apiUrl, SPHttpClient.configurations.v1);
+      if(res.status == 404)
+      {
+        return false;
+      }
+      return true;
     }
 
     public static async GetLists(spHttpClient:SPHttpClient, siteAbsoluteUrl:string)

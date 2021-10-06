@@ -31,4 +31,21 @@ export default class GraphAPIHelper
         console.log("GraphAPIHelper.GetUserPhoto failed");
       }
     }
+    
+    public static async GetGroupMembers(groupid:string, msGraphClient:MSGraphClient)
+    {      
+      var res = await msGraphClient.api(`/groups/${groupid}/members?$select=mail`).get();
+      if(res)
+      {               
+        console.log(`GraphAPIHelper.GetGroupMembers for user ${groupid} done.`);
+        const graphResponse: any = res.value; 
+        return await graphResponse;
+      }
+      else
+      {
+        var message = `Failed to get uesr ${groupid} from graph API`;
+        console.log(message);
+        Promise.reject(message);
+      }
+    }
 }

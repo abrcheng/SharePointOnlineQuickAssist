@@ -34,7 +34,7 @@ export default class RestAPIHelper
       const userItem: SP.ListItem = context.get_web().get_siteUserInfoList().getItemById(userId); 
       userItem.set_item('JobTitle', newJobTitle);      
       userItem.update();
-      context.executeQueryAsync((sender: any, args: SP.ClientRequestSucceededEventArgs): void => {successCallBack();}, (sender: any, args: SP.ClientRequestSucceededEventArgs): void => {failedCallback();});      
+      context.executeQueryAsync((sender: any, args: SP.ClientRequestSucceededEventArgs): void => {successCallBack();}, (sender: any, args: SP.ClientRequestSucceededEventArgs): void => {failedCallback();});           
     }    
     
     public static TestConnectMySite(spHttpClient:SPHttpClient, mySiteHost:string)
@@ -444,8 +444,8 @@ export default class RestAPIHelper
           if(resJson.error)
           {
             let apiUrl:string = `${siteAbsoluteUrl}/_api/web/GetFileByUrl('${relativeDocPath}')/Publish('Published by SharePointOnlineQuickAssist')`;           
-            var res = await spHttpClient.post(apiUrl, SPHttpClient.configurations.v1, spOpts); 
-            resJson = await res.json();
+            var res = await spHttpClient.post(apiUrl, SPHttpClient.configurations.v1, spOpts);   
+            console.log(`${apiUrl} OK?${res.ok}`);
           }
      
 

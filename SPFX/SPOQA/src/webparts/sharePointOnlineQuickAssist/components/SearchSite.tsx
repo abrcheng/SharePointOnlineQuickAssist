@@ -230,6 +230,9 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
           {
             console.log(`The site is searchable`);
             SPOQAHelper.ShowMessageBar("Success", "The site is searchable."); 
+            SPOQASpinner.Hide();
+            this.setState({isChecked:false});
+            return;
           }
         }
         catch(err)

@@ -72,7 +72,7 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
                                 <Label style={{"color":"Green",marginLeft:"20px"}}>The nocrawl hasn't been enabled for the site {this.state.affectedSite}</Label>}
                             {this.state.isListNoIndex?<Label style={{"color":"Red",marginLeft:"20px"}}>The nocrawl has been enabled for this list {this.listTitle}</Label>:
                                 <Label style={{"color":"Green",marginLeft:"20px"}}>The nocrawl hasn't been enabled for this list {this.listTitle}</Label>}
-                            {this.state.isMissingDisplayForm?<Label style={{"color":"Red",marginLeft:"20px"}}>The dispalyForm is missed for the list {this.listTitle}</Label>:
+                            {this.state.isMissingDisplayForm && !this.state.isLibrary?<Label style={{"color":"Red",marginLeft:"20px"}}>The dispalyForm is missed for the list {this.listTitle}</Label>:
                                 <Label style={{"color":"Green",marginLeft:"20px"}}>The dispalyForm is not missed</Label>}
                             {this.state.isDraftVersion?<Label style={{"color":"Red",marginLeft:"20px"}}>The document {this.state.affectedDocument} is in draft version</Label>:
                                 <Label style={{"color":"Green",marginLeft:"20px"}}>The document {this.state.affectedDocument} is in major version</Label>}

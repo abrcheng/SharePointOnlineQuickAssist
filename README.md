@@ -61,5 +61,5 @@ gulp serve
 ### Features
 
 * [Search issue for a specific document](https://github.com/abrcheng/SharePointOnlineQuickAssist/blob/main/SPFX/SPOQA/SearchSpecificDocument.md)
-
+* [Job Title Sync issue](https://github.com/abrcheng/SharePointOnlineQuickAssist/blob/main/SPFX/SPOQA/JobTitleSyncIssue.md)
 

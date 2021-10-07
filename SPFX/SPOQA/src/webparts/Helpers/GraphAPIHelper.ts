@@ -34,7 +34,7 @@ export default class GraphAPIHelper
     
     public static async GetGroupMembers(groupid:string, msGraphClient:MSGraphClient)
     {      
-      var res = await msGraphClient.api(`/groups/${groupid}/members?$select=mail`).get();
+      var res = await msGraphClient.api(`/groups/${groupid}/members?$select=id,mail`).get();
       if(res)
       {               
         console.log(`GraphAPIHelper.GetGroupMembers for user ${groupid} done.`);
@@ -44,6 +44,37 @@ export default class GraphAPIHelper
       else
       {
         var message = `Failed to get uesr ${groupid} from graph API`;
+        console.log(message);
+        Promise.reject(message);
+      }
+    }
+
+    public static async AddUserinMembers(groupid:string, msGraphClient:MSGraphClient, useremail:string)
+    {
+
+      var resUserInfo = await msGraphClient.api(`/me`).get();
+      console.log(`User info2: ${await resUserInfo["id"]}`);
+      var userId = await resUserInfo["id"];
+
+      //var keyOdataId = `@odata.id`;
+      //var valueODataId = `https://graph.microsoft.com/v1.0/directoryObjects/${useremail}`;
+
+      //const directoryObject = `@"{{ ""${keyOdataId}"": ""${valueODataId}"" }}`;
+
+      var body: string = JSON.stringify({
+        "@odata.id": `https://graph.microsoft.com/v1.0/directoryObjects/${userId}`
+      });
+      
+      var res = await msGraphClient.api(`/groups/${groupid}/members/$ref`).post(body);
+      if(res)
+      {               
+        console.log(`GraphAPIHelper.AddUserinMembers for user ${useremail} to ${groupid} done.`);
+        const graphResponse: any = res.value; 
+        return await graphResponse;
+      }
+      else
+      {
+        var message = `Failed to add uesr ${useremail} to ${groupid} via graph API`;
         console.log(message);
         Promise.reject(message);
       }

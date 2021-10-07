@@ -19,7 +19,7 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
         isWebNoIndex:false,
         userPerm:false,
         isinMembers:false,
-        isGroupSite:false,
+        GroupId:"",
         isChecked:false
     };
 
@@ -46,30 +46,37 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
                             {this.state.userPerm?<Label style={{"color":"Green",marginLeft:20}}>You have access to the site</Label>:
                                 <Label style={{"color":"Red",marginLeft:20}}>You don't have access to the site</Label>}
                             </div>:null}
-                            {this.state.isGroupSite?
+                            {this.state.GroupId?
                             <div>
                             {this.state.isinMembers?<Label style={{"color":"Green",marginLeft:20}}>You are in the members of the site</Label>:
                                 <Label style={{"color":"Red",marginLeft:20}}>You are not in the members of the site</Label>}
                             </div>:null}
                         </div>:null
                     }
-                  <PrimaryButton
+                  <div id="CommandButtonsSection">
+                    <PrimaryButton
                       text="Check Site"
                       style={{ display: 'inline', marginTop: '10px' }}
                       onClick={() => {this.ResetSatus(); this.CheckSiteSearchSettings();}} //When click: Reset banner status & check if the site is searchable
                     />
+                     {this.state.isChecked && this.state.isWebThere && (this.state.isWebNoIndex || (this.state.GroupId && !this.state.isinMembers))?
+                        <PrimaryButton
+                            text="Fix Issues"
+                            style={{ display: 'inline', marginTop: '10px', marginLeft:"10px"}}
+                            onClick={() => {this.FixIssues();}}
+                        />:null}
+                </div>
             </div>
         );
     }
     
     private async ResetSatus()
     {
-      this.state.affectedSite=this.props.webAbsoluteUrl;
       this.state.isWebThere=false;
       this.state.isWebNoIndex=false;
       this.state.userPerm=false;
       this.state.isinMembers=false;
-      this.state.isGroupSite=false;
+      this.state.GroupId="";
       this.state.isChecked=false;
       SPOQAHelper.ResetFormStaus();
     }
@@ -105,6 +112,7 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
     public async CheckSiteSearchSettings()
     {
         this.setState({isChecked:false});
+        SPOQASpinner.Show("Checking ......");
         try
         {
           var siteSearch = await RestAPIHelper.GetSerchResults(this.props.spHttpClient, this.props.rootUrl, this.state.affectedSite, "Site");
@@ -169,14 +177,14 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
                     
                     if(groupid == "00000000-0000-0000-0000-000000000000")
                     {
-                      this.state.isGroupSite = false;
+                      this.state.GroupId = "";
                     }
                     else
                     {
-                      this.state.isGroupSite = true;
+                      this.state.GroupId = groupid;
                     }
                     
-                    if(this.state.isGroupSite)
+                    if(this.state.GroupId)
                     {
                       //Get the group members
                       var memberInfo = await GraphAPIHelper.GetGroupMembers(groupid, this.props.msGraphClient);
@@ -230,6 +238,48 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
            console.log(`Error`);
         }
 
+        SPOQASpinner.Hide();
         this.setState({isChecked:true});
+    }
+
+    public async FixIssues()
+    {
+        SPOQAHelper.ResetFormStaus();
+        SPOQASpinner.Show("Fix detected site search issues ......");
+        let hasError:boolean = false;
+        
+        if(this.state.isWebNoIndex)
+        {
+            try{
+                await RestAPIHelper.FixWebNoCrawl(this.props.spHttpClient, this.state.affectedSite);
+            }
+            catch(err)
+            {
+                SPOQAHelper.ShowMessageBar("Error",`Get exception when try to check FixWebNoCrawl with error message ${err}`);
+                hasError = true;
+            }
+        }
+
+        if(this.state.GroupId && !this.state.isinMembers)
+        {
+            try
+            {
+                var addUserinMembers = await GraphAPIHelper.AddUserinMembers(this.state.GroupId, this.props.msGraphClient, this.props.currentUser.email);
+            }
+            catch(err)
+            {
+                SPOQAHelper.ShowMessageBar("Error",`Get exception when try to check AddUserinMembers with error message ${err}`);
+                hasError = true;
+            }
+        }
+
+        if(!hasError)
+        {
+            SPOQAHelper.ShowMessageBar("Success", `Fixed all detected issues please try to reindex the affected site and wait for 20~30 minutes then verify it`);
+            this.setState({isChecked:false});
+        }
+
+        SPOQASpinner.Hide();
+
     }
 }

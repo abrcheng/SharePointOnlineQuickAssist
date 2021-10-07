@@ -315,7 +315,7 @@ export default class RestAPIHelper
   
     public static async FixWebNoCrawl(spHttpClient:SPHttpClient, siteAbsoluteUrl:string)
     {
-      let apiUrl = `${siteAbsoluteUrl}/_api/web`;  
+      let apiUrl = `${siteAbsoluteUrl}/_api/web`;
       let listData = { 
           __metadata:
           {

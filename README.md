@@ -56,3 +56,10 @@ gulp serve
 * Approve API access requests in SharePoint admin center  
         * https://&lt;tenant&gt;-admin.sharepoint.com/_layouts/15/online/AdminHome.aspx#/webApiPermissionManagement 
 * Add the web part to a site collection, and test it on a page
+
+
+### Features
+
+* [Search issue for a specific document](https://github.com/abrcheng/SharePointOnlineQuickAssist/blob/main/SPFX/SPOQA/SearchSpecificDocument.md)
+* [Job Title Sync issue](https://github.com/abrcheng/SharePointOnlineQuickAssist/blob/main/SPFX/SPOQA/JobTitleSyncIssue.md)
+

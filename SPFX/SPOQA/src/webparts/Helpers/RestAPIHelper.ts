@@ -1,6 +1,7 @@
 import {SPHttpClient,ISPHttpClientOptions} from '@microsoft/sp-http';
 import { format } from 'office-ui-fabric-react';
 import SPOQAHelper from './SPOQAHelper';
+import { WebPartContext } from '@microsoft/sp-webpart-base';
 
 export default class RestAPIHelper
 {
@@ -79,6 +80,62 @@ export default class RestAPIHelper
       var apiUrl = `${webAbsoluteUrl}/_api/web/siteusers(@v)?@v='${encodeURIComponent(account)}'`;
       var res = await RestAPIHelper.CallGetRest(apiUrl, spHttpClient);
       return res;
+    }
+
+    public static async GetUserPermissions(user:string, spHttpClient:SPHttpClient, webAbsoluteUrl:string)
+    {
+      var account =  `i:0#.f|membership|${user}`;
+      var apiUrl = `${webAbsoluteUrl}/_api/web/getUserEffectivePermissions(@username)?@username='${encodeURIComponent(account)}'`;      
+      var res = await spHttpClient.get(apiUrl, SPHttpClient.configurations.v1);
+      if(res.ok)
+      {
+        var responseJson = await res.json();
+        console.log(`GetUserPermissions done for API url ${apiUrl}`);
+        var permissions = new SP.BasePermissions();
+        permissions.fromJson(responseJson);
+        //let result = {};
+        var hasPermission = permissions.has(SP.PermissionKind.viewPages);
+        /*
+        for(var levelName in SP.PermissionKind) {
+            if (SP.PermissionKind.hasOwnProperty(levelName)) {
+                 let permLevel:SP.PermissionKind = levelName ;
+                if(permissions.has(permLevel))
+                {
+                  result[levelName] = true;
+                }
+                else
+                {
+                  result[levelName] = false;
+                }
+            }     
+        }*/
+        return hasPermission;
+      }
+      else
+      {
+        var message = `Failed GetUserPermissions for API url ${apiUrl}`;
+        console.log(message);
+        Promise.reject(message);
+      }
+    }
+
+    public static async GetSiteGroupId(spHttpClient:SPHttpClient, ctx:WebPartContext)
+    {
+      var siteURL = ctx.pageContext.site.absoluteUrl;
+      var apiUrl = `${siteURL}/_api/site`;      
+      var res = await spHttpClient.get(apiUrl, SPHttpClient.configurations.v1);
+      if(res.ok)
+      {
+        var responseJson = await res.json();
+        console.log(`GetSite done for API url ${apiUrl}`);
+        return await responseJson['GroupId'];
+      }
+      else
+      {
+        var message = `Failed GetUserPermissions for API url ${apiUrl}`;
+        console.log(message);
+        Promise.reject(message);
+      }
     }
 
     private static async CallGetRest(apiUrl:string, spHttpClient:SPHttpClient, )

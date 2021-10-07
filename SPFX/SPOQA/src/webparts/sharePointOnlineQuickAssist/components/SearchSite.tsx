@@ -14,9 +14,12 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
 {
     public state = {
         affectedSite:this.props.webAbsoluteUrl,
-        affectedUser:this.props.currentUser.email,
+        //affectedUser:this.props.currentUser.email,
         isWebThere:false,
         isWebNoIndex:false,
+        userPerm:false,
+        isinMembers:false,
+        isGroupSite:false,
         isChecked:false
     };
 
@@ -31,13 +34,6 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
                         value={this.state.affectedSite}
                         required={true}                                                
                   />
-                  <TextField
-                        label="Affected User:"
-                        multiline={false}
-                        onChange={(e)=>{let text:any = e.target; this.setState({affectedUser:text.value});}}
-                        value={this.state.affectedUser}
-                        required={true}                                                
-                  /> 
                     {this.state.affectedSite!="" && this.state.isChecked? 
                         <div id="SearchSiteResultSection">
                             <Label>Diagnose result:</Label>
@@ -47,16 +43,35 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
                             <div>
                             {this.state.isWebNoIndex?<Label style={{"color":"Red",marginLeft:20}}>The nocrawl has been enabled for site {this.state.affectedSite}</Label>:
                                 <Label style={{"color":"Green",marginLeft:20}}>Site {this.state.affectedSite} is searchable</Label>}
+                            {this.state.userPerm?<Label style={{"color":"Green",marginLeft:20}}>You have access to the site</Label>:
+                                <Label style={{"color":"Red",marginLeft:20}}>You don't have access to the site</Label>}
+                            </div>:null}
+                            {this.state.isGroupSite?
+                            <div>
+                            {this.state.isinMembers?<Label style={{"color":"Green",marginLeft:20}}>You are in the members of the site</Label>:
+                                <Label style={{"color":"Red",marginLeft:20}}>You are not in the members of the site</Label>}
                             </div>:null}
                         </div>:null
                     }
                   <PrimaryButton
                       text="Check Site"
                       style={{ display: 'inline', marginTop: '10px' }}
-                      onClick={() => {SPOQAHelper.ResetFormStaus();this.CheckSiteSearchSettings();}} //When click: Reset banner status & check if the site is searchable
+                      onClick={() => {this.ResetSatus(); this.CheckSiteSearchSettings();}} //When click: Reset banner status & check if the site is searchable
                     />
             </div>
         );
+    }
+    
+    private async ResetSatus()
+    {
+      this.state.affectedSite=this.props.webAbsoluteUrl;
+      this.state.isWebThere=false;
+      this.state.isWebNoIndex=false;
+      this.state.userPerm=false;
+      this.state.isinMembers=false;
+      this.state.isGroupSite=false;
+      this.state.isChecked=false;
+      SPOQAHelper.ResetFormStaus();
     }
 
     private async GetJsonResults(JsonStr:string)
@@ -85,6 +100,8 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
         return userData.value[0].Id;
     }
 
+    
+
     public async CheckSiteSearchSettings()
     {
         this.setState({isChecked:false});
@@ -99,8 +116,8 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
           {
             if(sum.totalNoDup == 0)
             {
-              console.log(`No Serach Result for the site`);
-              SPOQAHelper.ShowMessageBar("Error", "No Serach Result for the site."); 
+              console.log(`No Search Result for the site`);
+              SPOQAHelper.ShowMessageBar("Error", "No Search Result for the site."); 
 
               //Site is not searchable. Proceed to check more
               //1. Check if the site exists
@@ -138,9 +155,55 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
                   //Get User Login Id by Email
                   //var userLoginId = this.getUserIDByEmail(this.state.affectedUser, this.state.affectedSite);
 
-                  var userInfoSite = await RestAPIHelper.GetUserFromUserInfoList(this.state.affectedUser, this.props.spHttpClient, this.state.affectedSite);
+                  var userInfoSite = await RestAPIHelper.GetUserFromUserInfoList(this.props.currentUser.email, this.props.spHttpClient, this.state.affectedSite);
                   //↑ Get error if user email contains "'"
-                  console.log(`User info is ${userInfoSite.Email}`);
+                  if(userInfoSite != null)
+                  {
+                    var permRes = await RestAPIHelper.GetUserPermissions(this.props.currentUser.email, this.props.spHttpClient, this.state.affectedSite);
+                    console.log(permRes);
+                    this.state.userPerm = permRes;
+
+                    //Check if the site is a group site
+                    var groupid = await RestAPIHelper.GetSiteGroupId(this.props.spHttpClient, this.props.ctx);
+                    console.log(groupid);
+                    
+                    if(groupid == "00000000-0000-0000-0000-000000000000")
+                    {
+                      this.state.isGroupSite = false;
+                    }
+                    else
+                    {
+                      this.state.isGroupSite = true;
+                    }
+                    
+                    if(this.state.isGroupSite)
+                    {
+                      //Get the group members
+                      var memberInfo = await GraphAPIHelper.GetGroupMembers(groupid, this.props.msGraphClient);
+                      console.log(memberInfo);
+                      if(memberInfo.length > 0)
+                      {
+                        for(var i=0;i<memberInfo.length;i++)
+                        {
+                          console.log(memberInfo[i]);
+                          if(memberInfo[i]['mail'] == this.props.currentUser.email) //Check if current user is in members
+                          {
+                            this.state.isinMembers = true;
+                            break;
+                          }
+                        }
+                      }
+                      else
+                      {
+                        this.state.isinMembers = false;
+                      }                      
+                    }
+
+                  }
+                  else
+                  {
+                    this.state.userPerm = false;
+                  }
                 }
                 catch(err)
                 {
@@ -151,8 +214,8 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
             }
             else
             {
-              console.log(`Serach Result in Duplicate for the site`);
-              SPOQAHelper.ShowMessageBar("Warning", "Serach Result in Duplicate for the site."); 
+              console.log(`Search Result in Duplicate for the site`);
+              SPOQAHelper.ShowMessageBar("Warning", "Search Result in Duplicate for the site."); 
             }
           }
           else

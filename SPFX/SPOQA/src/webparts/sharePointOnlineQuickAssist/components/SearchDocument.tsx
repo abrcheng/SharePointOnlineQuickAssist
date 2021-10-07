@@ -10,7 +10,7 @@ import {
 import RestAPIHelper from '../../Helpers/RestAPIHelper';
 import { ISharePointOnlineQuickAssistProps } from './ISharePointOnlineQuickAssistProps';
 import SPOQAHelper from '../../Helpers/SPOQAHelper';
-import SPOQASpinner from '../../Helpers/SPOQASpinner'
+import SPOQASpinner from '../../Helpers/SPOQASpinner';
 export default class SearchDocumentQA extends React.Component<ISharePointOnlineQuickAssistProps>
 {
     public state = {

@@ -76,9 +76,11 @@ gulp serve
 ```
 
 ### Deploy
-* gulp clean
-* gulp bundle --ship
-* gulp package-solution --ship
+```shell	  
+gulp clean
+gulp bundle --ship
+gulp package-solution --ship
+```
 * Upload .sppkg file from sharepoint\solution to your tenant App Catalog
 	* E.g.: https://&lt;tenant&gt;.sharepoint.com/sites/AppCatalog/AppCatalog
 <IMG src=.\assets\UploadSolution.JPG>

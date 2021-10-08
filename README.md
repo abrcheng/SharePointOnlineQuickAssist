@@ -88,6 +88,7 @@ gulp serve
 <IMG src=.\assets\ApproveAPI.JPG>	
 	
 * Add the web part to a site collection, and test it on a page    
+<IMG src=.\assets\WebPart.JPG>	
     
 ### Additional resources
 

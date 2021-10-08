@@ -12,7 +12,7 @@ SharePoint Online Quick Assist is a SPFX webpart that appears inside a SharePoin
 
   This feature helps user diagnose the issue when a specific document does not appear in the search results
 
-  <IMG src=.\assets\SearchSpecificDocument.JPG>
+  <IMG src=.\assets\NoCrawl.JPG>
 
    [More details](https://github.com/abrcheng/SharePointOnlineQuickAssist/blob/main/SPFX/SPOQA/SearchSpecificDocument.md)
 

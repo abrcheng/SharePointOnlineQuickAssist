@@ -17,10 +17,13 @@ SharePoint Online Quick Assist is a SPFX webpart that appears inside a SharePoin
    [More details](https://github.com/abrcheng/SharePointOnlineQuickAssist/blob/main/SPFX/SPOQA/SearchSpecificDocument.md)
 
 
+* Search Issue For A Specific Site
+	
+  This feature helps user diagnose the issue when a specific site does not appear in the search results	
 
-
-
-
+  <IMG src=.\assets\SiteNoCrawl.JPG>
+	  
+   [More details](https://github.com/abrcheng/SharePointOnlineQuickAssist/blob/main/SPFX/SPOQA/SearchSpecificDocument.md)
 
 * Job Title Sync Issue
 	

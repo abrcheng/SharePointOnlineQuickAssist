@@ -84,9 +84,13 @@ gulp clean
 gulp bundle --ship
 gulp package-solution --ship
 ```
-* Upload .sppkg file from sharepoint\solution to your tenant App Catalog
+* Upload SPOQA.sppkg from SPFX\SPOQA\sharepoint\solution to your tenant App Catalog
 	* E.g.: https://&lt;tenant&gt;.sharepoint.com/sites/AppCatalog/AppCatalog
 <IMG src=.\assets\UploadSolution.JPG>
+
+* Deploy the app when you see the promp as follow
+<IMG src=.\assets\Deploy.JPG>	
+	
 	  
 * Approve API access requests in SharePoint admin center  
         * https://&lt;tenant&gt;-admin.sharepoint.com/_layouts/15/online/AdminHome.aspx#/webApiPermissionManagement 

@@ -23,7 +23,8 @@ SharePoint Online Quick Assist is a SPFX webpart that appears inside a SharePoin
 
   <IMG src=.\assets\SiteNoCrawl.JPG>
 	  
-   [More details](https://github.com/abrcheng/SharePointOnlineQuickAssist/blob/main/SPFX/SPOQA/SearchSpecificDocument.md)
+   [More details](https://github.com/abrcheng/SharePointOnlineQuickAssist/blob/main/SPFX/SPOQA/SearchSite.md)
+	  
 
 * Job Title Sync Issue
 	

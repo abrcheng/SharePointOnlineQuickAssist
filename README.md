@@ -12,6 +12,8 @@ SharePoint Online Quick Assist is a SPFX webpart that appears inside a SharePoin
 ## Available features
 
 * Search Issue For A Specific Document
+
+
 This feature helps user diagnose the issue when a specific document does not appear in the search results
 
   <IMG src=.\assets\SearchSpecificDocument.JPG>
@@ -25,6 +27,8 @@ This feature helps user diagnose the issue when a specific document does not app
 
 
 * Job Title Sync Issue
+	
+
   This feature helps validate user's 'job title' in AAD, SPO user profile and site.
   
   <IMG src=.\assets\JobTitleSync.JPG>

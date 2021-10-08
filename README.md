@@ -14,7 +14,7 @@ SharePoint Online Quick Assist is a SPFX webpart that appears inside a SharePoin
 * Search Issue For A Specific Document
 
 
-This feature helps user diagnose the issue when a specific document does not appear in the search results
+  This feature helps user diagnose the issue when a specific document does not appear in the search results
 
   <IMG src=.\assets\SearchSpecificDocument.JPG>
 

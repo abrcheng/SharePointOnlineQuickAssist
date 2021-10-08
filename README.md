@@ -88,7 +88,7 @@ gulp package-solution --ship
 	* E.g.: https://&lt;tenant&gt;.sharepoint.com/sites/AppCatalog/AppCatalog
 <IMG src=.\assets\UploadSolution.JPG>
 
-* Deploy the app when you see the promp as follow
+* Deploy the app when you see the prompt as follow
 <IMG src=.\assets\Deploy.JPG>	
 	
 	  

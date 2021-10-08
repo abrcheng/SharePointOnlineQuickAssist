@@ -16,7 +16,7 @@ This feature helps user diagnose the issue when a specific document does not app
 
 <IMG src=.\assets\SearchSpecificDocument.JPG>
 
-    [More details](https://github.com/abrcheng/SharePointOnlineQuickAssist/blob/main/SPFX/SPOQA/SearchSpecificDocument.md)
+     [More details](https://github.com/abrcheng/SharePointOnlineQuickAssist/blob/main/SPFX/SPOQA/SearchSpecificDocument.md)
 
 
 

@@ -85,6 +85,8 @@ gulp serve
 	  
 * Approve API access requests in SharePoint admin center  
         * https://&lt;tenant&gt;-admin.sharepoint.com/_layouts/15/online/AdminHome.aspx#/webApiPermissionManagement 
+<IMG src=.\assets\ApproveAPI.JPG>	
+	
 * Add the web part to a site collection, and test it on a page    
     
 ### Additional resources

@@ -17,7 +17,7 @@ In this example, it detected that the library's nocrawl was enabled. Just click 
 
 ## More Information
 
-The feature diagnoses the issue from the following aspects.
+The feature diagnoses the issue as follows:
 
 * Check if the site's Nocrawl is enabled
 * Check if the affected library/list's Nocrawl is enabled

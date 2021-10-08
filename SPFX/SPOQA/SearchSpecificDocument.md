@@ -17,9 +17,9 @@ In this example, it detected that the library's nocrawl was enabled. Just click 
 
 ## More Information
 
-The feature diagnoses the issue as follows:
+The feature diagnoses and fixes the issue as follows:
 
-* Check if the site's Nocrawl is enabled
-* Check if the affected library/list's Nocrawl is enabled
-* Check if the DispForm.aspx of the affected library/list exists
-* Check if the affected document is having no major version
+* The site's Nocrawl is enabled
+* The affected library/list's Nocrawl is enabled
+* The DispForm.aspx of the affected library/list is missing
+* The affected document is having no major version

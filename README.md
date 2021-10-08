@@ -27,7 +27,7 @@ This feature helps user diagnose the issue when a specific document does not app
 * Job Title Sync issue
   This feature helps validate user's 'job title' in AAD, SPO user profile and site.
   
-  <IMG src=.\asssets\JobTitleSync.JPG>
+  <IMG src=.\assets\JobTitleSync.JPG>
   
   [More details](https://github.com/abrcheng/SharePointOnlineQuickAssist/blob/main/SPFX/SPOQA/JobTitleSyncIssue.md)
 

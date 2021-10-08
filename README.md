@@ -27,7 +27,7 @@ SharePoint Online Quick Assist is a SPFX webpart that appears inside a SharePoin
 
   This feature helps validate user's 'job title' in AAD, SPO user profile and site.
   
-  <IMG src=.\assets\JobTitleSync.JPG>
+  <IMG src=.\assets\JobTitle.JPG>
   
    [More details](https://github.com/abrcheng/SharePointOnlineQuickAssist/blob/main/SPFX/SPOQA/JobTitleSyncIssue.md)
     

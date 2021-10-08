@@ -15,4 +15,11 @@ In this example, it detected that the library's nocrawl was enabled. Just click 
 <img src=./asset/FixedNoCrawl.JPG>
 
 
+## More Information
 
+The feature diagnoses the issue from the following aspects.
+
+* Check if the site's Nocrawl is enabled
+* Check if the affected library/list's Nocrawl is enabled
+* Check if the DispForm.aspx of the affected library/list exists
+* Check if the affected document is having no major version

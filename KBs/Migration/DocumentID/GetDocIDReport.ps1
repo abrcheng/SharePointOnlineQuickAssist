@@ -10,9 +10,9 @@
 # Filename: GetDocIDReport.ps1
 # Description: This script will generate a report for document ID assignment in the site
 # Output: 
-#    1. xxxxx_MissDocIdLog.txt, if there is any documents which missed the document ID will be logged
-#    2. xxxxx_DocIDSummaryReport.csv, Document ID assignment summary report in list level
-#    3. xxxxx_GetDocIDReportErrorLog.log, if there is any error message when executing the script will be logged
+#    1. <Site Title>_MissDocIdLog.txt, if there is any documents which missed the document ID will be logged
+#    2. <Site Title>_DocIDSummaryReport.csv, Document ID assignment summary report in list level
+#    3. <Site Title>_GetDocIDReportErrorLog.log, if there is any error message when executing the script will be logged
 # Paramters:
 #    1. siteUrl, the site URL(e.g. https://chengc.sharepoint.com/sites/abc) whicn need to be processed 
 ##################################################################################

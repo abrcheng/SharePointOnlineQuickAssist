@@ -1,12 +1,15 @@
 **Symptoms,**
+
 The document ID may can't be generated in time after migrating a lot of documents to SharePoint Online (SPO)
 ![image](https://user-images.githubusercontent.com/21354416/136787754-26aec0cc-d938-4791-8691-902b2bc4e8cb.png)
 
 
-**Cause**
+**Cause,**
+
 The SPO DocID assignment job is a async timer job process and runs for a set duration in the day. It is shared across all customers in that farm. So there is no guarantee on how many day/months it will take if there are millions of documents and there is no quick backend way to assign the Ids. 
 
 **Solution,**
+
 Run the script TouchDocumentIds.ps1 for trigger the document ID assignment, please note this script will trigger the workflow or PowerAutomate flow which associated with the library,
 ![image](https://user-images.githubusercontent.com/21354416/136777288-e358cfb0-ce05-4ed6-ac76-c4b2a11e8bc3.png)
 ![image](https://user-images.githubusercontent.com/21354416/136777331-99c63615-43cf-4dd3-9a49-537dd239eaff.png)

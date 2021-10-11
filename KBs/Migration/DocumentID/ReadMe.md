@@ -10,6 +10,7 @@ Run the script TouchDocumentIds.ps1 for trigger the document ID assignment, plea
 
 And you can run it in parallel for different libraries if necessary.
 Then run the script GetDocIDReport.ps1 for getting document ID assignment report,
+![image](https://user-images.githubusercontent.com/21354416/136783341-44fd2dcb-72b8-4be0-9b74-04e28cb462d5.png)
 ![image](https://user-images.githubusercontent.com/21354416/136777527-9272041f-e728-4a9c-95a2-7455195eeb72.png)
 ![image](https://user-images.githubusercontent.com/21354416/136777560-ec1ff9fa-8266-4b61-a707-50b50adb7ec0.png)
 

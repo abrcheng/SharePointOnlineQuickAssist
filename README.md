@@ -42,7 +42,23 @@ SharePoint Online Quick Assist is a SPFX webpart that appears inside a SharePoin
     
     
 ## Using the tool
+* Upload SPOQA.sppkg from https://github.com/abrcheng/SharePointOnlineQuickAssist/blob/main/SPFX/SPOQA/sharepoint/solution/spoqa.sppkg to your tenant App Catalog
+	* E.g.: https://&lt;tenant&gt;.sharepoint.com/sites/AppCatalog/AppCatalog
+<IMG src=.\assets\UploadSolution.JPG>
 
+* Deploy the app when you see the prompt as follow
+<IMG src=.\assets\Deploy.JPG>	
+	
+	  
+* Approve API access requests in SharePoint admin center  
+        * https://&lt;tenant&gt;-admin.sharepoint.com/_layouts/15/online/AdminHome.aspx#/webApiPermissionManagement 
+<IMG src=.\assets\ApproveAPI.JPG>	
+	
+* Add the web part to a site collection, and test it on a page    
+<IMG src=.\assets\WebPart.JPG>	
+    
+## If you want to contribute/customzied this tool, you may try below steps,
+	
 To build and start using these projects, you'll need to clone and build the projects.
 
 Clone this repository by executing the following command in your console:
@@ -85,21 +101,6 @@ gulp clean
 gulp bundle --ship
 gulp package-solution --ship
 ```
-* Upload SPOQA.sppkg from SPFX\SPOQA\sharepoint\solution to your tenant App Catalog
-	* E.g.: https://&lt;tenant&gt;.sharepoint.com/sites/AppCatalog/AppCatalog
-<IMG src=.\assets\UploadSolution.JPG>
-
-* Deploy the app when you see the prompt as follow
-<IMG src=.\assets\Deploy.JPG>	
-	
-	  
-* Approve API access requests in SharePoint admin center  
-        * https://&lt;tenant&gt;-admin.sharepoint.com/_layouts/15/online/AdminHome.aspx#/webApiPermissionManagement 
-<IMG src=.\assets\ApproveAPI.JPG>	
-	
-* Add the web part to a site collection, and test it on a page    
-<IMG src=.\assets\WebPart.JPG>	
-    
 ### Additional resources
 
 * [Overview of the SharePoint Framework](https://docs.microsoft.com/sharepoint/dev/spfx/sharepoint-framework-overview)

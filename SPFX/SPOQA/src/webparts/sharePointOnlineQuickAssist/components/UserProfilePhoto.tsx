@@ -57,16 +57,16 @@ export default class UserProfilePhotoQA extends React.Component<ISharePointOnlin
                 {
                     this.setState({uapUserPhotoUrl:userInfoUAP.PictureUrl});
                 }
-                SPOQAHelper.ShowMessageBar("Success", "Photos are loaded, but if they are mismatched, please follow this article https://github.com/abrcheng/SharePointOnlineQuickAssist/tree/main/KBs/SyncPhotoFromADToSPO");
+                SPOQAHelper.ShowMessageBar("Success", "Photos are loaded, but if they are mismatched, please follow this article https://github.com/abrcheng/SharePointOnlineQuickAssist/tree/main/KBs/UAP/SyncPhotoFromADToSPO");
             }
             catch(err)
             {
-                SPOQAHelper.ShowMessageBar("Error", "Failed to get the user photo from the user profie! Please consider to follow this article https://github.com/abrcheng/SharePointOnlineQuickAssist/tree/main/KBs/SyncPhotoFromADToSPO");
+                SPOQAHelper.ShowMessageBar("Error", "Failed to get the user photo from the user profie! Please consider to follow this article https://github.com/abrcheng/SharePointOnlineQuickAssist/tree/main/KBs/UAP/SyncPhotoFromADToSPO");
             }
         }
         catch(err)
         {
-            SPOQAHelper.ShowMessageBar("Error", "Failed to get the user photo from the AAD! please consider to set the user photo in AAD https://docs.microsoft.com/en-us/azure/active-directory/fundamentals/active-directory-users-profile-azure-portal");
+            SPOQAHelper.ShowMessageBar("Error", "Failed to get the user photo from the AAD! please consider to set the user photo in AAD https://github.com/abrcheng/SharePointOnlineQuickAssist/tree/main/KBs/UAP/SyncPhotoFromADToSPO");
             this.setState({aadUserPhotoUrl:"", uapUserPhotoUrl:""});              
         }        
     }

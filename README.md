@@ -42,7 +42,7 @@ SharePoint Online Quick Assist is a SPFX webpart that appears inside a SharePoin
     
     
 ## Using the tool
-* Upload SPOQA.sppkg from https://github.com/abrcheng/SharePointOnlineQuickAssist/blob/main/SPFX/SPOQA/sharepoint/solution/spoqa.sppkg to your tenant App Catalog
+* Upload SPOQA.sppkg from https://github.com/abrcheng/SharePointOnlineQuickAssist/blob/main/Packages/spoqa.sppkg to your tenant App Catalog
 	* E.g.: https://&lt;tenant&gt;.sharepoint.com/sites/AppCatalog/AppCatalog
 <IMG src=.\assets\UploadSolution.JPG>
 

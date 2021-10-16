@@ -4,11 +4,11 @@ import {
     TextField,
     Label
   } from 'office-ui-fabric-react/lib/index';
-import GraphAPIHelper from '../../Helpers/GraphAPIHelper';  
-import RestAPIHelper from '../../Helpers/RestAPIHelper';
-import SPOQASpinner from '../../Helpers/SPOQASpinner';
-import SPOQAHelper from '../../Helpers/SPOQAHelper';
-import { ISharePointOnlineQuickAssistProps } from './ISharePointOnlineQuickAssistProps';
+import GraphAPIHelper from '../../../Helpers/GraphAPIHelper';  
+import RestAPIHelper from '../../../Helpers/RestAPIHelper';
+import SPOQASpinner from '../../../Helpers/SPOQASpinner';
+import SPOQAHelper from '../../../Helpers/SPOQAHelper';
+import { ISharePointOnlineQuickAssistProps } from '../ISharePointOnlineQuickAssistProps';
 export default class UserProfileTitleQA extends React.Component<ISharePointOnlineQuickAssistProps>
 {
     public state = {

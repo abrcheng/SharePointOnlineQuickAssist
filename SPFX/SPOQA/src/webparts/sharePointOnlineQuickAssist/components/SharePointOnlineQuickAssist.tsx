@@ -14,15 +14,15 @@ import {
   MessageBar,
   MessageBarType
 } from 'office-ui-fabric-react/lib/index';
-import SearchDocumentQA from './SearchDocument';
-import SearchLibraryQA from './SearchLibrary';
-import SearchSiteQA from './SearchSite';
-import UserProfilePhotoQA from './UserProfilePhoto';
-import UserProfileEmailQA from './UserProfileEmail';
-import UserProfileManagerQA from './UserProfileManager';
-import UserProfileTitleQA from './UserProfileTitle';
-import UserProfileDepartmentQA from './UserProfileDepartment';
-import SearchPeopleQA from './SearchPeople';
+import SearchDocumentQA from './Search/SearchDocument';
+import SearchLibraryQA from './Search/SearchLibrary';
+import SearchSiteQA from './Search/SearchSite';
+import UserProfilePhotoQA from './UserProfile/UserProfilePhoto';
+import UserProfileEmailQA from './UserProfile/UserProfileEmail';
+import UserProfileManagerQA from './UserProfile/UserProfileManager';
+import UserProfileTitleQA from './UserProfile/UserProfileTitle';
+import UserProfileDepartmentQA from './UserProfile/UserProfileDepartment';
+import SearchPeopleQA from './Search/SearchPeople';
 import { WebPartContext } from "@microsoft/sp-webpart-base"; 
 import { SPComponentLoader } from '@microsoft/sp-loader';
 import SPOQAHelper from '../../Helpers/SPOQAHelper';
@@ -31,13 +31,13 @@ import SPOQAHelper from '../../Helpers/SPOQAHelper';
 // https://developer.microsoft.com/en-us/fluentui?fabricVer=6#/controls/web/combobox
 const INITIAL_OPTIONS: IComboBoxOption[] = [
   { key: 'Search', text: 'Search Issues', itemType: SelectableOptionMenuItemType.Header },
-  { key: 'SearchDocument', text: 'Specified Document' },
+  { key: 'SearchDocument', text: '  Specified Document' },
   // { key: 'SearchPeople', text: 'People' },
   //{ key: 'SearchLibrary', text: 'Specified Library' },
-  { key: 'SearchSite', text: 'Specified Site' },  
+  { key: 'SearchSite', text: '  Specified Site' },  
   { key: 'UserProfile', text: 'User Profile Issues', itemType: SelectableOptionMenuItemType.Header },
-  { key: 'UserProfilePhoto', text: 'Photo sync issue' },
-  { key: 'UserProfileTitle', text: 'Job Title sync issue'},
+  { key: 'UserProfilePhoto', text: '  Photo sync issue' },
+  { key: 'UserProfileTitle', text: '  Job Title sync issue'},
   // { key: 'UserProfileEmail', text: 'Email sync issue' },
   // { key: 'UserProfileManager', text: 'Manager sync issue' },
   // { key: 'UserProfileDepartment', text: 'Department sync issue' }  
@@ -46,7 +46,8 @@ const INITIAL_OPTIONS: IComboBoxOption[] = [
 const wrapperClassName = mergeStyles({
   selectors: {
     '& > *': { marginBottom: '20px' },
-    '& .ms-ComboBox': { maxWidth: '300px' }
+    '& .ms-ComboBox': { maxWidth: '300px' },
+    '& .ms-ComboBox-option':{marginLeft:"15px"}
   }
 });
 
@@ -96,7 +97,7 @@ export default class SharePointOnlineQuickAssist extends React.Component<IShareP
 
     return (
       <div className={ styles.sharePointOnlineQuickAssist }>
-         <Fabric className={wrapperClassName}>
+         <Fabric className={wrapperClassName} id="SPOAQFabric">
         <div className={ styles.container }>
           <div className={ styles.row } id="SPOQAHeaderContainer">
             <div className={ styles.column }>
@@ -111,7 +112,7 @@ export default class SharePointOnlineQuickAssist extends React.Component<IShareP
                       defaultSelectedKey="-1"
                       label="Please select issue which you want to check"
                       allowFreeform
-                      autoComplete="on"
+                      autoComplete="on"                      
                       options={INITIAL_OPTIONS} 
                       required={true}                    
                       onChange ={(ev: React.FormEvent<IComboBox>, option?: IComboBoxOption): void => {

@@ -347,7 +347,7 @@ export default class RestAPIHelper
       var listId = resJson.Id; // get list ID resJson.Id
       
       // get list root folder https://chengc.sharepoint.com/sites/abc/_api/web/Lists/getByTitle('LargeList')/rootFolder/      
-      var rootfolderApi = apiUrl+"/rootFolder"
+      var rootfolderApi = apiUrl+"/rootFolder";
       var rootFolderRes = await spHttpClient.get(rootfolderApi, SPHttpClient.configurations.v1);
       var rootFolderResJson = await rootFolderRes.json();
       var formPath =  `${rootFolderResJson.ServerRelativeUrl}`;      
@@ -468,7 +468,7 @@ export default class RestAPIHelper
         body: displayFormHtml        
       };
       
-      var addFileRes = await spHttpClient.post(addFileApiUrl, SPHttpClient.configurations.v1, spOpts)
+      var addFileRes = await spHttpClient.post(addFileApiUrl, SPHttpClient.configurations.v1, spOpts);
       return addFileRes;
     }
 
@@ -500,9 +500,9 @@ export default class RestAPIHelper
           console.log(resJson);
           if(resJson.error)
           {
-            let apiUrl:string = `${siteAbsoluteUrl}/_api/web/GetFileByUrl('${relativeDocPath}')/Publish('Published by SharePointOnlineQuickAssist')`;           
-            var res = await spHttpClient.post(apiUrl, SPHttpClient.configurations.v1, spOpts);   
-            console.log(`${apiUrl} OK?${res.ok}`);
+             apiUrl = `${siteAbsoluteUrl}/_api/web/GetFileByUrl('${relativeDocPath}')/Publish('Published by SharePointOnlineQuickAssist')`;           
+             res = await spHttpClient.post(apiUrl, SPHttpClient.configurations.v1, spOpts);   
+            console.log(`${apiUrl} OK? ${res.ok}`);
           }
      
 

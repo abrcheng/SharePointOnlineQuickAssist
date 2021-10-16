@@ -2,7 +2,7 @@ import * as React from 'react';
 import {  
     PrimaryButton    
   } from 'office-ui-fabric-react/lib/index';
-import { ISharePointOnlineQuickAssistProps } from './ISharePointOnlineQuickAssistProps';
+import { ISharePointOnlineQuickAssistProps } from '../ISharePointOnlineQuickAssistProps';
 export default class UserProfileDepartmentQA extends React.Component<ISharePointOnlineQuickAssistProps>
 {
     public render():React.ReactElement<ISharePointOnlineQuickAssistProps>

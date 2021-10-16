@@ -72,3 +72,8 @@
     }
   }
 }
+
+// Overwrite margin for .ms-ComboBox-option
+:global(.ms-ComboBox-option) {  
+  margin-left: 15px;
+}  

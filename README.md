@@ -41,7 +41,7 @@ SharePoint Online Quick Assist is a SPFX webpart that appears inside a SharePoin
   <IMG src=.\assets\CheckUserProfilePhoto.JPG>
     
     
-## Using the tool
+## Install the tool to SharePoint Online 
 * Upload SPOQA.sppkg from https://github.com/abrcheng/SharePointOnlineQuickAssist/blob/main/Packages/spoqa.sppkg to your tenant App Catalog
 	* E.g.: https://&lt;tenant&gt;.sharepoint.com/sites/AppCatalog/AppCatalog
 <IMG src=.\assets\UploadSolution.JPG>

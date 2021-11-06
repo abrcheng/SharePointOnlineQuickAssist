@@ -26,6 +26,7 @@ import SearchPeopleQA from './Search/SearchPeople';
 import { WebPartContext } from "@microsoft/sp-webpart-base"; 
 import { SPComponentLoader } from '@microsoft/sp-loader';
 import SPOQAHelper from '../../Helpers/SPOQAHelper';
+import * as strings from 'SharePointOnlineQuickAssistWebPartStrings';
 
 //import { Button } from 'office-ui-fabric-react/lib/Button';
 // https://developer.microsoft.com/en-us/fluentui?fabricVer=6#/controls/web/combobox
@@ -101,7 +102,7 @@ export default class SharePointOnlineQuickAssist extends React.Component<IShareP
         <div className={ styles.container }>
           <div className={ styles.row } id="SPOQAHeaderContainer">
             <div className={ styles.column }>
-              <span className={ styles.title }>Welcome to use SharePoint Online Quick Assist!</span>                            
+              <span className={ styles.title }>{strings.WebPartTitle}</span>                            
             </div>
           </div>
 

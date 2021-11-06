@@ -172,7 +172,7 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
                     this.state.userPerm = permRes;
 
                     //Check if the site is a group site
-                    var groupid = await RestAPIHelper.GetSiteGroupId(this.props.spHttpClient, this.props.ctx);
+                    var groupid = await RestAPIHelper.GetSiteGroupId(this.props.spHttpClient, this.props.ctx, this.state.affectedSite);
                     console.log(groupid);
                     
                     if(groupid == "00000000-0000-0000-0000-000000000000")

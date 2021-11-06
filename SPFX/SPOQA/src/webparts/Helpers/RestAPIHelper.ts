@@ -119,10 +119,10 @@ export default class RestAPIHelper
       }
     }
 
-    public static async GetSiteGroupId(spHttpClient:SPHttpClient, ctx:WebPartContext)
+    public static async GetSiteGroupId(spHttpClient:SPHttpClient, ctx:WebPartContext, siteAbsoluteUrl:string)
     {
-      var siteURL = ctx.pageContext.site.absoluteUrl;
-      var apiUrl = `${siteURL}/_api/site`;      
+      // var siteURL = ctx.pageContext.site.absoluteUrl;
+      var apiUrl = `${siteAbsoluteUrl}/_api/site`;      
       var res = await spHttpClient.get(apiUrl, SPHttpClient.configurations.v1);
       if(res.ok)
       {

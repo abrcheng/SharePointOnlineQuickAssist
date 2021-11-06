@@ -117,8 +117,8 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
     public async CheckSearchDocument()
     {
         SPOQAHelper.ResetFormStaus();
-        this.setState({isChecked:false});
-        let hasError:boolean = false;
+        this.setState({isChecked:false});         
+        let searched:boolean = false;
         SPOQASpinner.Show("Checking document search issue ......");
         this.listTitle = this.state.affectedLibrary.substr(0,this.state.affectedLibrary.length-2);
         try
@@ -127,70 +127,66 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
            console.log(searchDocRes);
            if(searchDocRes.RowCount >0)
            {
-                SPOQAHelper.ShowMessageBar("Success", `Searched out ${searchDocRes.RowCount} items, looks like the affected document can be searched.`);
-                hasError = true;
+                SPOQAHelper.ShowMessageBar("Success", `Searched out ${searchDocRes.RowCount} items, looks like the affected document can be searched.`);   
+                searched = true;             
            }           
         }
         catch(err)
         {
-            SPOQAHelper.ShowMessageBar("Error",`Get exception when try to SearchDocumentByFullPath with error message ${err}`);
+            SPOQAHelper.ShowMessageBar("Error",`Get exception when try to SearchDocumentByFullPath with error message ${err}`);             
         }
 
         // Check web no-index
-        try
-        {
-            var noCrawl = await RestAPIHelper.IsWebNoCrawl(this.props.spHttpClient, this.state.affectedSite);
-            this.setState({isWebNoIndex:noCrawl});            
-        }
-        catch(err)
-        {
-            SPOQAHelper.ShowMessageBar("Error",`Get exception when try to check IsWebNoCrawl with error message ${err}`);
-            hasError = true;
-        }
-
-        // check library no-index
-        try
-        {
-            var resIsListNoCrawl = await RestAPIHelper.IsListNoCrawl(this.props.spHttpClient, this.state.affectedSite, this.listTitle);
-            this.setState({isListNoIndex:resIsListNoCrawl});
-        }
-        catch(err)
-        {
-            SPOQAHelper.ShowMessageBar("Error",`Get exception when try to check IsListNoCrawl with error message ${err}`);
-            hasError = true;
-        }
-
-        // check the list form missed issue
-        if(!this.state.isLibrary)
+        if(!searched)
         {
             try
             {
-                var resIsListMissedForm = await RestAPIHelper.IsListMissDisplayForm(this.props.spHttpClient, this.state.affectedSite, this.listTitle);
-                // isMissingDisplayForm
-                this.setState({isMissingDisplayForm:resIsListMissedForm});
+                var noCrawl = await RestAPIHelper.IsWebNoCrawl(this.props.spHttpClient, this.state.affectedSite);
+                this.setState({isWebNoIndex:noCrawl});            
             }
             catch(err)
             {
-                SPOQAHelper.ShowMessageBar("Error",`Get exception when try to check IsListMissDisplayForm with error message ${err}`);
-                hasError = true;
+                SPOQAHelper.ShowMessageBar("Error",`Get exception when try to check IsWebNoCrawl with error message ${err}`);                 
             }
-        }
 
-        // check the draft version issue
-        try
-        {
-            var resIsDraftVersion = await RestAPIHelper.IsDocumentInDraftVersion(this.props.spHttpClient, this.state.affectedSite, this.state.isLibrary, this.listTitle,this.state.affectedDocument);
-            this.setState({isDraftVersion:resIsDraftVersion});
-        }
-        catch(err)
-        {
-            SPOQAHelper.ShowMessageBar("Error",`Get exception when try to check IsDocumentInDraftVersion with error message ${err}`);
-            hasError = true;
-        }
-        
-        if(!hasError)
-        {
-            this.setState({isChecked:true});
+            // check library no-index
+            try
+            {
+                var resIsListNoCrawl = await RestAPIHelper.IsListNoCrawl(this.props.spHttpClient, this.state.affectedSite, this.listTitle);
+                this.setState({isListNoIndex:resIsListNoCrawl});
+            }
+            catch(err)
+            {
+                SPOQAHelper.ShowMessageBar("Error",`Get exception when try to check IsListNoCrawl with error message ${err}`);                
+            }
+
+            // check the list form missed issue
+            if(!this.state.isLibrary)
+            {
+                try
+                {
+                    var resIsListMissedForm = await RestAPIHelper.IsListMissDisplayForm(this.props.spHttpClient, this.state.affectedSite, this.listTitle);
+                    // isMissingDisplayForm
+                    this.setState({isMissingDisplayForm:resIsListMissedForm});
+                }
+                catch(err)
+                {
+                    SPOQAHelper.ShowMessageBar("Error",`Get exception when try to check IsListMissDisplayForm with error message ${err}`);                     
+                }
+            }
+
+            // check the draft version issue
+            try
+            {
+                var resIsDraftVersion = await RestAPIHelper.IsDocumentInDraftVersion(this.props.spHttpClient, this.state.affectedSite, this.state.isLibrary, this.listTitle,this.state.affectedDocument);
+                this.setState({isDraftVersion:resIsDraftVersion});
+            }
+            catch(err)
+            {
+                SPOQAHelper.ShowMessageBar("Error",`Get exception when try to check IsDocumentInDraftVersion with error message ${err}`);                
+            }
+
+            this.setState({isChecked:true});           
         }
 
         SPOQASpinner.Hide();

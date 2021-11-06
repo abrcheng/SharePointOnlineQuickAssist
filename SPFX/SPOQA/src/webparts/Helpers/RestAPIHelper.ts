@@ -293,7 +293,7 @@ export default class RestAPIHelper
         else // version haven't been enabled
         {
           console.log(`Version haven't enabled for library ${listTitle}`);
-          return true;
+          return false;
         }
     } 
     

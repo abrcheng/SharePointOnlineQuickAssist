@@ -284,8 +284,17 @@ export default class RestAPIHelper
         var res = await spHttpClient.get(apiUrl, SPHttpClient.configurations.v1);
         var resJson = await res.json();
         var versionStr = resJson.OData__UIVersionString;
-        var minVersion = (versionStr.split("."))[1];
-        return minVersion > '0';
+        if(versionStr)
+        {
+          console.log(`UIVersionString is ${versionStr} for the document ${fullDocmentPath}`);
+          var minVersion = (versionStr.split("."))[1];
+          return minVersion > '0';
+        }
+        else // version haven't been enabled
+        {
+          console.log(`Version haven't enabled for library ${listTitle}`);
+          return true;
+        }
     } 
     
     public static async FixListNoCrawl(spHttpClient:SPHttpClient, siteAbsoluteUrl:string, listTitle:string)

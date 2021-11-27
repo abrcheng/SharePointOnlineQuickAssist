@@ -1,7 +1,7 @@
-﻿Connect-PnPOnline https://chengc.sharepoint.com -UseWebLogin
-$TermGroupName = "Site Collection - chengc.sharepoint.com"
+﻿Connect-PnPOnline https://contoso.sharepoint.com -UseWebLogin
+$TermGroupName = "Site Collection - contoso.sharepoint.com"
 $TermSetName= "SiteMM"
-$TermSetOwner= "i:0#.f|membership|johna@chengc.onmicrosoft.com"
+$TermSetOwner= "i:0#.f|membership|johna@contoso.com"
 $processedCount = 0
 
 $Ctx = Get-PnPContext

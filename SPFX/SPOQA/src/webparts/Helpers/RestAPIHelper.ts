@@ -27,6 +27,21 @@ export default class RestAPIHelper
          return null;
       }
     }
+
+    public static async GetGroupFromUserInfoList(groupId:string, spHttpClient:SPHttpClient, webAbsoluteUrl:string)
+    {      
+      var apiUrl = `${webAbsoluteUrl}/_api/web/SiteUserInfoList/items?$filter=substringof('${groupId}',Name)'`;      
+      var res = await RestAPIHelper.CallGetRest(apiUrl, spHttpClient);
+      if(res.value.length>=1)
+      {
+        return await res.value[0];
+      }
+      else
+      {
+         console.log(`Result is empty for the API URL ${apiUrl}`);
+         return null;
+      }
+    }
     
     // SP.Data.UserInfoItem
     public static async FixJobTitleInUserInfoList(userId:number, spHttpClient:SPHttpClient, webAbsoluteUrl:string, newJobTitle:string, successCallBack:Function, failedCallback:Function) 
@@ -38,6 +53,17 @@ export default class RestAPIHelper
       context.executeQueryAsync((sender: any, args: SP.ClientRequestSucceededEventArgs): void => {successCallBack();}, (sender: any, args: SP.ClientRequestSucceededEventArgs): void => {failedCallback();});           
     }    
     
+    public static async FixUserInfoItem(userId:number, spHttpClient:SPHttpClient, webAbsoluteUrl:string,properties:any ,successCallBack:Function, failedCallback:Function)
+    {     
+      const context: SP.ClientContext = new SP.ClientContext(webAbsoluteUrl);     
+      const userItem: SP.ListItem = context.get_web().get_siteUserInfoList().getItemById(userId); 
+      properties.forEach(p => {
+        userItem.set_item(p.key, p.value);    
+      });       
+      userItem.update();
+      context.executeQueryAsync((sender: any, args: SP.ClientRequestSucceededEventArgs): void => {successCallBack();}, (sender: any, args: SP.ClientRequestSucceededEventArgs): void => {failedCallback();});  
+    }
+
     public static TestConnectMySite(spHttpClient:SPHttpClient, mySiteHost:string)
     {
       const context: SP.ClientContext = new SP.ClientContext(mySiteHost);  

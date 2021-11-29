@@ -3,7 +3,7 @@
   "solution": {
     "name": "spoqa-client-side-solution",
     "id": "029e4fc2-a440-4f5f-a358-b34a0eca54b5",
-    "version": "1.21.11.06",
+    "version": "1.21.11.29",
     "includeClientSideAssets": true,
     "webApiPermissionRequests": [
           {  

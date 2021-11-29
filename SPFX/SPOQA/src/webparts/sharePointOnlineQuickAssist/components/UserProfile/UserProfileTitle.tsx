@@ -134,7 +134,7 @@ export default class UserProfileTitleQA extends React.Component<ISharePointOnlin
     public SuccessCallBack()
     {    
         SPOQASpinner.Hide();
-        SPOQAHelper.ShowMessageBar("Success", "Fix JobTitle in the user info list done, please recheck for verfiying it."); 
+        SPOQAHelper.ShowMessageBar("Success", "Fix JobTitle in the user info list completed, please recheck for verfiying it."); 
     }
 
     public FailedCallback()

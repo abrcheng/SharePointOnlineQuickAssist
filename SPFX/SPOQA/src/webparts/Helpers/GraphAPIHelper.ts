@@ -79,4 +79,36 @@ export default class GraphAPIHelper
         Promise.reject(message);
       }
     }
+
+    public static async GetGroupByEmail(msGraphClient:MSGraphClient, groupMail:string)
+    {
+      var res = await msGraphClient.api(`/groups?$filter=mail eq '${groupMail}'`).get();
+      if(res)
+      {               
+        console.log(`GraphAPIHelper.GetGroupByEmail for group ${groupMail} done, get ${res.value.length} groups.`);
+        return await res;
+      }
+      else
+      {
+        var message = `Failed to get group ${groupMail} from graph API`;
+        console.log(message);
+        Promise.reject(message);
+      }
+    }
+
+    public static async GetUserByEmail(msGraphClient:MSGraphClient, userMail:string)
+    {
+      var res = await msGraphClient.api(`/users?$filter=mail eq '${userMail}'`).get();
+      if(res)
+      {               
+        console.log(`GraphAPIHelper.GetUserByEmail for user ${userMail} done, get ${res.value.length} users`);
+        return await res;
+      }
+      else
+      {
+        var message = `Failed to get uesr ${userMail} from graph API`;
+        console.log(message);
+        Promise.reject(message);
+      }
+    }
 }

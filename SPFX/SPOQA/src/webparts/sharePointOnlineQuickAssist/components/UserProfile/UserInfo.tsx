@@ -47,19 +47,19 @@ export default class UserInfoQA extends React.Component<ISharePointOnlineQuickAs
             />                  
             <div id="UserInfoSyncDiagnoseResult">
                   {this.state.isChecked?<Label>Diagnose result:</Label>:null}
-                  <div id="UserInfoSyncDiagnoseResultDiv" ref={this.resRef}>
+                  <div style={{marginLeft:20}} id="UserInfoSyncDiagnoseResultDiv" ref={this.resRef}>
 
                   </div>
             </div>
             <PrimaryButton
-                text="Check Sync Issue"
+                text="Check Issues"
                 style={{ display: 'inline', marginTop: '10px' }}
                 onClick={() => {this.Check();}}
               />
               
               { this.state.isNeedFix ? 
               <PrimaryButton
-                text="Fix It"
+                text="Fix Issues"
                 style={{ display: 'inline', marginTop: '10px', marginLeft:"20px"}}             
                 onClick={() => {this.Fix();}}
               />: null}

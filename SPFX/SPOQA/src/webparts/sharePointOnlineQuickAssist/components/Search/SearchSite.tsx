@@ -55,7 +55,7 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
                     }
                   <div id="CommandButtonsSection">
                     <PrimaryButton
-                      text="Check Site"
+                      text="Check Issues"
                       style={{ display: 'inline', marginTop: '10px' }}
                       onClick={() => {this.ResetSatus(); this.CheckSiteSearchSettings();}} //When click: Reset banner status & check if the site is searchable
                     />

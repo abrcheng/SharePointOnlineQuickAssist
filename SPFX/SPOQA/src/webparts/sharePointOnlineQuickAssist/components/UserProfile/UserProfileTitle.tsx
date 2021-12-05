@@ -44,14 +44,14 @@ export default class UserProfileTitleQA extends React.Component<ISharePointOnlin
                   {this.state.aadJobTitle != "" && this.state.userId && this.state.userId !=-1?<Label>JobTitle from site user info list is <span style={this.state.siteJobTitle != this.state.aadJobTitle? {"color":"Red"}:{"color":"Green"}}>{this.state.siteJobTitle}</span></Label>: null}
 
                   <PrimaryButton
-                      text="Check Job Title"
+                      text="Check Issues"
                       style={{ display: 'inline', marginTop: '10px' }}
                       onClick={() => {this.CheckUserProfileTitle();}}
                     />
                     
                     { (this.state.siteJobTitle != this.state.aadJobTitle || this.state.aadJobTitle != this.state.uapJobtitle) && this.state.userId && this.state.userId !=-1 ? 
                     <PrimaryButton
-                      text="Fix It"
+                      text="Fix Issues"
                       style={{ display: 'inline', marginTop: '10px', marginLeft:"20px"}}
                       hidden={this.state.siteJobTitle == this.state.aadJobTitle && this.state.uapJobtitle == this.state.aadJobTitle}
                       onClick={() => {this.FixJobTitle();}}

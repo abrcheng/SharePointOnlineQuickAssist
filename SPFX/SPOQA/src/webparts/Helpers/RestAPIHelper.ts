@@ -224,7 +224,7 @@ export default class RestAPIHelper
     public static async GetLists(spHttpClient:SPHttpClient, siteAbsoluteUrl:string)
     {
         console.log(`Start to load list for the site ${siteAbsoluteUrl}`);
-        var apiUrl = `${siteAbsoluteUrl}/_api/web/Lists?$select=Title,BaseTemplate,BaseType&rowlimit=5000`;
+        var apiUrl = `${siteAbsoluteUrl}/_api/web/Lists?$select=Id,Title,BaseTemplate,BaseType&rowlimit=5000`;
         var res = await spHttpClient.get(apiUrl, SPHttpClient.configurations.v1);
         var resJson = await res.json();
         return resJson.value;
@@ -542,5 +542,133 @@ export default class RestAPIHelper
      
 
       return resJson;
+    }
+    
+    // Return list info which returned by https://xxxxx.sharepoint.com/sites/abc/_api/web/Lists/getByTitle('xxxxx')
+    // Get ExcludeFromOfflineClient of list https://chengc.sharepoint.com/sites/abc/_api/web/Lists/getByTitle('GifLib')?$select=ExcludeFromOfflineClient
+    // properties: ExcludeFromOfflineClient,ForceCheckout,DraftVersionVisibility,EnableModeration,ValidationFormula,ValidationMessage
+    public static async GetListInfo(spHttpClient:SPHttpClient, siteAbsoluteUrl:string, listTitle:string, properties:string[])
+    {     
+      let selectStr:string = RestAPIHelper.BuildSelectStr(properties);
+      var apiUrl = `${siteAbsoluteUrl}/_api/web/Lists/getByTitle('${listTitle}')${selectStr}`;
+      var res = await spHttpClient.get(apiUrl, SPHttpClient.configurations.v1);
+      var resJson = await res.json();
+      return resJson;
+    }
+    
+    // https://chengc.sharepoint.com/sites/abc/_api/web/Lists/getByTitle('GifLib')/SchemaXml
+    public static async GetListFields(spHttpClient:SPHttpClient, siteAbsoluteUrl:string, listTitle:string)
+    {
+      var apiUrl = `${siteAbsoluteUrl}/_api/web/Lists/getByTitle('${listTitle}')/Fields`;
+      var res = await spHttpClient.get(apiUrl, SPHttpClient.configurations.v1);
+      var resJson = await res.json();
+      return resJson.value;
+    }
+    
+    // https://chengc.sharepoint.com/sites/abc/_api/site/Features
+    // Check if the feature (e.g.  7c637b23-06c4-472d-9a9a-7c175762c5c4) is enabled or not in the site collection
+    public static async IsSiteFeatureEnabled(spHttpClient:SPHttpClient, siteAbsoluteUrl:string, featureId:string)
+    {
+      var apiUrl = `${siteAbsoluteUrl}/_api/site/Features`;
+      var res = await spHttpClient.get(apiUrl, SPHttpClient.configurations.v1);
+      var resJson = await res.json();
+      let enabled = false;
+      for(var i=0; i<resJson.value.length;i++)
+      {
+        if(resJson.value[i].DefinitionId.toLowerCase() == featureId.toLowerCase())
+        {
+          enabled = true;
+          break;
+        }
+      }
+
+      return enabled;
+    }    
+
+    // https://chengc.sharepoint.com/sites/abc/TestSPOQA/_api/web?$select=ExcludeFromOfflineClient
+    public static async GetWebInfo(spHttpClient:SPHttpClient, siteAbsoluteUrl:string, properties:string[])
+    {
+      let selectStr:string = RestAPIHelper.BuildSelectStr(properties);
+      var apiUrl = `${siteAbsoluteUrl}/_api/web${selectStr}`;
+      var res = await spHttpClient.get(apiUrl, SPHttpClient.configurations.v1);
+      var resJson = await res.json();
+      return resJson;
+    }
+    
+    // https://chengc.sharepoint.com/sites/abc/TestSPOQA/_api/web/ParentWeb
+    public static async GetParentWebUrl(spHttpClient:SPHttpClient, siteAbsoluteUrl:string)
+    {
+      let parentWebUrl = "";
+      var apiUrl = `${siteAbsoluteUrl}/_api/web/ParentWeb`;
+      var res = await spHttpClient.get(apiUrl, SPHttpClient.configurations.v1);
+      var resJson = await res.json();
+      if(resJson.ServerRelativeUrl)
+      {
+        let url:URL = new URL(siteAbsoluteUrl);
+        let rootSiteUrl = `${url.protocol}//${url.hostname}`;
+        parentWebUrl = `${rootSiteUrl}${resJson.ServerRelativeUrl}`;
+      }
+
+      return parentWebUrl;
+    }
+
+    public static async GetWebExcludeFromOfflineClient(spHttpClient:SPHttpClient, siteAbsoluteUrl:string)
+    {
+        let properties:string[] = ["ExcludeFromOfflineClient"];
+        let resList:any[] = [];
+        var hasParentWeb = true;
+        let currentWebUrl = siteAbsoluteUrl;
+        while(hasParentWeb)
+        {
+            var webInfo = await RestAPIHelper.GetWebInfo(spHttpClient, currentWebUrl, properties);
+            resList.push({webUrl:currentWebUrl,
+               ExcludeFromOfflineClient:webInfo.ExcludeFromOfflineClient,
+               RemedyUrl:`${currentWebUrl}/_layouts/15/srchvis.aspx`});
+            currentWebUrl = await RestAPIHelper.GetParentWebUrl(spHttpClient, currentWebUrl);
+            hasParentWeb = currentWebUrl && currentWebUrl!="";
+        }
+
+        return resList;
+    }
+
+    // https://chengc.sharepoint.com/sites/abc/_api/web/Lists/getByTitle('GifLib')/GetUserEffectivePermissions('i%3A0%23.f%7Cmembership%7Cjohnb%40chengc.onmicrosoft.com')
+    // permission: SP.PermissionKind.editListItems
+    public static async HasPermissionOnList(spHttpClient:SPHttpClient, siteAbsoluteUrl:string, listTitle:string, user:string, permission:SP.PermissionKind)
+    {
+      
+      var account =  `i:0#.f|membership|${user}`;
+      var apiUrl = `${siteAbsoluteUrl}/_api/web/Lists/getByTitle('${listTitle}')/GetUserEffectivePermissions('${encodeURIComponent(account)}')`;      
+      var res = await spHttpClient.get(apiUrl, SPHttpClient.configurations.v1);
+      if(res.ok)
+      {
+        var responseJson = await res.json();
+        console.log(`GetUserPermissions done for API url ${apiUrl}`);
+        var permissions = new SP.BasePermissions();
+        permissions.fromJson(responseJson);        
+        var hasPermission = permissions.has(permission);      
+        return hasPermission;
+      }
+      else
+      {
+        var message = `Failed GetUserPermissions for API url ${apiUrl}`;
+        console.log(message);
+        Promise.reject(message);
+      }
+    }
+
+    private static BuildSelectStr(properties:string[]):string
+    {
+      var selectStr="";
+      if(properties && properties.length >0)
+      {
+        selectStr="?$select=";
+        properties.forEach(pro=>{
+          selectStr+=`${pro},`;
+        });
+
+        selectStr = selectStr.substr(0, selectStr.length-1);
+      }
+     
+      return selectStr;
     }
 }

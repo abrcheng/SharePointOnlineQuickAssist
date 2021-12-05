@@ -32,7 +32,7 @@ export default class UserProfilePhotoQA extends React.Component<ISharePointOnlin
                   {this.state.aadUserPhotoUrl!=""?<Label>Picture from user profile:</Label>:null}
                   {this.state.uapUserPhotoUrl!=""? <img src={`${this.props.webAbsoluteUrl}/_layouts/15/userphoto.aspx?username=${this.state.affectedUser}`} />:null}
                   <PrimaryButton
-                      text="Check UserProfile Photo"
+                      text="Check Issues"
                       style={{ display: 'block', marginTop: '10px' }}
                       onClick={() => {this.CheckUserPhoto();}}
                   />

@@ -80,7 +80,7 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
                     }
                 <div id="CommandButtonsSection">
                     <PrimaryButton
-                        text="Check Search Document"
+                        text="Check Issues"
                         style={{ display: 'inline', marginTop: '10px' }}
                         onClick={() => {this.CheckSearchDocument();}}
                         />

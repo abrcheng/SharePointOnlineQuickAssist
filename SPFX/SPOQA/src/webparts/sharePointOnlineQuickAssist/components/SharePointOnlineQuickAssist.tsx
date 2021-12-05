@@ -23,7 +23,8 @@ import UserProfileManagerQA from './UserProfile/UserProfileManager';
 import UserProfileTitleQA from './UserProfile/UserProfileTitle';
 import UserProfileDepartmentQA from './UserProfile/UserProfileDepartment';
 import SearchPeopleQA from './Search/SearchPeople';
-import UserInfoQA from './UserProfile/UserInfoQA'; 
+import UserInfoQA from './UserProfile/UserInfo'; 
+import OneDriveLockIconQA from './OneDrive/OneDriveLockIcon';
 import { WebPartContext } from "@microsoft/sp-webpart-base"; 
 import { SPComponentLoader } from '@microsoft/sp-loader';
 import SPOQAHelper from '../../Helpers/SPOQAHelper';
@@ -38,12 +39,14 @@ const INITIAL_OPTIONS: IComboBoxOption[] = [
   //{ key: 'SearchLibrary', text: 'Specified Library' },
   { key: 'SearchSite', text: '  Specified Site' },  
   { key: 'UserProfile', text: 'User Profile Issues', itemType: SelectableOptionMenuItemType.Header },
-  { key: 'UserProfilePhoto', text: '  Photo sync issue' },  
-  { key: 'UserProfileTitle', text: '  Job Title sync issue'},
-  { key: 'UserInfoSync', text: '  User information sync issue'},
+  { key: 'UserProfilePhoto', text: '  Photo sync' },  
+  { key: 'UserProfileTitle', text: '  Job Title sync'},
+  { key: 'UserInfoSync', text: '  User information sync'},
   // { key: 'UserProfileEmail', text: 'Email sync issue' },
   // { key: 'UserProfileManager', text: 'Manager sync issue' },
   // { key: 'UserProfileDepartment', text: 'Department sync issue' }  
+  { key: 'OneDrive', text: 'OneDrive Issues', itemType: SelectableOptionMenuItemType.Header },
+  { key: 'OneDriveLockIcon', text: 'OneDrive lock icon' }, 
 ];
 
 const wrapperClassName = mergeStyles({
@@ -95,6 +98,7 @@ export default class SharePointOnlineQuickAssist extends React.Component<IShareP
         case "UserProfileManager":   return <UserProfileManagerQA spHttpClient={this.props.spHttpClient} msGraphClient={this.props.msGraphClient} webUrl={this.props.webUrl} webAbsoluteUrl={this.props.webAbsoluteUrl} rootUrl={this.props.rootUrl} currentUser={this.props.currentUser} ctx={this.props.ctx}/>;
         case "UserProfileDepartment":   return <UserProfileDepartmentQA spHttpClient={this.props.spHttpClient} msGraphClient={this.props.msGraphClient} webUrl={this.props.webUrl} webAbsoluteUrl={this.props.webAbsoluteUrl} rootUrl={this.props.rootUrl} currentUser={this.props.currentUser} ctx={this.props.ctx}/>; 
         case "UserInfoSync":   return <UserInfoQA spHttpClient={this.props.spHttpClient} msGraphClient={this.props.msGraphClient} webUrl={this.props.webUrl} webAbsoluteUrl={this.props.webAbsoluteUrl} rootUrl={this.props.rootUrl} currentUser={this.props.currentUser} ctx={this.props.ctx}/>; 
+        case "OneDriveLockIcon":   return <OneDriveLockIconQA spHttpClient={this.props.spHttpClient} msGraphClient={this.props.msGraphClient} webUrl={this.props.webUrl} webAbsoluteUrl={this.props.webAbsoluteUrl} rootUrl={this.props.rootUrl} currentUser={this.props.currentUser} ctx={this.props.ctx}/>; 
         default: return <div id="NoContentPlaceHolder"/>;
       }
     };

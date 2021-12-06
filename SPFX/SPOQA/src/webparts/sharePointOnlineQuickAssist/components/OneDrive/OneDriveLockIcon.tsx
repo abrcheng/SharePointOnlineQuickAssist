@@ -46,7 +46,7 @@ export default class OneDriveLockIconQA extends React.Component<ISharePointOnlin
                     <TextField
                             label="Affected Site(press enter for loading libraries/lists):"
                             multiline={false}
-                            onChange={(e)=>{let text:any = e.target; this.setState({affectedSite:text.value,siteIsVaild:false}); this.resRef.current.innerHTML=""; this.remedyRef.current.innerHTML="";}}
+                            onChange={(e)=>{let text:any = e.target; this.setState({affectedSite:text.value,siteIsVaild:false,isChecked:false}); this.resRef.current.innerHTML=""; this.remedyRef.current.innerHTML="";}}
                             value={this.state.affectedSite}
                             required={true}
                             onKeyDown={(e)=>{if(e.keyCode ===13){this.LoadLists();}}}                          
@@ -66,7 +66,7 @@ export default class OneDriveLockIconQA extends React.Component<ISharePointOnlin
                         </div>: null}
                     </div>
                     <div id="OneDriveSyncDiagnoseResult">
-                  {this.state.isChecked?<Label>Diagnose result:</Label>:null}
+                  {this.state.isChecked && this.state.siteIsVaild?<Label>Diagnose result:</Label>:null}
                         <div style={{marginLeft:20}} id="OneDriveSyncDiagnoseResultDiv" ref={this.resRef}>
                         </div>
                  </div>
@@ -74,9 +74,9 @@ export default class OneDriveLockIconQA extends React.Component<ISharePointOnlin
                     <PrimaryButton
                         text="Check Issues"
                         style={{ display: 'inline', marginTop: '10px' }}
-                        onClick={() => {this.CheckOneDriveLockIconQAIssues();}}
+                        onClick={() => {this.state.siteIsVaild? this.CheckOneDriveLockIconQAIssues():this.LoadLists();}}
                         />
-                     {this.state.needRemedy && !this.state.remedyStepsShowed?
+                     {this.state.needRemedy && !this.state.remedyStepsShowed && this.state.siteIsVaild?
                         <PrimaryButton
                             text="Show Remedy Steps"
                             style={{ display: 'inline', marginTop: '10px', marginLeft:"10px"}}
@@ -114,6 +114,12 @@ export default class OneDriveLockIconQA extends React.Component<ISharePointOnlin
     
     public async CheckOneDriveLockIconQAIssues()
     {
+        if(this.state.affectedLibrary == "" ||this.state.affectedLibrary =="-1")
+        {
+            SPOQAHelper.ShowMessageBar("Error", "Please select the library!");
+            return;
+        }
+
         SPOQAHelper.ResetFormStaus();
         this.setState({isChecked:false, needRemedy:false, remedyStepsShowed:false});         
         this.remedySteps = []; // Clean RemedySteps

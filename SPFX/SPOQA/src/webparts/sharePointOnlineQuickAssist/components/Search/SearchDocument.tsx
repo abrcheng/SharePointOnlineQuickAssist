@@ -82,7 +82,7 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
                     <PrimaryButton
                         text="Check Issues"
                         style={{ display: 'inline', marginTop: '10px' }}
-                        onClick={() => {this.CheckSearchDocument();}}
+                        onClick={() => {this.state.siteIsVaild? this.CheckSearchDocument():this.LoadLists();}}
                         />
                      {this.state.isChecked && (this.state.isListNoIndex || this.state.isWebNoIndex || this.state.isMissingDisplayForm || this.state.isDraftVersion)?
                         <PrimaryButton
@@ -116,6 +116,18 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
     
     public async CheckSearchDocument()
     {
+        if(this.state.affectedLibrary == "" ||this.state.affectedLibrary =="-1")
+        {
+            SPOQAHelper.ShowMessageBar("Error", "Please select the library!");
+            return;
+        }
+
+        if(!this.state.affectedDocument || this.state.affectedDocument =="" || this.state.affectedDocument.trim()=="")
+        {
+            SPOQAHelper.ShowMessageBar("Error", "Please provide the affected document full URL!");
+            return;
+        }
+
         SPOQAHelper.ResetFormStaus();
         this.setState({isChecked:false});         
         let searched:boolean = false;

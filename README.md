@@ -8,7 +8,7 @@ This tool is provided by the copyright holders and contributors “as is” and 
 
 ## Available features
 
-* Search Issue For A Specific Document
+* **Search Issue For A Specific Document**
 
 
   This feature helps user diagnose the issue when a specific document does not appear in the search results
@@ -18,7 +18,7 @@ This tool is provided by the copyright holders and contributors “as is” and 
    [More details](https://github.com/abrcheng/SharePointOnlineQuickAssist/blob/main/SPFX/SPOQA/SearchSpecificDocument.md)
 
 
-* Search Issue For A Specific Site
+* **Search Issue For A Specific Site**
 	
   This feature helps user diagnose the issue when a specific site does not appear in the search results	
 
@@ -27,7 +27,7 @@ This tool is provided by the copyright holders and contributors “as is” and 
    [More details](https://github.com/abrcheng/SharePointOnlineQuickAssist/blob/main/SPFX/SPOQA/SearchSite.md)
 	  
 
-* Job Title Sync Issue
+* **Job Title Sync Issue**
 	
 
   This feature helps validate user's 'job title' in AAD, SPO user profile and site.
@@ -36,12 +36,12 @@ This tool is provided by the copyright holders and contributors “as is” and 
   
    [More details](https://github.com/abrcheng/SharePointOnlineQuickAssist/blob/main/SPFX/SPOQA/JobTitleSyncIssue.md)
     
-*  Photo Sync Issue
+*  **Photo Sync Issue**
    This feature helps user compare their profile photo from AAD to SPO user profile.
     
   <IMG src=.\assets\CheckUserProfilePhoto.JPG>
     
-* ** User Info list sync issue**,
+* **User Info list sync issue**,
 	User/Group mail haven’t been synced to user info list caused the mail can’t be send to User/Group in user alert, workflow 
 	User/Group display name updated but haven’t synced to user info list cause mismatch issue 
 	User’ phone number haven’t been synced to user info list cause mismatch issue 

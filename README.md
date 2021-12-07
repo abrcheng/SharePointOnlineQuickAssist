@@ -41,7 +41,7 @@ This tool is provided by the copyright holders and contributors “as is” and 
     
   <IMG src=.\assets\CheckUserProfilePhoto.JPG>
     
-*  User Info list sync issue
+* ** User Info list sync issue**,
 	User/Group mail haven’t been synced to user info list caused the mail can’t be send to User/Group in user alert, workflow 
 	User/Group display name updated but haven’t synced to user info list cause mismatch issue 
 	User’ phone number haven’t been synced to user info list cause mismatch issue 
@@ -49,7 +49,7 @@ This tool is provided by the copyright holders and contributors “as is” and 
 ![image](https://user-images.githubusercontent.com/21354416/144986960-e4befdd6-b9d6-40a0-bb54-fc90ca8d0d70.png)
 ![image](https://user-images.githubusercontent.com/21354416/144987002-085d0652-f243-4c29-84b6-94452d3afdee.png)
 
-*  OneDrive library sync issue
+*  **OneDrive library sync issue**,
 	 OneDrive sync button can't be found.
 	 Library synced as read only 
 	 ![image](https://user-images.githubusercontent.com/21354416/144987185-d18e2e24-5b35-4436-ba3f-002dd95819c7.png)

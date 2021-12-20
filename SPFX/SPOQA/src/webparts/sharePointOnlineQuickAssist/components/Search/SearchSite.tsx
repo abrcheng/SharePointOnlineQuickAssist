@@ -115,7 +115,10 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
         SPOQASpinner.Show("Checking ......");
         try
         {
-          var siteSearch = await RestAPIHelper.GetSerchResults(this.props.spHttpClient, this.props.rootUrl, this.state.affectedSite, "Site");
+          let url:URL = new URL(this.state.affectedSite);
+          let rootSiteUrl = `${url.protocol}//${url.hostname}`;
+          console.log(rootSiteUrl);
+          var siteSearch = await RestAPIHelper.GetSerchResults(this.props.spHttpClient, rootSiteUrl, this.state.affectedSite, "Site");
           console.log(siteSearch);
 
           var sum = await this.GetJsonResults(siteSearch);

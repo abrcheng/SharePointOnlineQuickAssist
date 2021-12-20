@@ -190,7 +190,7 @@ export default class RestAPIHelper
       var contentClassStr = `*`;
       if(contentClass == "Site")
       {
-        contentClassStr = `ContentClass:STS_Site Path:"${targetwebAbsoluteUrl}"`;
+        contentClassStr = `ContentClass:STS_Site Path="${targetwebAbsoluteUrl}"`;
       }
       var apiUrl = `${siteAbsoluteUrl}/search/_api/search/query?querytext='${contentClassStr}'&SelectProperties='Path,Title'&rowlimit=10`;
 

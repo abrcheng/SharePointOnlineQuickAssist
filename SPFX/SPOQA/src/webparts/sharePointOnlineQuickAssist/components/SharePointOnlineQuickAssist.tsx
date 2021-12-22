@@ -25,6 +25,7 @@ import UserProfileDepartmentQA from './UserProfile/UserProfileDepartment';
 import SearchPeopleQA from './Search/SearchPeople';
 import UserInfoQA from './UserProfile/UserInfo'; 
 import OneDriveLockIconQA from './OneDrive/OneDriveLockIcon';
+import RepairFormQA from './List/RepairListForms';
 import { WebPartContext } from "@microsoft/sp-webpart-base"; 
 import { SPComponentLoader } from '@microsoft/sp-loader';
 import SPOQAHelper from '../../Helpers/SPOQAHelper';
@@ -47,6 +48,8 @@ const INITIAL_OPTIONS: IComboBoxOption[] = [
   // { key: 'UserProfileDepartment', text: 'Department sync issue' }  
   { key: 'OneDrive', text: 'OneDrive Issues', itemType: SelectableOptionMenuItemType.Header },
   { key: 'OneDriveLockIcon', text: 'OneDrive lock icon' }, 
+  { key: 'List', text: 'List/Library Issues', itemType: SelectableOptionMenuItemType.Header },
+  { key: 'ListMissingForm', text: 'Missing New/Disp/Edit Forms' }, 
 ];
 
 const wrapperClassName = mergeStyles({
@@ -99,6 +102,7 @@ export default class SharePointOnlineQuickAssist extends React.Component<IShareP
         case "UserProfileDepartment":   return <UserProfileDepartmentQA spHttpClient={this.props.spHttpClient} msGraphClient={this.props.msGraphClient} webUrl={this.props.webUrl} webAbsoluteUrl={this.props.webAbsoluteUrl} rootUrl={this.props.rootUrl} currentUser={this.props.currentUser} ctx={this.props.ctx}/>; 
         case "UserInfoSync":   return <UserInfoQA spHttpClient={this.props.spHttpClient} msGraphClient={this.props.msGraphClient} webUrl={this.props.webUrl} webAbsoluteUrl={this.props.webAbsoluteUrl} rootUrl={this.props.rootUrl} currentUser={this.props.currentUser} ctx={this.props.ctx}/>; 
         case "OneDriveLockIcon":   return <OneDriveLockIconQA spHttpClient={this.props.spHttpClient} msGraphClient={this.props.msGraphClient} webUrl={this.props.webUrl} webAbsoluteUrl={this.props.webAbsoluteUrl} rootUrl={this.props.rootUrl} currentUser={this.props.currentUser} ctx={this.props.ctx}/>; 
+        case "ListMissingForm":   return <RepairFormQA spHttpClient={this.props.spHttpClient} msGraphClient={this.props.msGraphClient} webUrl={this.props.webUrl} webAbsoluteUrl={this.props.webAbsoluteUrl} rootUrl={this.props.rootUrl} currentUser={this.props.currentUser} ctx={this.props.ctx}/>; 
         default: return <div id="NoContentPlaceHolder"/>;
       }
     };

@@ -55,6 +55,10 @@ This tool is provided by the copyright holders and contributors “as is” and 
 	 ![image](https://user-images.githubusercontent.com/21354416/144987185-d18e2e24-5b35-4436-ba3f-002dd95819c7.png)
          ![image](https://user-images.githubusercontent.com/21354416/144987204-83e0eb28-9f10-4ec4-858a-cc31c78d0d32.png)
 	  
+*  **Missing New/Display/Edit forms issue**
+	  ![image](https://user-images.githubusercontent.com/21354416/147523270-bef520ae-e487-4414-a449-6348b31efe82.png)
+[More details](https://github.com/abrcheng/SharePointOnlineQuickAssist/releases/tag/1.21.12.28)
+	  
 ## Install the tool to SharePoint Online 
 * Upload SPOQA.sppkg from https://github.com/abrcheng/SharePointOnlineQuickAssist/blob/main/Packages/spoqa.sppkg to your tenant App Catalog
 	* E.g.: https://&lt;tenant&gt;.sharepoint.com/sites/AppCatalog/AppCatalog

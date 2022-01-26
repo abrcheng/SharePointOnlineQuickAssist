@@ -15,10 +15,10 @@ c. phtotoPath is the temp folder for storing the photo which download from AAD
 Please note the above script is based on the result of command “Get-AzureADUserThumbnailPhoto -ObjectId $user”, if that command can’t get the photo from AAD, then the script will can’t sync it either.
 
 If there is a error message as below, but the photo can be got by by Graph API, then please use **SyncPhotoFromAADToSPOByGraphAPI.ps1**,
-Get-AzureADUserThumbnailPhoto : Error occurred while executing GetAzureADUserThumbnailPhoto
-Code: Request_ResourceNotFound
-Message: Resource 'thumbnailPhoto' does not exist or one of its queried reference-property objects are not
-present.
+	Get-AzureADUserThumbnailPhoto : Error occurred while executing GetAzureADUserThumbnailPhoto
+	Code: Request_ResourceNotFound
+	Message: Resource 'thumbnailPhoto' does not exist or one of its queried reference-property objects are not
+	present.
 ![image](https://user-images.githubusercontent.com/21354416/151100735-52c86402-46e4-4ba5-b90b-56aeb9fba64d.png)
 
 Please note **SyncPhotoFromAADToSPOByGraphAPI.ps1** need to install PNP with below version,

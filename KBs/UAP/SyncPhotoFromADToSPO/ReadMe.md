@@ -1,5 +1,6 @@
 1. Installed the SharePoint PNP and Azure AD PowerShell Module 
 2. Export/Save the affected user list to UsersListFile.txt
+
 ![image](https://user-images.githubusercontent.com/21354416/151100496-3493c7df-0f19-4087-8173-c3a46d5db5d8.png)
 
 3. Save the above script as SyncPhotoFromAADToSPO.ps1
@@ -21,6 +22,9 @@ present.
 ![image](https://user-images.githubusercontent.com/21354416/151100735-52c86402-46e4-4ba5-b90b-56aeb9fba64d.png)
 
 Please note **SyncPhotoFromAADToSPOByGraphAPI.ps1** need to install PNP with below version,
+
 Uninstall-Module -Name "PNP.PowerShell"
+
 Uninstall-Module -Name "SharePointPnPPowerShellOnline"
+
 Install-Module -Name "SharePointPnPPowerShellOnline" -RequiredVersion 3.20.2004.0

@@ -7,6 +7,7 @@
 4. Run it as below 
 	
 	.\SyncPhotoFromAADToSPO.ps1 -**usersListFile** ".\UsersListFile.txt" -**mySiteHostSiteUrl** https://chengc-my.sharepoint.com-photoPath C:\Photos\Photos
+	
 a. usersListFile is the user list file name
 
 b. mySiteHostSiteUrl is your tenant’s my site host URL

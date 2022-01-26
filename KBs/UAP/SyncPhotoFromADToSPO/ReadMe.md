@@ -6,7 +6,7 @@
 3. Save the above script as SyncPhotoFromAADToSPO.ps1
 4. Run it as below 
 	
-	.\SyncPhotoFromAADToSPO.ps1 -**usersListFile** ".\UsersListFile.txt" -**mySiteHostSiteUrl** https://chengc-my.sharepoint.com-photoPath C:\Photos\Photos
+	.\SyncPhotoFromAADToSPO.ps1 -**usersListFile** ".\UsersListFile.txt" -**mySiteHostSiteUrl** https://chengc-my.sharepoint.com -photoPath C:\Photos\Photos
 	
 a. usersListFile is the user list file name
 
@@ -18,7 +18,7 @@ c. phtotoPath is the temp folder for storing the photo which download from AAD
  
 Please note the above script is based on the result of command “Get-AzureADUserThumbnailPhoto -ObjectId $user”, if that command can’t get the photo from AAD, then the script will can’t sync it either.
 
-If there is a error message as below, but the photo can be got by by Graph API, then please use **SyncPhotoFromAADToSPOByGraphAPI.ps1**,
+If there is a error message as below, but the photo can be got by by Graph API, then please use **SyncPhotoFromAADToSPOByGraphAPI.ps1** with same parameters,
 	Get-AzureADUserThumbnailPhoto : Error occurred while executing GetAzureADUserThumbnailPhoto
 	Code: Request_ResourceNotFound
 	Message: Resource 'thumbnailPhoto' does not exist or one of its queried reference-property objects are not

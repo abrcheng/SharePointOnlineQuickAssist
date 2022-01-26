@@ -8,8 +8,11 @@
 	
 	.\SyncPhotoFromAADToSPO.ps1 -**usersListFile** ".\UsersListFile.txt" -**mySiteHostSiteUrl** https://chengc-my.sharepoint.com-photoPath C:\Photos\Photos
 a. usersListFile is the user list file name
+
 b. mySiteHostSiteUrl is your tenant’s my site host URL
+
 c. phtotoPath is the temp folder for storing the photo which download from AAD
+
 1. Check the FailedUsers.txtand ErrorMessage.txtfor accounts which failed to be synced 
  
 Please note the above script is based on the result of command “Get-AzureADUserThumbnailPhoto -ObjectId $user”, if that command can’t get the photo from AAD, then the script will can’t sync it either.

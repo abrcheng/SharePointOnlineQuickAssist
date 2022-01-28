@@ -4,7 +4,9 @@
   [Parameter(mandatory=$true)]
   [string]$usersListFile = "D:\files\photos\UsersListFile.txt",
   [Parameter(mandatory=$true)]
-  [string]$photoPath = "D:\files\photos\Photos"
+  [string]$photoPath = "D:\files\photos\Photos",
+ [Parameter(mandatory=$false)]
+  [bool]$updateExo = $false
 )
 
 # connect AAD for get the users's ThumbnailPhoto by commmand Get-AzureADUserThumbnailPhoto -ObjectId "CVDu@chengc.onmicrosoft.com"
@@ -22,6 +24,11 @@ Connect-PnPOnline $mySiteHostSiteUrl -UseWebLogin
 $ctx = Get-PnPContext
 
 $peopleManager = New-Object Microsoft.SharePoint.Client.UserProfiles.PeopleManager($adminCtx)
+
+if($updateExo)
+{
+    Connect-ExchangeOnline
+}
 
 function GeneratetThumbnail($filePath, $baseFilename)
 {
@@ -56,6 +63,11 @@ foreach($user in $users)
         {
             $baseFilename = $user.Replace(".", "_").Replace("@","_")
             GeneratetThumbnail -filePath $file.FullName -baseFilename $baseFilename
+
+            if($updateExo)
+            {
+                Set-UserPhoto -Identity $user -PictureData ([System.IO.File]::ReadAllBytes("$($photoPath)\$($baseFilename)_SThumb.jpg")) -Confirm:$false
+            }
 
             $thumbnails = Get-ChildItem -Path $photoPath -Filter "$baseFilename*"
             foreach($thumbnail in $thumbnails)

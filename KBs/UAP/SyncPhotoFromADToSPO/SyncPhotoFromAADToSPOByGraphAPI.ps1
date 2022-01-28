@@ -4,12 +4,20 @@
   [Parameter(mandatory=$true)]
   [string]$usersListFile = "D:\files\photos\UsersListFile.txt",
   [Parameter(mandatory=$true)]
-  [string]$photoPath = "D:\files\photos\Photos"
+  [string]$photoPath = "D:\files\photos\Photos",
+  [Parameter(mandatory=$false)]
+  [string]$updateExo = $false
 )
 
 # connect AAD for get the users's ThumbnailPhoto by commmand Get-AzureADUserThumbnailPhoto -ObjectId "CVDu@chengc.onmicrosoft.com"
 Connect-PnPOnline -Scopes "User.Read","User.ReadBasic.All"
 $accessToken =Get-PnPAccessToken
+
+# Connect to exchange online
+if($updateExo)
+{
+    Connect-ExchangeOnline
+}
 
 # Connect to the for uploading photos and update user profile
 $adminSiteUrl = $mySiteHostSiteUrl.Replace("-my", "-admin")
@@ -61,12 +69,18 @@ foreach($user in $users)
             $baseFilename = $user.Replace(".", "_").Replace("@","_")
             GeneratetThumbnail -filePath $file.FullName -baseFilename $baseFilename
 
+            if($updateExo)
+            {
+                Set-UserPhoto -Identity $user -PictureData ([System.IO.File]::ReadAllBytes("$($photoPath)\$($baseFilename)_SThumb.jpg")) -Confirm:$false
+            }
+            
             $thumbnails = Get-ChildItem -Path $photoPath -Filter "$baseFilename*"
             foreach($thumbnail in $thumbnails)
             {       
                 Write-Host "Uploading $($thumbnail.FullName)......"         
-                $null = Add-PnPFile -Path $thumbnail.FullName -Folder $photoFolderUrl -ErrorAction Stop
+                $null = Add-PnPFile -Path $thumbnail.FullName -Folder $photoFolderUrl -ErrorAction Stop            
             }
+
             $fullPictureUrl = $mySiteHostSiteUrl + $photoFolderUrl + $baseFilename + "_MThumb.jpg"
             $uploadedPicture = Get-PnPFile $fullPictureUrl
             if($uploadedPicture.Length -gt 0)

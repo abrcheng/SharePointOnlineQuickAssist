@@ -1,18 +1,21 @@
 1. Installed the SharePoint PNP and Azure AD PowerShell Module 
-2. Export/Save the affected user list to UsersListFile.txt
+2. If you need to update the Photo in Exchange online(EXO) as well, then install the EXO PowerShell according to https://docs.microsoft.com/en-us/powershell/exchange/connect-to-exchange-online-powershell?view=exchange-ps
+3. Export/Save the affected user list to UsersListFile.txt
 
 ![image](https://user-images.githubusercontent.com/21354416/151100496-3493c7df-0f19-4087-8173-c3a46d5db5d8.png)
 
 3. Save the above script as SyncPhotoFromAADToSPO.ps1
 4. Run it as below 
 	
-	.\SyncPhotoFromAADToSPO.ps1 -**usersListFile** ".\UsersListFile.txt" -**mySiteHostSiteUrl** https://chengc-my.sharepoint.com -photoPath C:\Photos\Photos
+	.\SyncPhotoFromAADToSPO.ps1 -**usersListFile** ".\UsersListFile.txt" -**mySiteHostSiteUrl** https://chengc-my.sharepoint.com -photoPath C:\Photos\Photos -updateExo $false
 	
 a. usersListFile is the user list file name
 
 b. mySiteHostSiteUrl is your tenant’s my site host URL
 
 c. phtotoPath is the temp folder for storing the photo which download from AAD
+
+d. updateExo switch specifies whether to update the photo via EXO command Set-UserPhoto in Exchange Online or not
 
 5. Check the FailedUsers.txtand ErrorMessage.txtfor accounts which failed to be synced 
  
@@ -32,3 +35,8 @@ Uninstall-Module -Name "PNP.PowerShell"
 Uninstall-Module -Name "SharePointPnPPowerShellOnline"
 
 Install-Module -Name "SharePointPnPPowerShellOnline" -RequiredVersion 3.20.2004.0
+
+Then run the Script as below,
+
+.\SyncPhotoFromAADToSPOByGraphAPI.ps1 -**usersListFile** ".\UsersListFile.txt" -**mySiteHostSiteUrl** https://chengc-my.sharepoint.com -photoPath C:\Photos\Photos -updateExo $false
+

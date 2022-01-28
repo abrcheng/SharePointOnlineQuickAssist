@@ -38,5 +38,8 @@ Install-Module -Name "SharePointPnPPowerShellOnline" -RequiredVersion 3.20.2004.
 
 Then run the Script as below,
 
-.\SyncPhotoFromAADToSPOByGraphAPI.ps1 -**usersListFile** ".\UsersListFile.txt" -**mySiteHostSiteUrl** https://chengc-my.sharepoint.com -**photoPath** C:\Photos\Photos -**updateExo** $false
+.\SyncPhotoFromAADToSPOByGraphAPI.ps1 -**usersListFile** ".\UsersListFile.txt" -**mySiteHostSiteUrl** https://chengc-my.sharepoint.com -**photoPath** C:\ps\Photos -**updateExo** $false
+
+![image](https://user-images.githubusercontent.com/21354416/151515934-0579cdb1-f2e9-4842-9042-20c5bf5c99fa.png)
+
 

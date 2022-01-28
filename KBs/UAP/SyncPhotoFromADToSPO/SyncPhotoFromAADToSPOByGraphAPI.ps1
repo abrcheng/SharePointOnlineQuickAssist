@@ -6,7 +6,7 @@
   [Parameter(mandatory=$true)]
   [string]$photoPath = "D:\files\photos\Photos",
   [Parameter(mandatory=$false)]
-  [string]$updateExo = $false
+  [bool]$updateExo = $false
 )
 
 # connect AAD for get the users's ThumbnailPhoto by commmand Get-AzureADUserThumbnailPhoto -ObjectId "CVDu@chengc.onmicrosoft.com"

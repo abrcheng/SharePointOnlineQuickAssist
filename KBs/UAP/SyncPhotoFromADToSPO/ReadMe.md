@@ -9,13 +9,13 @@
 	
 	.\SyncPhotoFromAADToSPO.ps1 -**usersListFile** ".\UsersListFile.txt" -**mySiteHostSiteUrl** https://chengc-my.sharepoint.com -**photoPath** C:\Photos\Photos -**updateExo** $false
 	
-a. usersListFile is the user list file name
+a. **usersListFile** is the user list file name
 
-b. mySiteHostSiteUrl is your tenant’s my site host URL
+b. **mySiteHostSiteUrl** is your tenant’s my site host URL
 
-c. phtotoPath is the temp folder for storing the photo which download from AAD
+c. **phtotoPath** is the temp folder for storing the photo which download from AAD
 
-d. updateExo switch specifies whether to update the photo via EXO command Set-UserPhoto in Exchange Online or not
+d. **updateExo** switch specifies whether to update the photo via EXO command Set-UserPhoto in Exchange Online or not
 
 5. Check the FailedUsers.txtand ErrorMessage.txtfor accounts which failed to be synced 
  

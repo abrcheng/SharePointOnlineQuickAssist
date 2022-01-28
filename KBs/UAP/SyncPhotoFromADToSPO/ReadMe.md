@@ -7,7 +7,7 @@
 3. Save the above script as SyncPhotoFromAADToSPO.ps1
 4. Run it as below 
 	
-	.\SyncPhotoFromAADToSPO.ps1 -**usersListFile** ".\UsersListFile.txt" -**mySiteHostSiteUrl** https://chengc-my.sharepoint.com -photoPath C:\Photos\Photos -updateExo $false
+	.\SyncPhotoFromAADToSPO.ps1 -**usersListFile** ".\UsersListFile.txt" -**mySiteHostSiteUrl** https://chengc-my.sharepoint.com -**photoPath** C:\Photos\Photos -**updateExo** $false
 	
 a. usersListFile is the user list file name
 
@@ -38,5 +38,5 @@ Install-Module -Name "SharePointPnPPowerShellOnline" -RequiredVersion 3.20.2004.
 
 Then run the Script as below,
 
-.\SyncPhotoFromAADToSPOByGraphAPI.ps1 -**usersListFile** ".\UsersListFile.txt" -**mySiteHostSiteUrl** https://chengc-my.sharepoint.com -photoPath C:\Photos\Photos -updateExo $false
+.\SyncPhotoFromAADToSPOByGraphAPI.ps1 -**usersListFile** ".\UsersListFile.txt" -**mySiteHostSiteUrl** https://chengc-my.sharepoint.com -**photoPath** C:\Photos\Photos -**updateExo** $false
 

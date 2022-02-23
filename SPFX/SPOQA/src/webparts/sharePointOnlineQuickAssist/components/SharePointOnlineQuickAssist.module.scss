@@ -1,5 +1,7 @@
 @import '~office-ui-fabric-react/dist/sass/References.scss';
 
+// https://codepen.io/andrewconnell/pen/NGNQbR
+
 .sharePointOnlineQuickAssist {
   .container {
     max-width: 100%;
@@ -20,6 +22,25 @@
     @include ms-xl8;
     @include ms-xlPush2;
     @include ms-lgPush1;
+  }  
+
+  .msgrid
+  {    
+    @include ms-Grid;
+    padding-top: 0px;
+  }
+
+  .msrow
+  {
+    @include ms-Grid-row;
+  }
+
+  .mscol6
+  {
+    @include ms-Grid-col;
+    @include ms-sm6;
+    @include ms-md6;   
+    padding-left: 0px; 
   }
 
   .title {

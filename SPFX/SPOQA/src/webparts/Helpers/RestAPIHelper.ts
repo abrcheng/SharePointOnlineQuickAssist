@@ -711,7 +711,7 @@ export default class RestAPIHelper
         <asp:Content ContentPlaceHolderId="PlaceHolderBodyRightMargin" runat="server">
         <div class='ms-areaseparatorright'><img src="/_layouts/15/images/blank.gif?rev=47" width='8' height='100%' alt="" data-accessibility-nocheck="true"/></div>
         </asp:Content>
-        <asp:Content ContentPlaceHolderId="PlaceHolderTitleAreaSeparator" runat="server"/>`
+        <asp:Content ContentPlaceHolderId="PlaceHolderTitleAreaSeparator" runat="server"/>`;
         var addFileApiUrl = `${siteAbsoluteUrl}/_api/web/GetFolderByServerRelativeUrl('${formPath}')/Files/Add(url='NewForm.aspx', overwrite=true)`;
       }
       else
@@ -1202,6 +1202,32 @@ export default class RestAPIHelper
         console.log(message);
         Promise.reject(message);
       }
+    }
+    
+    public static async Getrecyclebinitems(spHttpClient:SPHttpClient, siteAbsoluteUrl:string, pageInfo:string, rowLimit:number,isAscending:boolean, itemState:number, orderby:number)
+    {
+       // https://chengc.sharepoint.com/sites/abc/_api/site/getrecyclebinitems?rowLimit='100'&isAscending=false&itemState=1&orderby=3
+       // 'id=dbe08209-a916-4762-8390-200aeefe91f2&title=Table of Contents.docx&searchValue=2021-12-21T08:25:47' => encode => pagingInfo
+       // https://chengc.sharepoint.com/sites/abc/_api/site/getrecyclebinitems?rowLimit=%27101%27&isAscending=false&itemState=1&orderby=3&pagingInfo=%27id%3Ddbe08209-a916-4762-8390-200aeefe91f2%26title%3DTable%20of%20Contents.docx%26searchValue%3D2021-12-21T08%3A25%3A47%27
+       
+       var apiUrl = `${siteAbsoluteUrl}/_api/site/getrecyclebinitems?rowLimit='${rowLimit}'&isAscending=${isAscending}&itemState=${itemState}&orderby=${orderby}`;
+       if(pageInfo && pageInfo.length > 0)
+       {
+          apiUrl = `${apiUrl}&pageInfo=${pageInfo}`;            
+       }
+
+       var res = await spHttpClient.get(apiUrl, SPHttpClient.configurations.v1);
+       if(res.ok)
+       {
+          var resJson = await res.json();
+          console.log(`Getrecyclebinitems done for API url ${apiUrl}`);          
+          return resJson;
+       }
+       else
+       {
+        var message = `Failed Getrecyclebinitems for API url ${apiUrl}`;
+        console.log(message);       
+       }
     }
 
     private static BuildSelectStr(properties:string[]):string

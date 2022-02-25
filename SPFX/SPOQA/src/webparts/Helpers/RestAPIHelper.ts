@@ -1213,7 +1213,7 @@ export default class RestAPIHelper
        var apiUrl = `${siteAbsoluteUrl}/_api/site/getrecyclebinitems?rowLimit='${rowLimit}'&isAscending=${isAscending}&itemState=${itemState}&orderby=${orderby}`;
        if(pageInfo && pageInfo.length > 0)
        {
-          apiUrl = `${apiUrl}&pageInfo=${pageInfo}`;            
+          apiUrl = `${apiUrl}&pagingInfo=${pageInfo}`;            
        }
 
        var res = await spHttpClient.get(apiUrl, SPHttpClient.configurations.v1);
@@ -1228,6 +1228,34 @@ export default class RestAPIHelper
         var message = `Failed Getrecyclebinitems for API url ${apiUrl}`;
         console.log(message);       
        }
+    }
+
+    public static async RestoreByIds(spHttpClient:SPHttpClient, siteAbsoluteUrl:string, ids:string[])
+    {
+        let requestBody:any={"ids":ids, "bRenameExistingItems":"true"};
+        requestBody = JSON.stringify(requestBody);
+        var apiUrl = `${siteAbsoluteUrl}/_api/site/RecycleBin/RestoreByIds`;
+        let spOpts = {  
+          headers: {              
+            "Accept": "application/json;odata=verbose",            
+            "Content-Type": "application/json;odata=verbose",            
+            "IF-MATCH": "*"                 
+          },
+          body:requestBody
+        };  
+
+        var res = await spHttpClient.post(apiUrl, SPHttpClient.configurations.v1, spOpts);
+        if(res.ok)
+        {            
+            console.log(`RestoreByIds done for API url ${apiUrl}`);          
+            return true;
+        }
+        else
+        {
+          var message = `Failed RestoreByIds for API url ${apiUrl}`;
+          console.log(message);    
+          return false;   
+        }
     }
 
     private static BuildSelectStr(properties:string[]):string

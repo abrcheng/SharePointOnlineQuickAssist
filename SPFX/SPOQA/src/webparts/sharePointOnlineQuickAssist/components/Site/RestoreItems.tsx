@@ -2,7 +2,8 @@ import * as React from 'react';
 import {  
     PrimaryButton,    
     TextField,
-    Label,
+    MessageBar,
+    MessageBarType,
     DatePicker
   } from 'office-ui-fabric-react/lib/index';
 import GraphAPIHelper from '../../../Helpers/GraphAPIHelper';  
@@ -13,10 +14,12 @@ import RestoreItemsQAGrid from "./RestoreItemsQAGrid";
 import styles from '../SharePointOnlineQuickAssist.module.scss';
 import { ISharePointOnlineQuickAssistProps } from '../ISharePointOnlineQuickAssistProps';
 import { IRestoreItem,IRestoreItems } from "./IRestoreItem";
-import { forEach } from 'lodash';
 export default class RestoreItemsQA extends React.Component<ISharePointOnlineQuickAssistProps>
 {
-  public recycleBinItems:IRestoreItem[];
+  private recycleBinItems:IRestoreItem[];
+  private queryCount:number = 0;
+  private querySeconds:number=0;
+
   public state = {
     deleteByUser: this.props.currentUser.loginName,
     deleteStartDate:null,
@@ -24,7 +27,9 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
     pathFilter:"",    
     affectedSite:this.props.webAbsoluteUrl,
     queried:false,
-    currentItems:null        
+    currentItems:null,
+    message:"",
+    messageType:MessageBarType.success
   };
   
   // https://chengc.sharepoint.com/sites/abc/_api/site/getrecyclebinitems?rowLimit='100'&isAscending=false&itemState=1&orderby=3
@@ -40,78 +45,96 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
   {
       return (
         <div>
-          <div id="RestoreItemsQA_FilterSection" className={styles.msgrid}>
-            <div className={styles.msrow} id="affectedSite_row">
-              <TextField
-                    label="Affected Site:"
-                    multiline={false}
-                    onChange={(e)=>{let text:any = e.target; this.setState({affectedSite:text.value});}}
-                    value={this.state.affectedSite}
-                    required={true}                        
-              /> 
-            </div>
-            <div className={styles.msrow} id="deleteByUser_row">
-            <div className={styles.mscol6}>
-              <TextField
-                          label="Deleted User:"                        
-                          multiline={false}
-                          onChange={(e)=>{let text:any = e.target; this.setState({deleteByUser:text.value});}}
-                          value={this.state.deleteByUser}
-                          
-                    />
-              </div>          
+          <div className={ styles.row }>
+            <div className={ styles.column }>
+            <div id="RestoreItemsQA_FilterSection" className={styles.msgrid}>
+              <div className={styles.msrow} id="affectedSite_row">
+                <TextField
+                      label="Affected Site:"
+                      multiline={false}
+                      onChange={(e)=>{let text:any = e.target; this.setState({affectedSite:text.value});}}
+                      value={this.state.affectedSite}
+                      required={true}                        
+                /> 
+              </div>
+              <div className={styles.msrow} id="deleteByUser_row">
               <div className={styles.mscol6}>
-                <TextField 
-                            label="Path Filter:"
-                            className='ms-Grid-col ms-u-sm6 block'
+                <TextField
+                            label="Deleted User:"                        
                             multiline={false}
-                            onChange={(e)=>{let text:any = e.target; this.setState({pathFilter:text.value});}}
-                            value={this.state.pathFilter}                          
-                  />     
+                            onChange={(e)=>{let text:any = e.target; this.setState({deleteByUser:text.value});}}
+                            value={this.state.deleteByUser}
+                            
+                      />
+                </div>          
+                <div className={styles.mscol6}>
+                  <TextField 
+                              label="Path Filter:"
+                              className='ms-Grid-col ms-u-sm6 block'
+                              multiline={false}
+                              onChange={(e)=>{let text:any = e.target; this.setState({pathFilter:text.value});}}
+                              value={this.state.pathFilter}                          
+                    />     
+                </div>
+              </div>
+              <div className={styles.msrow} id="deleteStartDate_row">
+                    <div className={styles.mscol6}>
+                      <DatePicker
+                          label='Start Date:'
+                          placeholder="Select a date..."
+                          ariaLabel="Select a date"   
+                          // onChange={(e)=>{let datePicker:any = e.target; this.setState({deleteStartDate:datePicker.value});}}
+                          onSelectDate={(e)=>{ this.setState({deleteStartDate:e});}}
+                          value={this.state.deleteStartDate}                    
+                      />
+                    </div>
+                    <div className={styles.mscol6}>
+                      <DatePicker
+                          label='End Date:'
+                          placeholder="Select a date..."
+                          ariaLabel="Select a date"   
+                          // onChange={(e)=>{let datePicker:any = e.target; this.setState({deleteEndDate:datePicker.value});}}
+                          onSelectDate={(e)=>{ this.setState({deleteEndDate:e});}}
+                          value={this.state.deleteEndDate}                           
+                      />
+                    </div>
+                </div> 
               </div>
             </div>
-            <div className={styles.msrow} id="deleteStartDate_row">
-                  <div className={styles.mscol6}>
-                    <DatePicker
-                        label='Start Date:'
-                        placeholder="Select a date..."
-                        ariaLabel="Select a date"   
-                        // onChange={(e)=>{let datePicker:any = e.target; this.setState({deleteStartDate:datePicker.value});}}
-                        onSelectDate={(e)=>{ this.setState({deleteStartDate:e});}}
-                        value={this.state.deleteStartDate}                    
-                    />
-                  </div>
-                  <div className={styles.mscol6}>
-                    <DatePicker
-                        label='End Date:'
-                        placeholder="Select a date..."
-                        ariaLabel="Select a date"   
-                        // onChange={(e)=>{let datePicker:any = e.target; this.setState({deleteEndDate:datePicker.value});}}
-                        onSelectDate={(e)=>{ this.setState({deleteEndDate:e});}}
-                        value={this.state.deleteEndDate}                           
-                    />
-                  </div>
-            </div> 
-          </div>
-          <div id="RestoreItemsQA_QueryResultSection">
-              <RestoreItemsQAGrid items={this.state.currentItems}/>
-          </div>
-          <div id="RestoreItemsQA_CommandButtonsSection">
-              <PrimaryButton
-                        text="Query Items"
-                        style={{ display: 'inline', marginTop: '10px' }}
-                        onClick={() => {this.QueryRecycleBinItems();}}
-                        />
-              {this.state.queried && false?
-                        <PrimaryButton
-                            text="Restore"
-                            style={{ display: 'inline', marginTop: '10px', marginLeft:"10px"}}
-                            // onClick={() => {this.ShowRemedySteps();}}
-                        />:
-                        null}
-          </div>
-          <div id="RestoreItemsQA_ActionSection">
+            </div>
 
+            <div className={ styles.row }>
+            <div className={ styles.column }>
+              <div id="RestoreItemsQA_CommandButtonsSection">
+                  <PrimaryButton
+                            text="Query Items"
+                            style={{ display: 'inline', marginTop: '10px' }}
+                            onClick={() => {this.QueryRecycleBinItems();}}
+                            />
+                  {this.state.queried && this.state.currentItems.length >0?
+                            <div style={{ display: 'inline'}}>
+                            <PrimaryButton
+                                text="Restore"
+                                style={{ display: 'inline', marginTop: '10px', marginLeft:"10px"}}
+                                onClick={() => {this.Restore();}}
+                            /> 
+                               <PrimaryButton
+                                text="Export"
+                                style={{ display: 'inline', marginTop: '10px', marginLeft:"10px"}}
+                                onClick={() => {this.DoExport();}}
+                            />
+                           </div>:null}                  
+                  </div>
+                </div>
+              </div>
+
+          <div id="RestoreItemsQA_QueryResultSection">
+              {this.state.queried?<MessageBar id="RestoreItemsQAMessageBar" messageBarType={this.state.messageType} isMultiline={true}>
+                 {this.state.message}
+              </MessageBar>:null}
+              {this.state.queried && this.state.currentItems.length >0? <RestoreItemsQAGrid items={this.state.currentItems}/>:null}
+          </div>          
+          <div id="RestoreItemsQA_ActionSection">
           </div>
         </div>
       );
@@ -122,15 +145,19 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
      // Verify the site is valid 
      var isSiteValid = await RestAPIHelper.GetWeb(this.props.spHttpClient, this.state.affectedSite);
      if(isSiteValid)
-     {         
+     {   
          var pageInfo = "";
          var currentCount=-1;
          this.recycleBinItems = []; // clean previous data set
          this.setState({queried:false});
          SPOQASpinner.Show("Querying ......");
-         while(currentCount ==500 || currentCount==-1)
+         var itemState = 1;
+         this.queryCount = 0;
+         var queryStartTime = new Date();
+
+         while(currentCount ==500 || currentCount==-1 || itemState <3)
          {
-           var recycleItems = await RestAPIHelper.Getrecyclebinitems(this.props.spHttpClient, this.state.affectedSite,pageInfo,500,false, 1, 3);
+           var recycleItems = await RestAPIHelper.Getrecyclebinitems(this.props.spHttpClient, this.state.affectedSite,pageInfo,500,false, itemState, 3);
 
            // recycleItems.value.length, if the length is less than 500, that's mean the current query is the last page
            /* Data structure of recycleItems.value[0]
@@ -160,22 +187,50 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
            for(var i=0; i<recycleItems.value.length; i++)
            {
               var currentItem = recycleItems.value[i];
-              if(this.IsMatchFilter(currentItem))
+              if(lastId != currentItem.Id)
               {
-                this.recycleBinItems.push(currentItem);
+                this.queryCount ++;
+                if(this.IsMatchFilter(currentItem))
+                {
+                  this.recycleBinItems.push(currentItem);
+                }
               }
+
               lastId = currentItem.Id;
               lastTitle = currentItem.Title;
               lastDeletedDate = currentItem.DeletedDate;
            }
             
            console.log(`RestAPIHelper.Getrecyclebinitems with page info ${pageInfo}`);
-           pageInfo = URI_Encoding.encodeURIComponent(`id=${lastId}&title=${lastTitle}&searchValue=${lastDeletedDate}`);  
-           SPOQASpinner.Show(`Queried ${this.recycleBinItems.length} ......`);      
-         }
+           if(lastDeletedDate.indexOf("Z") > 0)
+           {
+              lastDeletedDate = lastDeletedDate.substring(0, lastDeletedDate.length -1);
+           }
 
-         this.setState({currentItems:this.recycleBinItems});
-         // this.setState({queried:true});
+           pageInfo = URI_Encoding.encodeURIComponent(`'id=${URI_Encoding.encodeURIComponent(lastId)}&title=${URI_Encoding.encodeURIComponent(lastTitle)}&searchValue=${URI_Encoding.encodeURIComponent(lastDeletedDate)}'`);  
+           SPOQASpinner.Show(`Queried ${this.queryCount} items, filtered ${this.recycleBinItems.length} items ......`);  
+           if(currentCount <500)    
+           {
+              if(itemState ==1)
+              {
+                itemState = 2;
+                pageInfo = "";
+              }
+              else
+              {
+                itemState =3
+              }
+           }
+           
+         }
+        
+         this.querySeconds = ((new Date()).getTime()- queryStartTime.getTime())/1000;
+         this.recycleBinItems.sort((a,b) =>a.DirName > b.DirName ?1:-1);
+         this.setState({currentItems:this.recycleBinItems,
+              message:`Queried ${this.queryCount} items, filtered ${this.recycleBinItems.length} items in ${this.querySeconds} seconds.`,
+              queried:true,
+              messageType:MessageBarType.success
+          });        
          SPOQASpinner.Hide();
      }
      else
@@ -194,20 +249,70 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
 
     if(this.state.pathFilter && this.state.pathFilter.trim().length > 0)
     {
-      matched = matched&&(this.state.pathFilter.toLowerCase() == item.DirName.toLowerCase());
+      matched = matched&&(item.DirName.toLowerCase().indexOf(this.state.pathFilter.toLowerCase()) > 0);
     }
 
     if(this.state.deleteStartDate)
     {
-        matched = matched&&(this.state.deleteStartDate < item.DeletedDate);
+        matched = matched&&(this.state.deleteStartDate <= new Date(item.DeletedDate));
     }
     
     if(this.state.deleteEndDate)
     {
-        matched = matched&&(this.state.deleteEndDate > item.DeletedDate);
+        let deleteEndDate:Date = new Date(this.state.deleteEndDate);
+        deleteEndDate.setDate(deleteEndDate.getDate()+1);
+        matched = matched&&(deleteEndDate >= new Date(item.DeletedDate));
     }
 
     return matched;
   }
 
+  private async Restore()
+  {    
+    // https://chengc.sharepoint.com/sites/SPOQA/_api/site/RecycleBin/RestoreByIds post
+    // {"ids":
+    //    ["59def901-c4b2-433a-ac74-5c2fbc5dd933",
+    //     "f2621b7b-7732-4423-95d0-60321e80fa65"]
+    // ,"bRenameExistingItems":true}
+    
+    // Restore 100 items in one batch 
+    let batchNo:number = Math.ceil(this.recycleBinItems.length /100);
+    for(var batchIndex=0; batchIndex <batchNo;batchIndex++)
+    {
+      let ids:string[]=[];
+      let startIndex:number= batchIndex * 100;
+      let endIndex:number = (batchIndex+1) * 100 < this.recycleBinItems.length? (batchIndex+1) * 100 : this.recycleBinItems.length;
+      for(var index=startIndex; index < endIndex; index++)
+      {
+        ids.push(this.recycleBinItems[index].Id);
+      }
+      this.setState({
+        message:`Restoring item from ${startIndex + 1} to ${endIndex}, please wait ...`,         
+        messageType:MessageBarType.info
+        });  
+
+      let restoreRes = await RestAPIHelper.RestoreByIds(this.props.spHttpClient, this.state.affectedSite, ids);
+      if(restoreRes)
+      {
+        this.setState({
+          message:`Restored items from ${startIndex + 1} to ${endIndex}.`,         
+          messageType:MessageBarType.success
+          });  
+      }
+      else
+      {
+        this.setState({
+          message:`Restoring item from ${startIndex} to ${endIndex} failed, please contact support.`,         
+          messageType:MessageBarType.error
+          }); 
+          break;
+      }
+    }
+  }
+
+  private DoExport():void
+  {
+      // Export filtered recycle bin items
+      SPOQAHelper.JSONToCSVConvertor(this.recycleBinItems, true, "RecycleBinItems");
+  }
 }

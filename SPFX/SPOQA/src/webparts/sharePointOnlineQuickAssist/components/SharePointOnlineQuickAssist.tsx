@@ -52,7 +52,7 @@ const INITIAL_OPTIONS: IComboBoxOption[] = [
   { key: 'List', text: 'List/Library Issues', itemType: SelectableOptionMenuItemType.Header },
   { key: 'ListMissingForm', text: 'Missing New/Disp/Edit Forms' }, 
   { key: 'Site', text: 'Site', itemType: SelectableOptionMenuItemType.Header },
-  { key: 'Restore', text: 'Restore' }, 
+  { key: 'Restore', text: 'Restore Items' }, 
 ];
 
 const wrapperClassName = mergeStyles({
@@ -139,7 +139,7 @@ export default class SharePointOnlineQuickAssist extends React.Component<IShareP
           </div>
           
           <div className={ styles.row } id="SPOQADetailContainer">
-            <div className={ styles.column }>
+            <div>
               {sPOQADetail()}
             </div>
           </div>

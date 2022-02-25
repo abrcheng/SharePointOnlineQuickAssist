@@ -5,7 +5,7 @@ export interface IRestoreItem {
     DeletedDate:Date;
     LeafName:string;
     DirName:string;
-    Id:Guid;            
+    Id:string;            
   }
 
   export interface IRestoreItems

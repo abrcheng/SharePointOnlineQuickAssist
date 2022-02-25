@@ -2,7 +2,8 @@
 2. If you need to update the Photo in Exchange online(EXO) as well, then install the EXO PowerShell according to https://docs.microsoft.com/en-us/powershell/exchange/connect-to-exchange-online-powershell?view=exchange-ps
 3. Export/Save the affected user list to UsersListFile.txt
 
-![image](https://user-images.githubusercontent.com/21354416/151100496-3493c7df-0f19-4087-8173-c3a46d5db5d8.png)
+![image](https://user-images.githubusercontent.com/21354416/151517552-413b9ce5-7dc6-4fe5-be48-d7a98d241638.png)
+
 
 3. Save the above script as SyncPhotoFromAADToSPO.ps1
 4. Run it as below 

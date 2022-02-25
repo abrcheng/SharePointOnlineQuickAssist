@@ -23,7 +23,8 @@ if($updateExo)
 $adminSiteUrl = $mySiteHostSiteUrl.Replace("-my", "-admin")
 $photoFolderUrl = "/User Photos/Profile Pictures/"
 $users = Get-Content $usersListFile
-Connect-PnPOnline $adminSiteUrl  -UseWebLogin
+# Update: Clear cached credential to connect to site
+Connect-PnPOnline $adminSiteUrl -SPOManagementShell -ClearTokenCache
 $adminCtx = Get-PnPContext
 $null = Get-PnPUserProfileProperty -Account $users[0]
 

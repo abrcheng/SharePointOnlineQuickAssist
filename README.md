@@ -59,6 +59,11 @@ This tool is provided by the copyright holders and contributors “as is” and 
 	  ![image](https://user-images.githubusercontent.com/21354416/147523270-bef520ae-e487-4414-a449-6348b31efe82.png)
 [More details](https://github.com/abrcheng/SharePointOnlineQuickAssist/releases/tag/1.21.12.28)
 	  
+*  **Filter and restore items from recycle bin**
+	  ![image](https://user-images.githubusercontent.com/21354416/155690547-1cb262ef-30d7-4717-9fa0-5cd5c6a4d8dd.png)	  
+[More details](https://github.com/abrcheng/SharePointOnlineQuickAssist/releases/tag/1.22.02.25)
+
+	  
 ## Install the tool to SharePoint Online 
 * Upload SPOQA.sppkg from https://github.com/abrcheng/SharePointOnlineQuickAssist/blob/main/Packages/spoqa.sppkg to your tenant App Catalog
 	* E.g.: https://&lt;tenant&gt;.sharepoint.com/sites/AppCatalog/AppCatalog

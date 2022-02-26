@@ -11,6 +11,7 @@ import RestAPIHelper from '../../../Helpers/RestAPIHelper';
 import { ISharePointOnlineQuickAssistProps } from '../ISharePointOnlineQuickAssistProps';
 import SPOQAHelper from '../../../Helpers/SPOQAHelper';
 import SPOQASpinner from '../../../Helpers/SPOQASpinner';
+import styles from '../SharePointOnlineQuickAssist.module.scss';
 export default class OneDriveLockIconQA extends React.Component<ISharePointOnlineQuickAssistProps>
 {
     public state = {         
@@ -35,57 +36,61 @@ export default class OneDriveLockIconQA extends React.Component<ISharePointOnlin
     {
         return (            
             <div id="SearchDocumentContainer">
-                 <div id="QuestionsSection">
-                 <TextField
-                        label="Affected User:"
-                        multiline={false}
-                        onChange={(e)=>{let text:any = e.target; this.setState({affectedUser:text.value});}}
-                        value={this.state.affectedUser}
-                        required={true}                                                
-                  />
-                    <TextField
-                            label="Affected Site(press enter for loading libraries/lists):"
-                            multiline={false}
-                            onChange={(e)=>{let text:any = e.target; this.setState({affectedSite:text.value,siteIsVaild:false,isChecked:false}); this.resRef.current.innerHTML=""; this.remedyRef.current.innerHTML="";}}
-                            value={this.state.affectedSite}
-                            required={true}
-                            onKeyDown={(e)=>{if(e.keyCode ===13){this.LoadLists();}}}                          
-                    /> 
-                    {this.state.siteIsVaild? 
-                        <div>
-                            <ComboBox
-                            defaultSelectedKey="-1"
-                            label="Please select the affected library/list"
-                            allowFreeform
-                            autoComplete="on"
-                            options={this.state.siteLibraries} 
-                            required={true}                    
-                            onChange ={(ev: React.FormEvent<IComboBox>, option?: IComboBoxOption): void => {
-                                this.setState({affectedLibrary: option.key, isChecked:false}); this.resRef.current.innerHTML=""; this.remedyRef.current.innerHTML="";}} 
-                            />                                      
-                        </div>: null}
-                    </div>
-                    <div id="OneDriveSyncDiagnoseResult">
-                  {this.state.isChecked && this.state.siteIsVaild?<Label>Diagnose result:</Label>:null}
-                        <div style={{marginLeft:20}} id="OneDriveSyncDiagnoseResultDiv" ref={this.resRef}>
-                        </div>
-                 </div>
-                <div id="CommandButtonsSection">
-                    <PrimaryButton
-                        text="Check Issues"
-                        style={{ display: 'inline', marginTop: '10px' }}
-                        onClick={() => {this.state.siteIsVaild? this.CheckOneDriveLockIconQAIssues():this.LoadLists();}}
+                <div className={ styles.row }>
+                    <div className={ styles.column }>
+                        <div id="QuestionsSection">
+                        <TextField
+                                label="Affected User:"
+                                multiline={false}
+                                onChange={(e)=>{let text:any = e.target; this.setState({affectedUser:text.value});}}
+                                value={this.state.affectedUser}
+                                required={true}                                                
                         />
-                     {this.state.needRemedy && !this.state.remedyStepsShowed && this.state.siteIsVaild?
-                        <PrimaryButton
-                            text="Show Remedy Steps"
-                            style={{ display: 'inline', marginTop: '10px', marginLeft:"10px"}}
-                            onClick={() => {this.ShowRemedySteps();}}
-                        />:null}
-                </div>
-                <div id="RemedyStepsDiv" ref={this.remedyRef}>
-                        
-                </div>
+                            <TextField
+                                    label="Affected Site(press enter for loading libraries/lists):"
+                                    multiline={false}
+                                    onChange={(e)=>{let text:any = e.target; this.setState({affectedSite:text.value,siteIsVaild:false,isChecked:false}); this.resRef.current.innerHTML=""; this.remedyRef.current.innerHTML="";}}
+                                    value={this.state.affectedSite}
+                                    required={true}
+                                    onKeyDown={(e)=>{if(e.keyCode ===13){this.LoadLists();}}}                          
+                            /> 
+                            {this.state.siteIsVaild? 
+                                <div>
+                                    <ComboBox
+                                    defaultSelectedKey="-1"
+                                    label="Please select the affected library/list"
+                                    allowFreeform
+                                    autoComplete="on"
+                                    options={this.state.siteLibraries} 
+                                    required={true}                    
+                                    onChange ={(ev: React.FormEvent<IComboBox>, option?: IComboBoxOption): void => {
+                                        this.setState({affectedLibrary: option.key, isChecked:false}); this.resRef.current.innerHTML=""; this.remedyRef.current.innerHTML="";}} 
+                                    />                                      
+                                </div>: null}
+                            </div>
+                            <div id="OneDriveSyncDiagnoseResult">
+                        {this.state.isChecked && this.state.siteIsVaild?<Label>Diagnose result:</Label>:null}
+                                <div style={{marginLeft:20}} id="OneDriveSyncDiagnoseResultDiv" ref={this.resRef}>
+                                </div>
+                        </div>
+                        <div id="CommandButtonsSection">
+                            <PrimaryButton
+                                text="Check Issues"
+                                style={{ display: 'inline', marginTop: '10px' }}
+                                onClick={() => {this.state.siteIsVaild? this.CheckOneDriveLockIconQAIssues():this.LoadLists();}}
+                                />
+                            {this.state.needRemedy && !this.state.remedyStepsShowed && this.state.siteIsVaild?
+                                <PrimaryButton
+                                    text="Show Remedy Steps"
+                                    style={{ display: 'inline', marginTop: '10px', marginLeft:"10px"}}
+                                    onClick={() => {this.ShowRemedySteps();}}
+                                />:null}
+                        </div>
+                        <div id="RemedyStepsDiv" ref={this.remedyRef}>
+                                
+                        </div>
+                    </div>
+                </div>  
             </div>
         );
     }

@@ -5,7 +5,7 @@ import RestAPIHelper from '../../../Helpers/RestAPIHelper';
 import SPOQASpinner from '../../../Helpers/SPOQASpinner';
 import SPOQAHelper from '../../../Helpers/SPOQAHelper';
 import { ISharePointOnlineQuickAssistProps } from '../ISharePointOnlineQuickAssistProps';
-
+import styles from '../SharePointOnlineQuickAssist.module.scss';
 export default class UserProfilePhotoQA extends React.Component<ISharePointOnlineQuickAssistProps>
 {
     public state = {
@@ -19,23 +19,26 @@ export default class UserProfilePhotoQA extends React.Component<ISharePointOnlin
         this.mySiteHost = this.props.webAbsoluteUrl.replace(this.props.webUrl == "/"?"":this.props.webUrl,"").replace(".sharepoint.com", "-my.sharepoint.com");
         return (
             <div> 
-                  
-                  <TextField
-                        label="Affected User:"
-                        multiline={false}
-                        onChange={(e)=>{let text:any = e.target; this.setState({affectedUser:text.value});}}
-                        value={this.state.affectedUser}
-                        required={true}                                                
-                  />                  
-                  {this.state.aadUserPhotoUrl!=""? <Label>Picture from AAD:</Label>:null}
-                  <img src={this.state.aadUserPhotoUrl} />   
-                  {this.state.aadUserPhotoUrl!=""?<Label>Picture from user profile:</Label>:null}
-                  {this.state.uapUserPhotoUrl!=""? <img src={`${this.props.webAbsoluteUrl}/_layouts/15/userphoto.aspx?username=${this.state.affectedUser}`} />:null}
-                  <PrimaryButton
-                      text="Check Issues"
-                      style={{ display: 'block', marginTop: '10px' }}
-                      onClick={() => {this.CheckUserPhoto();}}
-                  />
+                <div className={ styles.row }>
+                    <div className={ styles.column }>
+                        <TextField
+                                label="Affected User:"
+                                multiline={false}
+                                onChange={(e)=>{let text:any = e.target; this.setState({affectedUser:text.value});}}
+                                value={this.state.affectedUser}
+                                required={true}                                                
+                        />                  
+                        {this.state.aadUserPhotoUrl!=""? <Label>Picture from AAD:</Label>:null}
+                        <img src={this.state.aadUserPhotoUrl} />   
+                        {this.state.aadUserPhotoUrl!=""?<Label>Picture from user profile:</Label>:null}
+                        {this.state.uapUserPhotoUrl!=""? <img src={`${this.props.webAbsoluteUrl}/_layouts/15/userphoto.aspx?username=${this.state.affectedUser}`} />:null}
+                        <PrimaryButton
+                            text="Check Issues"
+                            style={{ display: 'block', marginTop: '10px' }}
+                            onClick={() => {this.CheckUserPhoto();}}
+                        />
+                    </div>
+              </div>  
             </div>
         );
     }

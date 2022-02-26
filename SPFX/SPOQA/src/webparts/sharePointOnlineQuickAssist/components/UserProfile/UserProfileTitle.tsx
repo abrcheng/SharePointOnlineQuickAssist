@@ -9,6 +9,7 @@ import RestAPIHelper from '../../../Helpers/RestAPIHelper';
 import SPOQASpinner from '../../../Helpers/SPOQASpinner';
 import SPOQAHelper from '../../../Helpers/SPOQAHelper';
 import { ISharePointOnlineQuickAssistProps } from '../ISharePointOnlineQuickAssistProps';
+import styles from '../SharePointOnlineQuickAssist.module.scss';
 export default class UserProfileTitleQA extends React.Component<ISharePointOnlineQuickAssistProps>
 {
     public state = {
@@ -21,41 +22,44 @@ export default class UserProfileTitleQA extends React.Component<ISharePointOnlin
       };
 
     public render():React.ReactElement<ISharePointOnlineQuickAssistProps>
-    {
-       
+    {       
         return (
             <div>
-                <TextField
-                        label="Affected Site:"
-                        multiline={false}
-                        onChange={(e)=>{let text:any = e.target; this.setState({affectedSite:text.value});}}
-                        value={this.state.affectedSite}
-                        required={true}                        
-                  /> 
-                <TextField
-                        label="Affected User:"
-                        multiline={false}
-                        onChange={(e)=>{let text:any = e.target; this.setState({affectedUser:text.value});}}
-                        value={this.state.affectedUser}
-                        required={true}                                                
-                  />                  
-                  {this.state.aadJobTitle != ""? <Label>JobTitle from AAD is <span style={{"color":"Green"}}>{this.state.aadJobTitle}</span></Label> : null}
-                  {this.state.aadJobTitle != "" && this.state.userId && this.state.userId !=-1? <Label>JobTitle from User Profile is <span style={this.state.uapJobtitle != this.state.aadJobTitle? {"color":"Red"}:{"color":"Green"}}>{this.state.uapJobtitle}</span></Label>: null}
-                  {this.state.aadJobTitle != "" && this.state.userId && this.state.userId !=-1?<Label>JobTitle from site user info list is <span style={this.state.siteJobTitle != this.state.aadJobTitle? {"color":"Red"}:{"color":"Green"}}>{this.state.siteJobTitle}</span></Label>: null}
+                <div className={ styles.row }>
+                    <div className={ styles.column }>
+                      <TextField
+                              label="Affected Site:"
+                              multiline={false}
+                              onChange={(e)=>{let text:any = e.target; this.setState({affectedSite:text.value});}}
+                              value={this.state.affectedSite}
+                              required={true}                        
+                        /> 
+                      <TextField
+                              label="Affected User:"
+                              multiline={false}
+                              onChange={(e)=>{let text:any = e.target; this.setState({affectedUser:text.value});}}
+                              value={this.state.affectedUser}
+                              required={true}                                                
+                        />                  
+                        {this.state.aadJobTitle != ""? <Label>JobTitle from AAD is <span style={{"color":"Green"}}>{this.state.aadJobTitle}</span></Label> : null}
+                        {this.state.aadJobTitle != "" && this.state.userId && this.state.userId !=-1? <Label>JobTitle from User Profile is <span style={this.state.uapJobtitle != this.state.aadJobTitle? {"color":"Red"}:{"color":"Green"}}>{this.state.uapJobtitle}</span></Label>: null}
+                        {this.state.aadJobTitle != "" && this.state.userId && this.state.userId !=-1?<Label>JobTitle from site user info list is <span style={this.state.siteJobTitle != this.state.aadJobTitle? {"color":"Red"}:{"color":"Green"}}>{this.state.siteJobTitle}</span></Label>: null}
 
-                  <PrimaryButton
-                      text="Check Issues"
-                      style={{ display: 'inline', marginTop: '10px' }}
-                      onClick={() => {this.CheckUserProfileTitle();}}
-                    />
-                    
-                    { (this.state.siteJobTitle != this.state.aadJobTitle || this.state.aadJobTitle != this.state.uapJobtitle) && this.state.userId && this.state.userId !=-1 ? 
-                    <PrimaryButton
-                      text="Fix Issues"
-                      style={{ display: 'inline', marginTop: '10px', marginLeft:"20px"}}
-                      hidden={this.state.siteJobTitle == this.state.aadJobTitle && this.state.uapJobtitle == this.state.aadJobTitle}
-                      onClick={() => {this.FixJobTitle();}}
-                    />: null}
+                        <PrimaryButton
+                            text="Check Issues"
+                            style={{ display: 'inline', marginTop: '10px' }}
+                            onClick={() => {this.CheckUserProfileTitle();}}
+                          />
+                          
+                          { (this.state.siteJobTitle != this.state.aadJobTitle || this.state.aadJobTitle != this.state.uapJobtitle) && this.state.userId && this.state.userId !=-1 ? 
+                          <PrimaryButton
+                            text="Fix Issues"
+                            style={{ display: 'inline', marginTop: '10px', marginLeft:"20px"}}
+                            hidden={this.state.siteJobTitle == this.state.aadJobTitle && this.state.uapJobtitle == this.state.aadJobTitle}
+                            onClick={() => {this.FixJobTitle();}}
+                          />: null}
+                  </div>  
+              </div>
             </div>
         );
     }

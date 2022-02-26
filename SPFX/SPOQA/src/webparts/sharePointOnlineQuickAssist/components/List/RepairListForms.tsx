@@ -11,6 +11,7 @@ import RestAPIHelper from '../../../Helpers/RestAPIHelper';
 import { ISharePointOnlineQuickAssistProps } from '../ISharePointOnlineQuickAssistProps';
 import SPOQAHelper from '../../../Helpers/SPOQAHelper';
 import SPOQASpinner from '../../../Helpers/SPOQASpinner';
+import styles from '../SharePointOnlineQuickAssist.module.scss';
 export default class RepairFormQA extends React.Component<ISharePointOnlineQuickAssistProps>
 {
     public state = {
@@ -29,53 +30,57 @@ export default class RepairFormQA extends React.Component<ISharePointOnlineQuick
     {
         return (            
             <div id="SearchDocumentContainer">
-                 <div id="QuestionsSection">
-                    <TextField
-                            label="Affected Site(press enter for loading libraries/lists):"
-                            multiline={false}
-                            onChange={(e)=>{let text:any = e.target; this.setState({affectedSite:text.value,siteIsVaild:false});}}
-                            value={this.state.affectedSite}
-                            required={true}
-                            onKeyDown={(e)=>{if(e.keyCode ===13){this.LoadLists();}}}                          
-                    /> 
-                    {this.state.siteIsVaild? 
-                        <div>
-                            <ComboBox
-                            defaultSelectedKey="-1"
-                            label="Please select the affected library/list"
-                            allowFreeform
-                            autoComplete="on"
-                            options={this.state.siteLists} 
-                            required={true}                    
-                            onChange ={(ev: React.FormEvent<IComboBox>, option?: IComboBoxOption): void => {
-                                this.setState({affectedList: option.key, isLibrary:option.key.toString().endsWith("#1"), isChecked:false});}} 
-                            />     
-                        </div>: null}
+                <div className={ styles.row }>
+                    <div className={ styles.column }>
+                        <div id="QuestionsSection">
+                            <TextField
+                                    label="Affected Site(press enter for loading libraries/lists):"
+                                    multiline={false}
+                                    onChange={(e)=>{let text:any = e.target; this.setState({affectedSite:text.value,siteIsVaild:false});}}
+                                    value={this.state.affectedSite}
+                                    required={true}
+                                    onKeyDown={(e)=>{if(e.keyCode ===13){this.LoadLists();}}}                          
+                            /> 
+                            {this.state.siteIsVaild? 
+                                <div>
+                                    <ComboBox
+                                    defaultSelectedKey="-1"
+                                    label="Please select the affected library/list"
+                                    allowFreeform
+                                    autoComplete="on"
+                                    options={this.state.siteLists} 
+                                    required={true}                    
+                                    onChange ={(ev: React.FormEvent<IComboBox>, option?: IComboBoxOption): void => {
+                                        this.setState({affectedList: option.key, isLibrary:option.key.toString().endsWith("#1"), isChecked:false});}} 
+                                    />     
+                                </div>: null}
+                            </div>
+                            {this.state.siteIsVaild&&this.state.affectedList!="" && this.state.isChecked? 
+                                <div id="SearchDocumentCheckResultSection">
+                                    <Label>Diagnose result,</Label>
+                                    {this.state.isMissingDisplayForm?<Label style={{"color":"Red",marginLeft:"20px"}}>The dispForm is missing for {this.listTitle}</Label>:
+                                        <Label style={{"color":"Green",marginLeft:"20px"}}>The dispForm exists</Label>}
+                                    {this.state.isMissingNewForm?<Label style={{"color":"Red",marginLeft:"20px"}}>The newForm is missing for {this.listTitle}</Label>:
+                                        <Label style={{"color":"Green",marginLeft:"20px"}}>The newForm exists</Label>}
+                                    {this.state.isMissingEditForm?<Label style={{"color":"Red",marginLeft:"20px"}}>The editForm is missing for {this.listTitle}</Label>:
+                                        <Label style={{"color":"Green",marginLeft:"20px"}}>The editForm exists</Label>}
+                                </div>:null
+                            }
+                        <div id="CommandButtonsSection">
+                            <PrimaryButton
+                                text="Check Issues"
+                                style={{ display: 'inline', marginTop: '10px' }}
+                                onClick={() => {this.state.siteIsVaild? this.CheckListForms():this.LoadLists();}}
+                                />
+                            {this.state.isChecked && (this.state.isMissingDisplayForm || this.state.isMissingNewForm || this.state.isMissingEditForm)?
+                                <PrimaryButton
+                                    text="Fix Issues"
+                                    style={{ display: 'inline', marginTop: '10px', marginLeft:"10px"}}
+                                    onClick={() => {this.FixIssues();}}
+                                />:null}
+                        </div>
                     </div>
-                    {this.state.siteIsVaild&&this.state.affectedList!="" && this.state.isChecked? 
-                        <div id="SearchDocumentCheckResultSection">
-                            <Label>Diagnose result,</Label>
-                            {this.state.isMissingDisplayForm?<Label style={{"color":"Red",marginLeft:"20px"}}>The dispForm is missing for {this.listTitle}</Label>:
-                                <Label style={{"color":"Green",marginLeft:"20px"}}>The dispForm exists</Label>}
-                            {this.state.isMissingNewForm?<Label style={{"color":"Red",marginLeft:"20px"}}>The newForm is missing for {this.listTitle}</Label>:
-                                <Label style={{"color":"Green",marginLeft:"20px"}}>The newForm exists</Label>}
-                            {this.state.isMissingEditForm?<Label style={{"color":"Red",marginLeft:"20px"}}>The editForm is missing for {this.listTitle}</Label>:
-                                <Label style={{"color":"Green",marginLeft:"20px"}}>The editForm exists</Label>}
-                        </div>:null
-                    }
-                <div id="CommandButtonsSection">
-                    <PrimaryButton
-                        text="Check Issues"
-                        style={{ display: 'inline', marginTop: '10px' }}
-                        onClick={() => {this.state.siteIsVaild? this.CheckListForms():this.LoadLists();}}
-                        />
-                     {this.state.isChecked && (this.state.isMissingDisplayForm || this.state.isMissingNewForm || this.state.isMissingEditForm)?
-                        <PrimaryButton
-                            text="Fix Issues"
-                            style={{ display: 'inline', marginTop: '10px', marginLeft:"10px"}}
-                            onClick={() => {this.FixIssues();}}
-                        />:null}
-                </div>
+                </div>            
             </div>
         );
     }

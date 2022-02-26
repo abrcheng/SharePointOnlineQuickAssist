@@ -9,6 +9,7 @@ import RestAPIHelper from '../../../Helpers/RestAPIHelper';
 import SPOQASpinner from '../../../Helpers/SPOQASpinner';
 import SPOQAHelper from '../../../Helpers/SPOQAHelper';
 import { ISharePointOnlineQuickAssistProps } from '../ISharePointOnlineQuickAssistProps';
+import styles from '../SharePointOnlineQuickAssist.module.scss';
 export default class UserInfoQA extends React.Component<ISharePointOnlineQuickAssistProps>
 {
   public state = {

@@ -11,6 +11,7 @@ import RestAPIHelper from '../../../Helpers/RestAPIHelper';
 import { ISharePointOnlineQuickAssistProps } from '../ISharePointOnlineQuickAssistProps';
 import SPOQAHelper from '../../../Helpers/SPOQAHelper';
 import SPOQASpinner from '../../../Helpers/SPOQASpinner';
+import styles from '../SharePointOnlineQuickAssist.module.scss';
 export default class SearchDocumentQA extends React.Component<ISharePointOnlineQuickAssistProps>
 {
     public state = {
@@ -31,66 +32,70 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
     {
         return (            
             <div id="SearchDocumentContainer">
-                 <div id="QuestionsSection">
-                    <TextField
-                            label="Affected Site(press enter for loading libraries/lists):"
-                            multiline={false}
-                            onChange={(e)=>{let text:any = e.target; this.setState({affectedSite:text.value,siteIsVaild:false});}}
-                            value={this.state.affectedSite}
-                            required={true}
-                            onKeyDown={(e)=>{if(e.keyCode ===13){this.LoadLists();}}}                          
-                    /> 
-                    {this.state.siteIsVaild? 
-                        <div>
-                            <ComboBox
-                            defaultSelectedKey="-1"
-                            label="Please select the affected library/list"
-                            allowFreeform
-                            autoComplete="on"
-                            options={this.state.siteLibraries} 
-                            required={true}                    
-                            onChange ={(ev: React.FormEvent<IComboBox>, option?: IComboBoxOption): void => {
-                                this.setState({affectedLibrary: option.key, isLibrary:option.key.toString().endsWith("#1"), isChecked:false});}} 
-                            />   
-                        {this.state.affectedLibrary!=""? 
-                        <div><TextField
-                        label="Affected document full URL:"
-                        multiline={false}
-                        onChange={(e)=>{let text:any = e.target; this.setState({affectedDocument:text.value,isChecked:false});}}
-                        value={this.state.affectedDocument}
-                        required={true}                                                
-                        />
-                                {!this.state.isLibrary?<Label>e.g. {this.state.affectedSite}/Lists/{this.state.affectedLibrary.substr(0,this.state.affectedLibrary.length-2)}/DispForm.aspx?ID=xxx</Label>
-                                    :<Label>e.g. {this.state.affectedSite}/{this.state.affectedLibrary.substr(0,this.state.affectedLibrary.length-2)}/xxxx.xxxx</Label>}
-                        </div>:null}                
-                        </div>: null}
+                <div className={ styles.row }>
+                    <div className={ styles.column }>
+                        <div id="QuestionsSection">
+                            <TextField
+                                    label="Affected Site(press enter for loading libraries/lists):"
+                                    multiline={false}
+                                    onChange={(e)=>{let text:any = e.target; this.setState({affectedSite:text.value,siteIsVaild:false});}}
+                                    value={this.state.affectedSite}
+                                    required={true}
+                                    onKeyDown={(e)=>{if(e.keyCode ===13){this.LoadLists();}}}                          
+                            /> 
+                            {this.state.siteIsVaild? 
+                                <div>
+                                    <ComboBox
+                                    defaultSelectedKey="-1"
+                                    label="Please select the affected library/list"
+                                    allowFreeform
+                                    autoComplete="on"
+                                    options={this.state.siteLibraries} 
+                                    required={true}                    
+                                    onChange ={(ev: React.FormEvent<IComboBox>, option?: IComboBoxOption): void => {
+                                        this.setState({affectedLibrary: option.key, isLibrary:option.key.toString().endsWith("#1"), isChecked:false});}} 
+                                    />   
+                                {this.state.affectedLibrary!=""? 
+                                <div><TextField
+                                label="Affected document full URL:"
+                                multiline={false}
+                                onChange={(e)=>{let text:any = e.target; this.setState({affectedDocument:text.value,isChecked:false});}}
+                                value={this.state.affectedDocument}
+                                required={true}                                                
+                                />
+                                        {!this.state.isLibrary?<Label>e.g. {this.state.affectedSite}/Lists/{this.state.affectedLibrary.substr(0,this.state.affectedLibrary.length-2)}/DispForm.aspx?ID=xxx</Label>
+                                            :<Label>e.g. {this.state.affectedSite}/{this.state.affectedLibrary.substr(0,this.state.affectedLibrary.length-2)}/xxxx.xxxx</Label>}
+                                </div>:null}                
+                                </div>: null}
+                            </div>
+                            {this.state.siteIsVaild&&this.state.affectedLibrary!="" && this.state.isChecked? 
+                                <div id="SearchDocumentCheckResultSection">
+                                    <Label>Diagnose result,</Label>
+                                    {this.state.isWebNoIndex?<Label style={{"color":"Red",marginLeft:"20px"}} >The nocrawl has been enabled for the site {this.state.affectedSite}</Label>:
+                                        <Label style={{"color":"Green",marginLeft:"20px"}}>The nocrawl hasn't been enabled for the site {this.state.affectedSite}</Label>}
+                                    {this.state.isListNoIndex?<Label style={{"color":"Red",marginLeft:"20px"}}>The nocrawl has been enabled for this list {this.listTitle}</Label>:
+                                        <Label style={{"color":"Green",marginLeft:"20px"}}>The nocrawl hasn't been enabled for this list {this.listTitle}</Label>}
+                                    {this.state.isMissingDisplayForm && !this.state.isLibrary?<Label style={{"color":"Red",marginLeft:"20px"}}>The dispalyForm is missed for the list {this.listTitle}</Label>:
+                                        <Label style={{"color":"Green",marginLeft:"20px"}}>The dispalyForm is not missed</Label>}
+                                    {this.state.isDraftVersion?<Label style={{"color":"Red",marginLeft:"20px"}}>The document {this.state.affectedDocument} is in draft version</Label>:
+                                        <Label style={{"color":"Green",marginLeft:"20px"}}>The document {this.state.affectedDocument} is in major version</Label>}
+                                </div>:null
+                            }
+                        <div id="CommandButtonsSection">
+                            <PrimaryButton
+                                text="Check Issues"
+                                style={{ display: 'inline', marginTop: '10px' }}
+                                onClick={() => {this.state.siteIsVaild? this.CheckSearchDocument():this.LoadLists();}}
+                                />
+                            {this.state.isChecked && (this.state.isListNoIndex || this.state.isWebNoIndex || this.state.isMissingDisplayForm || this.state.isDraftVersion)?
+                                <PrimaryButton
+                                    text="Fix Issues"
+                                    style={{ display: 'inline', marginTop: '10px', marginLeft:"10px"}}
+                                    onClick={() => {this.FixIssues();}}
+                                />:null}
+                        </div>
                     </div>
-                    {this.state.siteIsVaild&&this.state.affectedLibrary!="" && this.state.isChecked? 
-                        <div id="SearchDocumentCheckResultSection">
-                            <Label>Diagnose result,</Label>
-                            {this.state.isWebNoIndex?<Label style={{"color":"Red",marginLeft:"20px"}} >The nocrawl has been enabled for the site {this.state.affectedSite}</Label>:
-                                <Label style={{"color":"Green",marginLeft:"20px"}}>The nocrawl hasn't been enabled for the site {this.state.affectedSite}</Label>}
-                            {this.state.isListNoIndex?<Label style={{"color":"Red",marginLeft:"20px"}}>The nocrawl has been enabled for this list {this.listTitle}</Label>:
-                                <Label style={{"color":"Green",marginLeft:"20px"}}>The nocrawl hasn't been enabled for this list {this.listTitle}</Label>}
-                            {this.state.isMissingDisplayForm && !this.state.isLibrary?<Label style={{"color":"Red",marginLeft:"20px"}}>The dispalyForm is missed for the list {this.listTitle}</Label>:
-                                <Label style={{"color":"Green",marginLeft:"20px"}}>The dispalyForm is not missed</Label>}
-                            {this.state.isDraftVersion?<Label style={{"color":"Red",marginLeft:"20px"}}>The document {this.state.affectedDocument} is in draft version</Label>:
-                                <Label style={{"color":"Green",marginLeft:"20px"}}>The document {this.state.affectedDocument} is in major version</Label>}
-                        </div>:null
-                    }
-                <div id="CommandButtonsSection">
-                    <PrimaryButton
-                        text="Check Issues"
-                        style={{ display: 'inline', marginTop: '10px' }}
-                        onClick={() => {this.state.siteIsVaild? this.CheckSearchDocument():this.LoadLists();}}
-                        />
-                     {this.state.isChecked && (this.state.isListNoIndex || this.state.isWebNoIndex || this.state.isMissingDisplayForm || this.state.isDraftVersion)?
-                        <PrimaryButton
-                            text="Fix Issues"
-                            style={{ display: 'inline', marginTop: '10px', marginLeft:"10px"}}
-                            onClick={() => {this.FixIssues();}}
-                        />:null}
-                </div>
+                </div>  
             </div>
         );
     }

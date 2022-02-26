@@ -10,6 +10,7 @@ import RestAPIHelper from '../../../Helpers/RestAPIHelper';
 import SPOQASpinner from '../../../Helpers/SPOQASpinner';
 import SPOQAHelper from '../../../Helpers/SPOQAHelper';
 import { ISharePointOnlineQuickAssistProps } from '../ISharePointOnlineQuickAssistProps';
+import styles from '../SharePointOnlineQuickAssist.module.scss';
 export default class SearchSiteQA extends React.Component<ISharePointOnlineQuickAssistProps>
 {
     public state = {
@@ -27,44 +28,48 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
     {        
         return (
             <div>
-                  <TextField
-                        label="Affected Site:"
-                        multiline={false}
-                        onChange={(e)=>{let text:any = e.target; this.setState({affectedSite:text.value}); this.setState({isChecked:false});}}
-                        value={this.state.affectedSite}
-                        required={true}                                                
-                  />
-                    {this.state.affectedSite!="" && this.state.isChecked? 
-                        <div id="SearchSiteResultSection">
-                            <Label>Diagnose result:</Label>
-                            {this.state.isWebThere?<Label style={{"color":"Green",marginLeft:20}}>Found site with URL {this.state.affectedSite}</Label>:
-                                <Label style={{"color":"Red",marginLeft:20}} >Site with URL {this.state.affectedSite} doesn't exist</Label>}
-                            {this.state.isWebThere?
-                            <div>
-                            {this.state.isWebNoIndex?<Label style={{"color":"Red",marginLeft:20}}>The nocrawl has been enabled for site {this.state.affectedSite}</Label>:
-                                <Label style={{"color":"Green",marginLeft:20}}>Site {this.state.affectedSite} is searchable</Label>}
-                            {this.state.userPerm?<Label style={{"color":"Green",marginLeft:20}}>You have access to the site</Label>:
-                                <Label style={{"color":"Red",marginLeft:20}}>You don't have access to the site</Label>}
-                            </div>:null}
-                            {this.state.GroupId?
-                            <div>
-                            {this.state.isinMembers?<Label style={{"color":"Green",marginLeft:20}}>You are in the members of the site</Label>:
-                                <Label style={{"color":"Red",marginLeft:20}}>You are not in the members of the site</Label>}
-                            </div>:null}
-                        </div>:null
-                    }
-                  <div id="CommandButtonsSection">
-                    <PrimaryButton
-                      text="Check Issues"
-                      style={{ display: 'inline', marginTop: '10px' }}
-                      onClick={() => {this.ResetSatus(); this.CheckSiteSearchSettings();}} //When click: Reset banner status & check if the site is searchable
-                    />
-                     {this.state.isChecked && this.state.isWebThere && (this.state.isWebNoIndex || (this.state.GroupId && !this.state.isinMembers))?
+                 <div className={ styles.row }>
+                    <div className={ styles.column }>
+                      <TextField
+                            label="Affected Site:"
+                            multiline={false}
+                            onChange={(e)=>{let text:any = e.target; this.setState({affectedSite:text.value}); this.setState({isChecked:false});}}
+                            value={this.state.affectedSite}
+                            required={true}                                                
+                      />
+                        {this.state.affectedSite!="" && this.state.isChecked? 
+                            <div id="SearchSiteResultSection">
+                                <Label>Diagnose result:</Label>
+                                {this.state.isWebThere?<Label style={{"color":"Green",marginLeft:20}}>Found site with URL {this.state.affectedSite}</Label>:
+                                    <Label style={{"color":"Red",marginLeft:20}} >Site with URL {this.state.affectedSite} doesn't exist</Label>}
+                                {this.state.isWebThere?
+                                <div>
+                                {this.state.isWebNoIndex?<Label style={{"color":"Red",marginLeft:20}}>The nocrawl has been enabled for site {this.state.affectedSite}</Label>:
+                                    <Label style={{"color":"Green",marginLeft:20}}>Site {this.state.affectedSite} is searchable</Label>}
+                                {this.state.userPerm?<Label style={{"color":"Green",marginLeft:20}}>You have access to the site</Label>:
+                                    <Label style={{"color":"Red",marginLeft:20}}>You don't have access to the site</Label>}
+                                </div>:null}
+                                {this.state.GroupId?
+                                <div>
+                                {this.state.isinMembers?<Label style={{"color":"Green",marginLeft:20}}>You are in the members of the site</Label>:
+                                    <Label style={{"color":"Red",marginLeft:20}}>You are not in the members of the site</Label>}
+                                </div>:null}
+                            </div>:null
+                        }
+                      <div id="CommandButtonsSection">
                         <PrimaryButton
-                            text="Fix Issues"
-                            style={{ display: 'inline', marginTop: '10px', marginLeft:"10px"}}
-                            onClick={() => {this.FixIssues();}}
-                        />:null}
+                          text="Check Issues"
+                          style={{ display: 'inline', marginTop: '10px' }}
+                          onClick={() => {this.ResetSatus(); this.CheckSiteSearchSettings();}} //When click: Reset banner status & check if the site is searchable
+                        />
+                        {this.state.isChecked && this.state.isWebThere && (this.state.isWebNoIndex || (this.state.GroupId && !this.state.isinMembers))?
+                            <PrimaryButton
+                                text="Fix Issues"
+                                style={{ display: 'inline', marginTop: '10px', marginLeft:"10px"}}
+                                onClick={() => {this.FixIssues();}}
+                            />:null}
+                    </div>
+                  </div>
                 </div>
             </div>
         );

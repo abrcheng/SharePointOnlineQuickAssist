@@ -32,38 +32,42 @@ export default class UserInfoQA extends React.Component<ISharePointOnlineQuickAs
   {
       return (
         <div>
-          <TextField
-                  label="Affected Site:"
-                  multiline={false}
-                  onChange={(e)=>{let text:any = e.target; this.setState({affectedSite:text.value});}}
-                  value={this.state.affectedSite}
-                  required={true}                        
-            /> 
-          <TextField
-                  label="Email of Affected User/Group:"
-                  multiline={false}
-                  onChange={(e)=>{let text:any = e.target; this.setState({email:text.value});}}
-                  value={this.state.email}
-                  required={true}                                                
-            />                  
-            <div id="UserInfoSyncDiagnoseResult">
-                  {this.state.isChecked?<Label>Diagnose result:</Label>:null}
-                  <div style={{marginLeft:20}} id="UserInfoSyncDiagnoseResultDiv" ref={this.resRef}>
+          <div className={ styles.row }>
+            <div className={ styles.column }>
+              <TextField
+                      label="Affected Site:"
+                      multiline={false}
+                      onChange={(e)=>{let text:any = e.target; this.setState({affectedSite:text.value});}}
+                      value={this.state.affectedSite}
+                      required={true}                        
+                /> 
+              <TextField
+                      label="Email of Affected User/Group:"
+                      multiline={false}
+                      onChange={(e)=>{let text:any = e.target; this.setState({email:text.value});}}
+                      value={this.state.email}
+                      required={true}                                                
+                />                  
+                <div id="UserInfoSyncDiagnoseResult">
+                      {this.state.isChecked?<Label>Diagnose result:</Label>:null}
+                      <div style={{marginLeft:20}} id="UserInfoSyncDiagnoseResultDiv" ref={this.resRef}>
 
-                  </div>
-            </div>
-            <PrimaryButton
-                text="Check Issues"
-                style={{ display: 'inline', marginTop: '10px' }}
-                onClick={() => {this.Check();}}
-              />
-              
-              { this.state.isNeedFix ? 
-              <PrimaryButton
-                text="Fix Issues"
-                style={{ display: 'inline', marginTop: '10px', marginLeft:"20px"}}             
-                onClick={() => {this.Fix();}}
-              />: null}
+                      </div>
+                </div>
+                <PrimaryButton
+                    text="Check Issues"
+                    style={{ display: 'inline', marginTop: '10px' }}
+                    onClick={() => {this.Check();}}
+                  />
+                  
+                  { this.state.isNeedFix ? 
+                  <PrimaryButton
+                    text="Fix Issues"
+                    style={{ display: 'inline', marginTop: '10px', marginLeft:"20px"}}             
+                    onClick={() => {this.Fix();}}
+                  />: null}
+              </div>
+          </div>
       </div>
       );
   }

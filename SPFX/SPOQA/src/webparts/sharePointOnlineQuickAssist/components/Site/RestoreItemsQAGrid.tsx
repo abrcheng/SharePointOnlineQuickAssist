@@ -6,30 +6,16 @@ export default class RestoreItemsQAGrid extends React.Component<IRestoreItems>
     public state = {items:this.props.items};
     private columns: IColumn[] = [       
         {
-            key: 'LeafName',
-            name: 'LeafName',
-            fieldName: 'leafName',
-            minWidth: 70,
-            maxWidth: 200,
-            isResizable: true,
-            isCollapsible: true,
-            data: 'string',          
-            onRender: (item: IRestoreItem) => {
-              return <span>{item.LeafName}</span>;
-            },
-            isPadded: true,
-          },      
-          {
-            key: 'DirName',
-            name: 'Folder',
-            fieldName: 'dirName',
+            key: 'Path',
+            name: 'Path',
+            fieldName: 'path',
             minWidth: 200,
-            maxWidth: 300,
+            maxWidth: 330,
             isResizable: true,
             isCollapsible: true,
             data: 'string',          
             onRender: (item: IRestoreItem) => {
-              return <span>{item.DirName}</span>;
+              return <span>{item.Path}</span>;
             },
             isPadded: true,
           },
@@ -51,8 +37,8 @@ export default class RestoreItemsQAGrid extends React.Component<IRestoreItems>
                 key: 'DeletedByEmail',
                 name: 'DeletedByEmail',
                 fieldName: 'deletedByEmail',
-                minWidth: 100,
-                maxWidth: 120,
+                minWidth: 120,
+                maxWidth: 180,
                 isResizable: true,
                 isCollapsible: true,
                 data: 'string',          
@@ -88,8 +74,7 @@ export default class RestoreItemsQAGrid extends React.Component<IRestoreItems>
               selectionMode={SelectionMode.none}            
               layoutMode={DetailsListLayoutMode.justified}
               isHeaderVisible={true}            
-            />: "No data"}
-            
+            />: "No data"}            
         </div>;
     }
 }

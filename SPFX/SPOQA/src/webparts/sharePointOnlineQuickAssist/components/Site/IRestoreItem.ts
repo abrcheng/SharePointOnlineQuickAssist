@@ -3,8 +3,7 @@ export interface IRestoreItem {
     DeletedByEmail:string;
     DeletedByName:string;
     DeletedDate:Date;
-    LeafName:string;
-    DirName:string;
+    Path:string;
     Id:string;            
   }
 

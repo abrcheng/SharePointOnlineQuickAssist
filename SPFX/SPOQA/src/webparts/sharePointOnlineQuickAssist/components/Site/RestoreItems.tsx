@@ -4,7 +4,8 @@ import {
     TextField,
     MessageBar,
     MessageBarType,
-    DatePicker
+    DatePicker,
+    Spinner
   } from 'office-ui-fabric-react/lib/index';
 import GraphAPIHelper from '../../../Helpers/GraphAPIHelper';  
 import RestAPIHelper from '../../../Helpers/RestAPIHelper';
@@ -29,7 +30,8 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
     queried:false,
     currentItems:null,
     message:"",
-    messageType:MessageBarType.success
+    messageType:MessageBarType.success,
+    spinnerMessage:"",
   };
   
   // https://chengc.sharepoint.com/sites/abc/_api/site/getrecyclebinitems?rowLimit='100'&isAscending=false&itemState=1&orderby=3
@@ -129,6 +131,7 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
               </div>
 
           <div id="RestoreItemsQA_QueryResultSection">
+              {this.state.spinnerMessage !=""? <Spinner id="SPOQASpinner" label={this.state.spinnerMessage} ariaLive="assertive" labelPosition="left" />:null}
               {this.state.queried?<MessageBar id="RestoreItemsQAMessageBar" messageBarType={this.state.messageType} isMultiline={true}>
                  {this.state.message}
               </MessageBar>:null}
@@ -190,8 +193,16 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
               if(lastId != currentItem.Id)
               {
                 this.queryCount ++;
+                currentItem["Path"] = `${currentItem["DirName"]}/${currentItem["LeafName"]}`;
+                delete currentItem['DirName'];
+                delete currentItem['LeafName'];
                 if(this.IsMatchFilter(currentItem))
                 {
+                  delete currentItem['LeafNamePath'];
+                  delete currentItem['DirNamePath'];
+                  delete currentItem['@odata.editLink'];
+                  delete currentItem['@odata.id'];
+                  delete currentItem['@odata.type'];         
                   this.recycleBinItems.push(currentItem);
                 }
               }
@@ -218,14 +229,13 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
               }
               else
               {
-                itemState =3
+                itemState =3;
               }
-           }
-           
+           }           
          }
         
          this.querySeconds = ((new Date()).getTime()- queryStartTime.getTime())/1000;
-         this.recycleBinItems.sort((a,b) =>a.DirName > b.DirName ?1:-1);
+         this.recycleBinItems.sort((a,b) =>a.Path > b.Path ?1:-1);
          this.setState({currentItems:this.recycleBinItems,
               message:`Queried ${this.queryCount} items, filtered ${this.recycleBinItems.length} items in ${this.querySeconds} seconds.`,
               queried:true,
@@ -249,7 +259,7 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
 
     if(this.state.pathFilter && this.state.pathFilter.trim().length > 0)
     {
-      matched = matched&&(item.DirName.toLowerCase().indexOf(this.state.pathFilter.toLowerCase()) > 0);
+      matched = matched&&(item.Path.toLowerCase().indexOf(this.state.pathFilter.toLowerCase()) >= 0);
     }
 
     if(this.state.deleteStartDate)
@@ -277,6 +287,7 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
     
     // Restore 100 items in one batch 
     let batchNo:number = Math.ceil(this.recycleBinItems.length /100);
+    var restoreStartTime = new Date();
     for(var batchIndex=0; batchIndex <batchNo;batchIndex++)
     {
       let ids:string[]=[];
@@ -286,24 +297,37 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
       {
         ids.push(this.recycleBinItems[index].Id);
       }
-      this.setState({
-        message:`Restoring item from ${startIndex + 1} to ${endIndex}, please wait ...`,         
-        messageType:MessageBarType.info
+      this.setState({     
+        spinnerMessage:`Restoring item from ${startIndex + 1} to ${endIndex}, please wait ...`
         });  
 
       let restoreRes = await RestAPIHelper.RestoreByIds(this.props.spHttpClient, this.state.affectedSite, ids);
       if(restoreRes)
       {
-        this.setState({
-          message:`Restored items from ${startIndex + 1} to ${endIndex}.`,         
-          messageType:MessageBarType.success
-          });  
+          if(batchIndex + 1 == batchNo) // last bacth completed
+          {
+            var restoreSeconds = ((new Date()).getTime()- restoreStartTime.getTime())/1000;
+            this.setState({
+              message:`Restored ${this.recycleBinItems.length} items in ${restoreSeconds} seconds.`,         
+              messageType:MessageBarType.success,
+              spinnerMessage:""
+              }); 
+          }
+          else
+          {
+            this.setState({
+              message:`Restored items from ${startIndex + 1} to ${endIndex}.`,         
+              messageType:MessageBarType.success,
+              spinnerMessage:""
+              });  
+          }
       }
       else
       {
         this.setState({
           message:`Restoring item from ${startIndex} to ${endIndex} failed, please contact support.`,         
-          messageType:MessageBarType.error
+          messageType:MessageBarType.error,
+          spinnerMessage:""
           }); 
           break;
       }

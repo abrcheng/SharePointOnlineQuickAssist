@@ -96,7 +96,6 @@ Download and install SharePoint Online Management Shell.
 * Add “spoqa-client-side-solution”.
 * Add a new page in the site and add the web part “SharePoint Online Quick Assist”. “Publish” the page. 
 
-![image](https://user-images.githubusercontent.com/21354416/156087718-1afd9932-e050-49f1-8669-4b80fdb7cf3f.png)
 
 ## If you want to contribute/customzied this tool, you may try below steps,
 	

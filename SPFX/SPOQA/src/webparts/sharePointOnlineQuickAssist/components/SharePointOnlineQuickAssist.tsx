@@ -31,6 +31,7 @@ import { WebPartContext } from "@microsoft/sp-webpart-base";
 import { SPComponentLoader } from '@microsoft/sp-loader';
 import SPOQAHelper from '../../Helpers/SPOQAHelper';
 import * as strings from 'SharePointOnlineQuickAssistWebPartStrings';
+import { initializeIcons } from '@uifabric/icons';
 
 //import { Button } from 'office-ui-fabric-react/lib/Button';
 // https://developer.microsoft.com/en-us/fluentui?fabricVer=6#/controls/web/combobox
@@ -70,6 +71,7 @@ export default class SharePointOnlineQuickAssist extends React.Component<IShareP
   
   public componentDidMount(): void
   {
+    initializeIcons();
     SPComponentLoader.loadScript('/_layouts/15/init.js', {
       globalExportsName: '$_global_init'
     })

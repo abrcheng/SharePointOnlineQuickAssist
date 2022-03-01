@@ -64,7 +64,7 @@ This tool is provided by the copyright holders and contributors “as is” and 
 [More details](https://github.com/abrcheng/SharePointOnlineQuickAssist/releases/tag/1.22.02.25)
 
 	  
-## Install the tool to SharePoint Online 
+## Deploy the tool tenant level app catalog 
 * Upload SPOQA.sppkg from https://github.com/abrcheng/SharePointOnlineQuickAssist/blob/main/Packages/spoqa.sppkg to your tenant App Catalog
 	* E.g.: https://&lt;tenant&gt;.sharepoint.com/sites/AppCatalog/AppCatalog
 <IMG src=.\assets\UploadSolution.JPG>
@@ -79,7 +79,25 @@ This tool is provided by the copyright holders and contributors “as is” and 
 	
 * Add the web part to a site collection, and test it on a page    
 <IMG src=.\assets\WebPart.JPG>	
-    
+	
+## Deploy the tool site collection level app catalog 
+Download and install SharePoint Online Management Shell.
+* Open it and run the following: (You need Global admin or SharePoint admin rights. )
+* Connect-SPOService https://contoso-admin.sharepoint.com
+* Set-SPOSite -Identity https://contoso.sharepoint.com/sites/ASite -DenyAddAndCustomizePages 0
+* Add-SPOSiteCollectionAppCatalog -Site https://contoso.sharepoint.com/sites/ASite
+* Download the tool https://github.com/abrcheng/SharePointOnlineQuickAssist/blob/main/Packages/spoqa.sppkg. 
+* Access https://contoso.sharepoint.com/sites/ASite/AppCatalog.
+* Click “Upload” and upload “spoqa.sppkg”. 
+* Click “Deploy” and click “Trust” button.
+* Approve API access requests in SharePoint admin center,
+        https://<tenant>-admin.sharepoint.com/_layouts/15/online/AdminHome.aspx#/webApiPermissionManagement
+* Back to the site https://contoso.sharepoint.com/sites/ASite, click “Add an app”. 
+* Add “spoqa-client-side-solution”.
+* Add a new page in the site and add the web part “SharePoint Online Quick Assist”. “Publish” the page. 
+
+![image](https://user-images.githubusercontent.com/21354416/156087718-1afd9932-e050-49f1-8669-4b80fdb7cf3f.png)
+
 ## If you want to contribute/customzied this tool, you may try below steps,
 	
 To build and start using these projects, you'll need to clone and build the projects.

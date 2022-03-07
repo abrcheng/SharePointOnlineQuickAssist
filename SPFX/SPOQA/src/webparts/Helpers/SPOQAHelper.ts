@@ -156,5 +156,5 @@ export default class SPOQAHelper
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-    }
+    }  
 }

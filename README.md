@@ -60,7 +60,7 @@ This tool is provided by the copyright holders and contributors “as is” and 
 [More details](https://github.com/abrcheng/SharePointOnlineQuickAssist/releases/tag/1.21.12.28)
 	  
 *  **Filter and restore items from recycle bin**
-	  ![image](https://user-images.githubusercontent.com/21354416/155690547-1cb262ef-30d7-4717-9fa0-5cd5c6a4d8dd.png)	  
+	  ![image](https://user-images.githubusercontent.com/21354416/158009915-15dfdc94-f472-49e0-9b5b-a36fdf8e4725.png)	  
 [More details](https://github.com/abrcheng/SharePointOnlineQuickAssist/releases/tag/1.22.02.25)
 
 	  

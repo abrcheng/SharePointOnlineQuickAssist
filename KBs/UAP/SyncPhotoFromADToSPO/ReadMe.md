@@ -1,4 +1,7 @@
 1. Installed the SharePoint PNP and Azure AD PowerShell Module 
+
+Install-Module -Name AzureAD
+
 Uninstall-Module -Name "PNP.PowerShell"
 
 Uninstall-Module -Name "SharePointPnPPowerShellOnline"

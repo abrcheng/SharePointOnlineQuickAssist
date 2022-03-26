@@ -162,7 +162,7 @@ export default class RestoreItemsQAGrid extends React.Component<IRestoreItems>
               contextualMenuProps: this.getContextualMenuProps(ev, column),
           });
       }
-    };
+    }
 
     private getContextualMenuProps = (ev: React.MouseEvent<HTMLElement>, column: IColumn): IContextualMenuProps => {
       // build sub menu
@@ -174,7 +174,7 @@ export default class RestoreItemsQAGrid extends React.Component<IRestoreItems>
           name:`${delName.key} (${delName.count})`,
           canCheck: true,
           checked:delName.key == filterByDeleteName,
-          onClick:(ev, item) =>{this.filterByDeleteName(item);}
+          onClick:(env, item) =>{this.filterByDeleteName(item);}
         };
         subItems.push(subItem);
       });
@@ -185,7 +185,7 @@ export default class RestoreItemsQAGrid extends React.Component<IRestoreItems>
               iconProps: { iconName: 'SortUp' },
               canCheck: true,
               checked: column.isSorted && !column.isSortedDescending,
-              onClick:(ev, item) =>{this.sortByColumn(column, false);}
+              onClick:(env, item) =>{this.sortByColumn(column, false);}
           },
           {
               key: 'zToA',
@@ -193,14 +193,14 @@ export default class RestoreItemsQAGrid extends React.Component<IRestoreItems>
               iconProps: { iconName: 'SortDown' },
               canCheck: true,
               checked: column.isSorted && column.isSortedDescending,
-              onClick:(ev, item) =>{this.sortByColumn(column, true);}
+              onClick:(env, item) =>{this.sortByColumn(column, true);}
           },
           {
             key: 'Filter',
             name: 'Filter',
             iconProps: { iconName: 'Filter' },
             canCheck: true,
-            checked: column.isSorted && column.isSortedDescending,
+            checked: this.state.filterByDeleteName,
             subMenuProps:{items:subItems}
         }
       ];
@@ -212,7 +212,7 @@ export default class RestoreItemsQAGrid extends React.Component<IRestoreItems>
           gapSpace: 0,
           isBeakVisible: true,
           onDismiss: this.onContextualMenuDismissed,
-      }
+      };
   }
 
   private filterByDeleteName(delNameItem:IContextualMenuItem)

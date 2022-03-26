@@ -32,6 +32,7 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
     message:"",
     messageType:MessageBarType.success,
     spinnerMessage:"",
+    errorDetail:[]
   };
   
   // https://chengc.sharepoint.com/sites/abc/_api/site/getrecyclebinitems?rowLimit='100'&isAscending=false&itemState=1&orderby=3
@@ -135,6 +136,7 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
               {this.state.queried?<MessageBar id="RestoreItemsQAMessageBar" messageBarType={this.state.messageType} isMultiline={true}>
                  {this.state.message}
               </MessageBar>:null}
+              {this.state.errorDetail.length >0?<div>{this.state.errorDetail.map(error => <div style={{color:"red"}}>{error}</div>)}</div>:null}
               {this.state.queried && this.state.currentItems.length >0? <RestoreItemsQAGrid items={this.state.currentItems}/>:null}
           </div>          
           <div id="RestoreItemsQA_ActionSection">
@@ -286,13 +288,15 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
     // ,"bRenameExistingItems":true}
     
     // Restore 100 items in one batch 
-    let batchNo:number = Math.ceil(this.recycleBinItems.length /100);
+    var batchSize = 10;
+    let batchNo:number = Math.ceil(this.recycleBinItems.length /batchSize);
     var restoreStartTime = new Date();
+    this.setState({errorDetail:[]});
     for(var batchIndex=0; batchIndex <batchNo;batchIndex++)
     {
       let ids:string[]=[];
-      let startIndex:number= batchIndex * 100;
-      let endIndex:number = (batchIndex+1) * 100 < this.recycleBinItems.length? (batchIndex+1) * 100 : this.recycleBinItems.length;
+      let startIndex:number= batchIndex * batchSize;
+      let endIndex:number = (batchIndex+1) * batchSize < this.recycleBinItems.length? (batchIndex+1) * batchSize : this.recycleBinItems.length;
       for(var index=startIndex; index < endIndex; index++)
       {
         ids.push(this.recycleBinItems[index].Id);
@@ -302,7 +306,7 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
         });  
 
       let restoreRes = await RestAPIHelper.RestoreByIds(this.props.spHttpClient, this.state.affectedSite, ids);
-      if(restoreRes)
+      if(restoreRes.success)
       {
           if(batchIndex + 1 == batchNo) // last bacth completed
           {
@@ -324,12 +328,15 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
       }
       else
       {
+        // restoreRes.error.message
+        const { errorDetail} = this.state;  
+        errorDetail.push(restoreRes.error.message);
         this.setState({
-          message:`Restoring item from ${startIndex} to ${endIndex} failed, please contact support.`,         
+          message:`Restored item from ${startIndex} to ${endIndex} with error message: ${restoreRes.error.message}.`,         
           messageType:MessageBarType.error,
-          spinnerMessage:""
-          }); 
-          break;
+          spinnerMessage:"",
+          errorDetail:errorDetail
+          });          
       }
     }
   }

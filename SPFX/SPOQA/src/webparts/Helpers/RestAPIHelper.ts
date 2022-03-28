@@ -224,7 +224,7 @@ export default class RestAPIHelper
     public static async GetLists(spHttpClient:SPHttpClient, siteAbsoluteUrl:string)
     {
         console.log(`Start to load list for the site ${siteAbsoluteUrl}`);
-        var apiUrl = `${siteAbsoluteUrl}/_api/web/Lists?$select=Id,Title,BaseTemplate,BaseType&rowlimit=5000`;
+        var apiUrl = `${siteAbsoluteUrl}/_api/web/Lists?$select=Id,Title,BaseTemplate,BaseType,RootFolder/ServerRelativeUrl,WriteSecurity,ReadSecurity&$expand=RootFolder&rowlimit=5000`;
         var res = await spHttpClient.get(apiUrl, SPHttpClient.configurations.v1);
         var resJson = await res.json();
         return resJson.value;
@@ -599,8 +599,7 @@ export default class RestAPIHelper
       var rootFolderResJson = await rootFolderRes.json();
       var formPath =  `${rootFolderResJson.ServerRelativeUrl}`;      
       
-      var webpartId = SPOQAHelper.GenerateUUID();
-     
+      var webpartId = SPOQAHelper.GenerateUUID();     
       var newFormHtml = `<%@ Page language="C#" MasterPageFile="~masterurl/default.master"    Inherits="Microsoft.SharePoint.WebPartPages.WebPartPage,Microsoft.SharePoint,Version=16.0.0.0,Culture=neutral,PublicKeyToken=71e9bce111e9429c" meta:webpartpageexpansion="full" meta:progid="SharePoint.WebPartPage.Document"  %>
         <%@ Register Tagprefix="SharePoint" Namespace="Microsoft.SharePoint.WebControls" Assembly="Microsoft.SharePoint, Version=16.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c" %> <%@ Register Tagprefix="Utilities" Namespace="Microsoft.SharePoint.Utilities" Assembly="Microsoft.SharePoint, Version=16.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c" %> <%@ Import Namespace="Microsoft.SharePoint" %> <%@ Assembly Name="Microsoft.Web.CommandUI, Version=16.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c" %> <%@ Register Tagprefix="WebPartPages" Namespace="Microsoft.SharePoint.WebPartPages" Assembly="Microsoft.SharePoint, Version=16.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c" %>
         <asp:Content ContentPlaceHolderId="PlaceHolderAdditionalPageHead" runat="server">
@@ -1177,26 +1176,10 @@ export default class RestAPIHelper
     // https://chengc.sharepoint.com/sites/abc/_api/web/Lists/getByTitle('GifLib')/GetUserEffectivePermissions('i%3A0%23.f%7Cmembership%7Cjohnb%40chengc.onmicrosoft.com')
     // permission: SP.PermissionKind.editListItems
     public static async HasPermissionOnList(spHttpClient:SPHttpClient, siteAbsoluteUrl:string, listTitle:string, user:string, permission:SP.PermissionKind)
-    {
-      
+    {      
       var account =  `i:0#.f|membership|${user}`;
       var apiUrl = `${siteAbsoluteUrl}/_api/web/Lists/getByTitle('${listTitle}')/GetUserEffectivePermissions('${encodeURIComponent(account)}')`;      
-      var res = await spHttpClient.get(apiUrl, SPHttpClient.configurations.v1);
-      if(res.ok)
-      {
-        var responseJson = await res.json();
-        console.log(`GetUserPermissions done for API url ${apiUrl}`);
-        var permissions = new SP.BasePermissions();
-        permissions.fromJson(responseJson);        
-        var hasPermission = permissions.has(permission);      
-        return hasPermission;
-      }
-      else
-      {
-        var message = `Failed GetUserPermissions for API url ${apiUrl}`;
-        console.log(message);
-        Promise.reject(message);
-      }
+      return await RestAPIHelper.HasPermssionOnOject(spHttpClient, apiUrl, permission);
     }
     
     public static async Getrecyclebinitems(spHttpClient:SPHttpClient, siteAbsoluteUrl:string, pageInfo:string, rowLimit:number,isAscending:boolean, itemState:number, orderby:number)
@@ -1253,6 +1236,54 @@ export default class RestAPIHelper
           return  resJson;         
         }
     }
+    
+    // TODO check file existing or not GetFileByServerRelativeUrl 
+    // https://chengc.sharepoint.com/sites/SPOQA/_api/web/GetFileByServerRelativeUrl('/sites/SPOQA/SitePages/Home.aspx')
+    public static async IsDocumentExisting(spHttpClient:SPHttpClient, siteAbsoluteUrl:string, fileServerRelativeUrl:string)
+    {
+      var apiUrl = `${siteAbsoluteUrl}/_api/web/GetFileByServerRelativeUrl('${fileServerRelativeUrl}')`;
+      var res = await spHttpClient.get(apiUrl, SPHttpClient.configurations.v1);
+      if(res.ok)
+      {
+        console.log(`Got file for url ${fileServerRelativeUrl}`);
+        return {success:true};
+      }
+      else
+      {
+        var resJson = await res.json();
+        console.log(`Failed to get file for url ${fileServerRelativeUrl} by error message ${resJson.error.message}`);
+        return {success:false, message:resJson.error.message};
+      }
+    }
+
+    // TODO check user's pmerssion on document 
+    // https://chengc.sharepoint.com/sites/SPOQA/_api/web/GetFileByServerRelativeUrl('/sites/SPOQA/SitePages/Home.aspx')/ListItemAllFields/GetUserEffectivePermissions('i%3A0%23.f%7Cmembership%7Cjohnb%40chengc.onmicrosoft.com')
+    public static async HasPermissionOnDocument(spHttpClient:SPHttpClient, siteAbsoluteUrl:string, documentUrl:string, user:string, permission:SP.PermissionKind)
+    {
+      var account =  `i:0#.f|membership|${user}`;
+      var apiUrl = `${siteAbsoluteUrl}/_api/web/GetFileByServerRelativeUrl('${documentUrl}')/ListItemAllFields/GetUserEffectivePermissions('${encodeURIComponent(account)}')`;  
+      return await RestAPIHelper.HasPermssionOnOject(spHttpClient, apiUrl, permission); 
+    }
+
+    // TODO check file without check-in version 
+    // https://chengc.sharepoint.com/sites/SPOQA/_layouts/15/ManageCheckedOutFiles.aspx?List=%7B6ED564A0%2DAA16%2D4AB9%2D8721%2D1AC6EC3F6354%7D    
+    public static async HasFileWithOutCheckInVersion(spHttpClient:SPHttpClient, siteAbsoluteUrl:string,listId:string)
+    {
+      var apiUrl = `${siteAbsoluteUrl}/_layouts/15/ManageCheckedOutFiles.aspx?List={${listId}}`;
+      var res = await spHttpClient.get(apiUrl, SPHttpClient.configurations.v1);
+      if(res.ok)
+      {
+        var html = await res.text();
+        const parser = new DOMParser();
+        const parsedDocument = parser.parseFromString(html, "text/html");
+        return parsedDocument.querySelectorAll("#onetidTable tr").length >=3;        
+      }
+      else
+      {
+        console.log(`Failed to load ${apiUrl}`);
+        return {success:false};
+      }
+    }
 
     private static BuildSelectStr(properties:string[]):string
     {
@@ -1268,5 +1299,24 @@ export default class RestAPIHelper
       }
      
       return selectStr;
+    }
+
+    private static async HasPermssionOnOject(spHttpClient:SPHttpClient, apiUrl:string, permission:SP.PermissionKind)
+    {
+      var res = await spHttpClient.get(apiUrl, SPHttpClient.configurations.v1);
+      var responseJson = await res.json();
+      if(res.ok)
+      {        
+        console.log(`GetUserPermissions done for API url ${apiUrl}`);
+        var permissions = new SP.BasePermissions();
+        permissions.fromJson(responseJson);        
+        var hasPermission = permissions.has(permission);      
+        return hasPermission;
+      }
+      else
+      {       
+        console.log( `Failed GetUserPermissions for API url ${apiUrl}`);
+        return false;
+      }
     }
 }

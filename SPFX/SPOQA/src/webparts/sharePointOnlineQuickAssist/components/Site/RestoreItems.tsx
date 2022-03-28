@@ -7,7 +7,6 @@ import {
     DatePicker,
     Spinner
   } from 'office-ui-fabric-react/lib/index';
-import GraphAPIHelper from '../../../Helpers/GraphAPIHelper';  
 import RestAPIHelper from '../../../Helpers/RestAPIHelper';
 import SPOQASpinner from '../../../Helpers/SPOQASpinner';
 import SPOQAHelper from '../../../Helpers/SPOQAHelper';
@@ -148,6 +147,7 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
   private async QueryRecycleBinItems()
   {
      // Verify the site is valid 
+     this.setState({errorDetail:[]});
      var isSiteValid = await RestAPIHelper.GetWeb(this.props.spHttpClient, this.state.affectedSite);
      if(isSiteValid)
      {   

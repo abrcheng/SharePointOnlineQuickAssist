@@ -1,4 +1,3 @@
-import { Guid } from "@microsoft/sp-core-library";
 export interface IRestoreItem {  
     DeletedByEmail:string;
     DeletedByName:string;

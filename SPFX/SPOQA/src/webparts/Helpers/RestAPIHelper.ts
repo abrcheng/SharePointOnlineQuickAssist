@@ -153,12 +153,12 @@ export default class RestAPIHelper
       if(res.ok)
       {
         var responseJson = await res.json();
-        console.log(`GetSite done for API url ${apiUrl}`);
+        console.log(`GetSiteGroupId done for API url ${apiUrl}`);
         return await responseJson['GroupId'];
       }
       else
       {
-        var message = `Failed GetUserPermissions for API url ${apiUrl}`;
+        var message = `Failed GetSiteGroupId for API url ${apiUrl}`;
         console.log(message);
         Promise.reject(message);
       }
@@ -219,6 +219,26 @@ export default class RestAPIHelper
         return false;
       }
       return true;
+    }
+
+    public static async GetSiteId(spHttpClient:SPHttpClient, siteAbsoluteUrl:string)
+    {
+      var apiUrl = `${siteAbsoluteUrl}/_api/site/ID`;      
+      var res = await spHttpClient.get(apiUrl, SPHttpClient.configurations.v1);
+      if(res.ok)
+      {
+        var responseJson = await res.json();
+        console.log(responseJson);
+        console.log(`GetSiteId done for API url ${apiUrl}`);
+        return await responseJson.value;
+      }
+      else
+      {
+        var message = `Failed GetSiteId for API url ${apiUrl}`;
+        console.log(message);
+        Promise.reject(message);
+        return null;
+      }
     }
 
     public static async GetLists(spHttpClient:SPHttpClient, siteAbsoluteUrl:string)

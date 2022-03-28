@@ -121,13 +121,19 @@ export default class GraphAPIHelper
       }
       else
       {
-        //let startDate = new Date();
-        let DS: string = startDate.getFullYear()
-        + '-' + ('0' + (startDate.getMonth()+1)).slice(-2)
-        + '-' + ('0' + startDate.getDate()).slice(-2)
-        + 'T00%3A00%3A00Z';
-        ///me/drive/root/delta?token=2021-09-29T00%3A00%3A00Z
-        apiUri = `/sites/${siteID}/drive/root/delta?token=${DS}`;
+        if(startDate)
+        {
+          let DS: string = startDate.getFullYear()
+          + '-' + ('0' + (startDate.getMonth()+1)).slice(-2)
+          + '-' + ('0' + startDate.getDate()).slice(-2)
+          + 'T00%3A00%3A00Z';
+          ///me/drive/root/delta?token=2021-09-29T00%3A00%3A00Z
+          apiUri = `/sites/${siteID}/drive/root/delta?token=${DS}`;
+        }
+        else
+        {
+          apiUri = `/sites/${siteID}/drive/root/delta`;
+        }
       }
       var res = await msGraphClient.api(apiUri).get();
       if(res)

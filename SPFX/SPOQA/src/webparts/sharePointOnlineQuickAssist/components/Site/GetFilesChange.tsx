@@ -92,7 +92,7 @@ export default class GetFilesChange extends React.Component<ISharePointOnlineQui
                             <PrimaryButton
                                 text="Get Files"
                                 style={{ display: 'inline', marginTop: '10px' }}
-                                onClick={() => {this.QueryFiles();}}
+                                onClick={() => {SPOQAHelper.ResetFormStaus();this.QueryFiles();}}
                                 />
                         </div>
                     </div>
@@ -146,35 +146,63 @@ export default class GetFilesChange extends React.Component<ISharePointOnlineQui
             var deltaLink = ""; 
             do
             {
-                var files = await GraphAPIHelper.CheckForUpdates(this.props.msGraphClient,nextLink,siteID,this.state.queryStartDate);
+                try
+                {
+                    var files = await GraphAPIHelper.CheckForUpdates(this.props.msGraphClient,nextLink,siteID,this.state.queryStartDate);
+                }
+                catch
+                {
+                    
+                    this.setState({queried:true,
+                    message:`Get Files Change Exited Unexpectedly`,         
+                    messageType:MessageBarType.error
+                    });
+                    SPOQASpinner.Hide();
+                    return;
+                }
                 console.log(files);
                 for(var i=1; i<files.value.length; i++)
                 {
-                    if(this.IsMatchFilter(files.value[i]))
-                    {
+                    try{
                         let aFile:IFile = {
-                        ModifiedByEmail: "",
-                        ModifiedByName:"",
-                        ModifiedDate:"",
-                        Path:"",
-                        Id:"",
-                        FileName:""
+                            ModifiedByEmail: "",
+                            ModifiedByName:"",
+                            ModifiedDate:"",
+                            Path:"",
+                            Id:"",
+                            FileName:""
                         };
-                        /*
-                            ModifiedByEmail:string;
-                            ModifiedByName:string;
-                            ModifiedDate:string;
-                            Path:string;
-                            FileName:string;
-                            Id:string;
-                        */
-                        aFile['ModifiedByEmail'] = `${files.value[i]['lastModifiedBy']['user']['email']}`;
-                        aFile['ModifiedByName'] = `${files.value[i]['lastModifiedBy']['user']['displayName']}`;
-                        aFile['ModifiedDate'] = `${files.value[i]['lastModifiedDateTime']}`;
-                        aFile['Path'] = `${files.value[i]['webUrl']}`;
-                        aFile['FileName'] = `${files.value[i]['name']}`;
+
+                        if(typeof files.value[i]['deleted'] !== 'undefined')
+                        {
+                            console.log(files.value[i]);
+                            aFile['FileName'] = `deleted file`;
+                        }
+                        else
+                        {
+                            if(this.IsMatchFilter(files.value[i]))
+                            {
+                                /*
+                                    ModifiedByEmail:string;
+                                    ModifiedByName:string;
+                                    ModifiedDate:string;
+                                    Path:string;
+                                    FileName:string;
+                                    Id:string;
+                                */
+                                console.log(files.value[i]);
+                                aFile['ModifiedByEmail'] = `${files.value[i]['lastModifiedBy']['user']['email']}`;
+                                aFile['ModifiedByName'] = `${files.value[i]['lastModifiedBy']['user']['displayName']}`;
+                                aFile['ModifiedDate'] = `${files.value[i]['lastModifiedDateTime']}`;
+                                aFile['Path'] = `${files.value[i]['webUrl']}`;
+                                aFile['FileName'] = `${files.value[i]['name']}`;
+                            }
+                        }
                         aFile['Id'] = `${files.value[i]['id']}`;
                         this.modifiedFiles.push(aFile);
+                    }
+                    catch(error){
+                        SPOQAHelper.ShowMessageBar("Error", `${error}`);
                     }
                 }
                 if(files['@odata.nextLink'])

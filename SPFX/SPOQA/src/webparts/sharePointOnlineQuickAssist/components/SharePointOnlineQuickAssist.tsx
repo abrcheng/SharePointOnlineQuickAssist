@@ -31,6 +31,7 @@ import PermssionQA from './Site/Permission';
 import { WebPartContext } from "@microsoft/sp-webpart-base"; 
 import { SPComponentLoader } from '@microsoft/sp-loader';
 import SPOQAHelper from '../../Helpers/SPOQAHelper';
+import GetFilesChange from './Site/GetFilesChange';
 import * as strings from 'SharePointOnlineQuickAssistWebPartStrings';
 import { initializeIcons } from '@uifabric/icons';
 
@@ -55,6 +56,7 @@ const INITIAL_OPTIONS: IComboBoxOption[] = [
   { key: 'ListMissingForm', text: 'Missing New/Disp/Edit Forms' }, 
   { key: 'Site', text: 'Site', itemType: SelectableOptionMenuItemType.Header },
   { key: 'Restore', text: 'Restore Items' }, 
+  { key: 'FilesDelta', text: 'Get File Changes' },
   { key: 'Permission', text: 'Permission issue' }, 
 ];
 
@@ -112,6 +114,7 @@ export default class SharePointOnlineQuickAssist extends React.Component<IShareP
         case "ListMissingForm":   return <RepairFormQA spHttpClient={this.props.spHttpClient} msGraphClient={this.props.msGraphClient} webUrl={this.props.webUrl} webAbsoluteUrl={this.props.webAbsoluteUrl} rootUrl={this.props.rootUrl} currentUser={this.props.currentUser} ctx={this.props.ctx}/>; 
         case "Restore": return <RestoreItemsQA spHttpClient={this.props.spHttpClient} msGraphClient={this.props.msGraphClient} webUrl={this.props.webUrl} webAbsoluteUrl={this.props.webAbsoluteUrl} rootUrl={this.props.rootUrl} currentUser={this.props.currentUser} ctx={this.props.ctx}/>; 
         case "Permission": return <PermssionQA spHttpClient={this.props.spHttpClient} msGraphClient={this.props.msGraphClient} webUrl={this.props.webUrl} webAbsoluteUrl={this.props.webAbsoluteUrl} rootUrl={this.props.rootUrl} currentUser={this.props.currentUser} ctx={this.props.ctx}/>; 
+        case "FilesDelta": return <GetFilesChange spHttpClient={this.props.spHttpClient} msGraphClient={this.props.msGraphClient} webUrl={this.props.webUrl} webAbsoluteUrl={this.props.webAbsoluteUrl} rootUrl={this.props.rootUrl} currentUser={this.props.currentUser} ctx={this.props.ctx}/>; 
         default: return <div id="NoContentPlaceHolder"/>;
       }
     };

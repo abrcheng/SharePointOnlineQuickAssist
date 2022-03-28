@@ -25,6 +25,7 @@ import UserProfileDepartmentQA from './UserProfile/UserProfileDepartment';
 import SearchPeopleQA from './Search/SearchPeople';
 import UserInfoQA from './UserProfile/UserInfo'; 
 import RestoreItemsQA from './Site/RestoreItems';
+import GetFilesChange from './Site/GetFilesChange';
 import OneDriveLockIconQA from './OneDrive/OneDriveLockIcon';
 import RepairFormQA from './List/RepairListForms';
 import { WebPartContext } from "@microsoft/sp-webpart-base"; 
@@ -54,6 +55,7 @@ const INITIAL_OPTIONS: IComboBoxOption[] = [
   { key: 'ListMissingForm', text: 'Missing New/Disp/Edit Forms' }, 
   { key: 'Site', text: 'Site', itemType: SelectableOptionMenuItemType.Header },
   { key: 'Restore', text: 'Restore Items' }, 
+  { key: 'FilesDelta', text: 'Get File Changes' }, 
 ];
 
 const wrapperClassName = mergeStyles({
@@ -109,6 +111,7 @@ export default class SharePointOnlineQuickAssist extends React.Component<IShareP
         case "OneDriveLockIcon":   return <OneDriveLockIconQA spHttpClient={this.props.spHttpClient} msGraphClient={this.props.msGraphClient} webUrl={this.props.webUrl} webAbsoluteUrl={this.props.webAbsoluteUrl} rootUrl={this.props.rootUrl} currentUser={this.props.currentUser} ctx={this.props.ctx}/>; 
         case "ListMissingForm":   return <RepairFormQA spHttpClient={this.props.spHttpClient} msGraphClient={this.props.msGraphClient} webUrl={this.props.webUrl} webAbsoluteUrl={this.props.webAbsoluteUrl} rootUrl={this.props.rootUrl} currentUser={this.props.currentUser} ctx={this.props.ctx}/>; 
         case "Restore": return <RestoreItemsQA spHttpClient={this.props.spHttpClient} msGraphClient={this.props.msGraphClient} webUrl={this.props.webUrl} webAbsoluteUrl={this.props.webAbsoluteUrl} rootUrl={this.props.rootUrl} currentUser={this.props.currentUser} ctx={this.props.ctx}/>; 
+        case "FilesDelta": return <GetFilesChange spHttpClient={this.props.spHttpClient} msGraphClient={this.props.msGraphClient} webUrl={this.props.webUrl} webAbsoluteUrl={this.props.webAbsoluteUrl} rootUrl={this.props.rootUrl} currentUser={this.props.currentUser} ctx={this.props.ctx}/>; 
         default: return <div id="NoContentPlaceHolder"/>;
       }
     };

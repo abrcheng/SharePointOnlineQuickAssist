@@ -111,4 +111,35 @@ export default class GraphAPIHelper
         Promise.reject(message);
       }
     }
+    
+    public static async CheckForUpdates(msGraphClient:MSGraphClient,nextxLink:string)
+    {
+      var apiUri = "";
+      if(nextxLink)
+      {
+        apiUri = nextxLink.substring("https://graph.microsoft.com/v1.0".length);
+      }
+      else
+      {
+        let today = new Date();
+        let DS: string = today.getFullYear()
+        + '-' + ('0' + (today.getMonth()+1)).slice(-2)
+        + '-' + ('0' + today.getDate()).slice(-2)
+        + 'T00%3A00%3A00Z';
+        ///me/drive/root/delta?token=2021-09-29T00%3A00%3A00Z
+        apiUri = `/sites/168c84b8-44c5-4e3a-b0e1-3fe520374543/drive/root/delta?token=${DS}`;
+      }
+      var res = await msGraphClient.api(apiUri).get();
+      if(res)
+      {               
+        console.log(`GraphAPIHelper.CheckForUpdates done.`);
+        return await res;
+      }
+      else
+      {
+        var message = `Failed to CheckForUpdates from graph API`;
+        console.log(message);
+        Promise.reject(message);
+      }
+    }
 }

@@ -1,5 +1,8 @@
 This script used for syncing user pictures from AAD to SharePoint online user profile.
 
+**It neeed to be run by SharePoint online tenant admin.**
+
+
 1. Start PowerShell as administrator and install the SharePoint PNP and Azure AD PowerShell Module
 
 	a. Install-Module -Name AzureAD

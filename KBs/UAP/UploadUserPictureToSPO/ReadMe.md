@@ -1,5 +1,7 @@
 
 This script used for uploading user pictures from local drive to SharePoint online user profile directly.
+**It neeed to be run by SharePoint online tenant admin.**
+
 
 1. Start PowerShell as administrator and install the SharePoint PNP Module
 

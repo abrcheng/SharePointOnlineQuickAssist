@@ -7,11 +7,16 @@ This tool is provided by the copyright holders and contributors “as is” and 
 ## Please note, if you want to use the auto fix function on the affected site then the custom script for the site should be enabled https://docs.microsoft.com/en-us/sharepoint/allow-or-prevent-custom-script#to-allow-custom-script-on-other-sharepoint-sites
 
 ## Available features
+* **Check Permssion issue**
+This feature helps user to diagnose permssion issues (get access denied or 404 when access shared links even the linked document does existing),
+![image](https://user-images.githubusercontent.com/21354416/160540659-9adbf609-b30e-4684-94b7-c84c9478e3f3.png)
+
+[More details](https://github.com/abrcheng/SharePointOnlineQuickAssist/releases/tag/1.22.03.28)
 
 * **Search Issue For A Specific Document**
 
 
-  This feature helps user diagnose the issue when a specific document does not appear in the search results
+  This feature helps user to diagnose the issue when a specific document does not appear in the search results
 
   <IMG src=.\assets\NoCrawl.JPG>
 

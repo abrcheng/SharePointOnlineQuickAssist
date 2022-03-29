@@ -8,7 +8,7 @@ This tool is provided by the copyright holders and contributors “as is” and 
 
 ## Available features
 * **Check Permssion issue**
-This feature helps user to diagnose permssion issues (get access denied or 404 when access shared links even the linked document does existing),
+This feature helps user to diagnose permssion issues (get access denied or 404 when accessing shared links even the linked document does existing),
 ![image](https://user-images.githubusercontent.com/21354416/160541128-832029ee-cfda-4f4a-913f-9512c43aaf67.png)
 
 [More details](https://github.com/abrcheng/SharePointOnlineQuickAssist/releases/tag/1.22.03.28)

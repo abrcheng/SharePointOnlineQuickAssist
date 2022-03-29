@@ -14,7 +14,7 @@
 ![image](https://user-images.githubusercontent.com/21354416/151517552-413b9ce5-7dc6-4fe5-be48-d7a98d241638.png)
 
 
-4. Save the above script as SyncPhotoFromAADToSPOByGraphAPI.ps1
+4. Save the SyncPhotoFromAADToSPOByGraphAPI.ps1 to local drive
 5. Run it as below 
 	
 	.\SyncPhotoFromAADToSPOByGraphAPI.ps1 -**usersListFile** ".\UsersListFile.txt" -**mySiteHostSiteUrl** https://chengc-my.sharepoint.com -**photoPath** C:\Photos\Photos -**updateExo** $false

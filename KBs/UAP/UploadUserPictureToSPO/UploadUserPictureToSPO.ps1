@@ -1,23 +1,12 @@
 ﻿param(  
   [Parameter(mandatory=$true)]
-  [string]$mySiteHostSiteUrl = "https://chengc-my.sharepoint.com",
+  [string]$mySiteHostSiteUrl = "https://arrkengineering-my.sharepoint.com",
   [Parameter(mandatory=$true)]
-  [string]$usersListFile = "D:\files\photos\UsersListFile.txt",
+  [string]$usersListFile = "C:\xxx\xxx\UsersListFile.txt",
   [Parameter(mandatory=$true)]
-  [string]$photoPath = "D:\files\photos\Photos",
-  [Parameter(mandatory=$false)]
-  [bool]$updateExo = $false
+  [string]$photoPath = "C:\xxx\xxx\Photos"
 )
 
-# connect AAD for get the users's ThumbnailPhoto by commmand Get-AzureADUserThumbnailPhoto -ObjectId "CVDu@chengc.onmicrosoft.com"
-Connect-PnPOnline -Scopes "User.Read","User.ReadBasic.All"
-$accessToken =Get-PnPAccessToken
-
-# Connect to exchange online
-if($updateExo)
-{
-    Connect-ExchangeOnline
-}
 
 # Connect to the for uploading photos and update user profile
 $adminSiteUrl = $mySiteHostSiteUrl.Replace("-my", "-admin")
@@ -26,7 +15,7 @@ $users = Get-Content $usersListFile
 # Update: Clear cached credential to connect to site
 Connect-PnPOnline $adminSiteUrl -UseWebLogin
 $adminCtx = Get-PnPContext
-$null = Get-PnPUserProfileProperty -Account $users[0] # load Microsoft.SharePoint.Client.UserProfiles
+$null = Get-PnPUserProfileProperty -Account $users[0] # Load Microsoft.SharePoint.Client.UserProfiles.dll
 
 Connect-PnPOnline $mySiteHostSiteUrl -UseWebLogin
 $ctx = Get-PnPContext
@@ -60,20 +49,13 @@ foreach($user in $users)
     try
     {
         Write-Host "Processing $user"        
-        #$null = Get-AzureADUserThumbnailPhoto -ObjectId $user -FilePath $photoPath -ErrorAction Stop
-        $apiUrl = "https://graph.microsoft.com/v1.0/users/$user/photo/`$value"
-        Invoke-RestMethod -Headers @{Authorization = "Bearer $accessToken"} -Uri $apiUrl -Method Get -ContentType image/jpeg -OutFile $photoPath\$user.jpg
 
         $file = Get-ChildItem -Path $photoPath -Filter "$user*"
         if($file.FullName -ne $empty)
         {
             $baseFilename = $user.Replace(".", "_").Replace("@","_")
             GeneratetThumbnail -filePath $file.FullName -baseFilename $baseFilename
-
-            if($updateExo)
-            {
-                Set-UserPhoto -Identity $user -PictureData ([System.IO.File]::ReadAllBytes("$($photoPath)\$($baseFilename)_SThumb.jpg")) -Confirm:$false
-            }
+           
             
             $thumbnails = Get-ChildItem -Path $photoPath -Filter "$baseFilename*"
             foreach($thumbnail in $thumbnails)
@@ -94,7 +76,7 @@ foreach($user in $users)
         }
         else
         {
-             $errorMessage = "Failed to get the user's photo when processing $($user) "
+             $errorMessage = "Failed to get the user's phtot when processing $($user) "
              Write-Host $errorMessage
              $errorMessage >>"ErrorMessage.txt"  
              $user  >> "FailedUsers.txt"

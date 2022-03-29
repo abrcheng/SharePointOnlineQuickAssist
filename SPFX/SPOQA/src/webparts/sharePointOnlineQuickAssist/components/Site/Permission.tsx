@@ -171,9 +171,9 @@ export default class PermissionQA extends React.Component<ISharePointOnlineQuick
        
        // check file existing
        var isFileExisting = await RestAPIHelper.IsDocumentExisting(this.props.spHttpClient, this.state.affectedSite, this.state.affectedDocument.replace(this.props.rootUrl, ""));
-       var fileExistingMsg = `The file ${isFileExisting? "can":"can't"} be found.`;
-       this.resRef.current.innerHTML += `<span style='${!isFileExisting? this.redStyle:this.greenStyle}'>${fileExistingMsg}</span><br/>`;
-       if(!isFileExisting)
+       var fileExistingMsg = `The file ${isFileExisting.success? "can":"can't"} be found.`;
+       this.resRef.current.innerHTML += `<span style='${!isFileExisting.success? this.redStyle:this.greenStyle}'>${fileExistingMsg}</span><br/>`;
+       if(!isFileExisting.success)
        {
             this.remedySteps.push({
                 message:fileExistingMsg,
@@ -208,7 +208,7 @@ export default class PermissionQA extends React.Component<ISharePointOnlineQuick
 
        // check library's read/write security is 2 (only the author can read/write the item) 
        var hasSecurityLevelIssue = this.state.affectedLibrary.readSecurity ===2 || this.state.affectedLibrary.writeSecurity ===2;
-       var securityLevelIssueMsg = `The library's ${hasSecurityLevelIssue? "has":"hasn't"} to only the author can read/write the item`;
+       var securityLevelIssueMsg = `The library ${hasSecurityLevelIssue? "has":"hasn't"} been set to only the author can read/write the item`;
        this.resRef.current.innerHTML += `<span style='${hasSecurityLevelIssue? this.redStyle:this.greenStyle}'>${securityLevelIssueMsg}</span><br/>`;
        if(hasSecurityLevelIssue)
        {

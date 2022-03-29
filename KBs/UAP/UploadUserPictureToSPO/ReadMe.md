@@ -10,6 +10,7 @@ This script used for uploading user pictures from local drive to SharePoint onli
 
 
 3. Export/Save the affected user list to UsersListFile.txt
+
 ![image](https://user-images.githubusercontent.com/21354416/160580116-632a35d6-c0ea-4da3-a67b-2e363704d2dc.png)
 
 

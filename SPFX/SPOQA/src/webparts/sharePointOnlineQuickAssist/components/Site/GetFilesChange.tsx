@@ -109,12 +109,12 @@ export default class GetFilesChange extends React.Component<ISharePointOnlineQui
 
     private async QueryFiles()
     {
+        this.setState({queried:false});
         //Get Site ID
         var siteID = await RestAPIHelper.GetSiteId(this.props.spHttpClient, this.state.querySite);
         if(siteID)
         {   
             this.modifiedFiles = [];
-            this.setState({queried:false});
             SPOQASpinner.Show("Querying ......");
             
             //Get files
@@ -164,22 +164,20 @@ export default class GetFilesChange extends React.Component<ISharePointOnlineQui
                 for(var i=1; i<files.value.length; i++)
                 {
                     try{
-                        let aFile:IFile = {
-                            ModifiedByEmail: "",
-                            ModifiedByName:"",
-                            ModifiedDate:"",
-                            Path:"",
-                            Id:"",
-                            FileName:""
-                        };
-
                         if(typeof files.value[i]['deleted'] !== 'undefined')
                         {
                             console.log(files.value[i]);
-                            aFile['FileName'] = `deleted file`;
                         }
                         else
                         {
+                            let aFile:IFile = {
+                                ModifiedByEmail: "",
+                                ModifiedByName:"",
+                                ModifiedDate:"",
+                                Path:"",
+                                Id:"",
+                                FileName:""
+                            };
                             if(this.IsMatchFilter(files.value[i]))
                             {
                                 /*
@@ -196,10 +194,10 @@ export default class GetFilesChange extends React.Component<ISharePointOnlineQui
                                 aFile['ModifiedDate'] = `${files.value[i]['lastModifiedDateTime']}`;
                                 aFile['Path'] = `${files.value[i]['webUrl']}`;
                                 aFile['FileName'] = `${files.value[i]['name']}`;
+                                aFile['Id'] = `${files.value[i]['id']}`;
+                                this.modifiedFiles.push(aFile);
                             }
                         }
-                        aFile['Id'] = `${files.value[i]['id']}`;
-                        this.modifiedFiles.push(aFile);
                     }
                     catch(error){
                         SPOQAHelper.ShowMessageBar("Error", `${error}`);
@@ -214,11 +212,61 @@ export default class GetFilesChange extends React.Component<ISharePointOnlineQui
                     deltaLink = files['@odata.deltaLink'];
                 }
             }while (deltaLink.length == 0);
+            
+            /*
+            @odata.editLink: "SP.ChangeItem33a91460-981a-42b0-8a1d-861fd05778cf"
+            @odata.id: "https://lingsuns.sharepoint.com/sites/29738881/_api/SP.ChangeItem33a91460-981a-42b0-8a1d-861fd05778cf"
+            @odata.type: "#SP.ChangeItem"
+            ChangeToken:
+            StringValue: "1;1;01ed74ae-3f05-41fd-a81a-47359ecb3178;637840550097370000;36674898"
+            [[Prototype]]: Object
+            ChangeType: 3
+            Editor: ""
+            EditorEmailHint: null
+            ItemId: 1
+            ListId: "4f8fa20d-d415-4de9-95d3-5b32451ed8b8"
+            ServerRelativeUrl: ""
+            SharedByUser: null
+            SharedWithUsers: null
+            SiteId: "01ed74ae-3f05-41fd-a81a-47359ecb3178"
+            Time: "2022-03-28T09:03:30Z"
+            UniqueId: "b7a1ad48-e436-4970-ae51-8b4ad821b74d"
+            WebId: "359810b0-b65b-480b-b33f-a9c4dd200f4b"
+            */
+
+            var files2 = await RestAPIHelper.GetSiteChanges(this.props.spHttpClient,siteID,this.state.querySite,this.state.queryStartDate);
+            console.log(files2);
+
+            for(var j=0; j<files2.value.length; j++)
+            {
+                let bFile:IFile = {
+                    ModifiedByEmail: "",
+                    ModifiedByName:"",
+                    ModifiedDate:"",
+                    Path:"",
+                    Id:"",
+                    FileName:""
+                };
+
+                var listUrl = await RestAPIHelper.GetListPath(this.props.spHttpClient,this.state.querySite,files2.value[j]['ListId']);
+                bFile['ModifiedByEmail'] = ``;
+                bFile['ModifiedByName'] = ``;
+                bFile['ModifiedDate'] = `${files2.value[j]['Time']}`;
+                bFile['Path'] = `${this.props.rootUrl}${listUrl}`;
+                bFile['FileName'] = `<deleted file>`;
+                bFile['Id'] = `${files2.value[j]['UniqueId']}`;
+
+                if(this.IsMatchFilter2(bFile))
+                {
+                    this.modifiedFiles.push(bFile);
+                }
+            }
 
             this.setState({queried:true,
             message:`Query Complete. Changes Number: ${this.modifiedFiles.length}`,
             messageType:MessageBarType.success
             });
+            
             SPOQASpinner.Hide();
         }
         else
@@ -232,11 +280,11 @@ export default class GetFilesChange extends React.Component<ISharePointOnlineQui
         let matched:boolean = true;
         if(this.state.modifiedByUser && this.state.modifiedByUser.trim().length >0)
         {
-        matched = matched&&(this.state.modifiedByUser.toLowerCase() == item.lastModifiedBy.user.email.toLowerCase());
+            matched = matched&&(this.state.modifiedByUser.toLowerCase() == item.lastModifiedBy.user.email.toLowerCase());
         }
         if(this.state.pathFilter && this.state.pathFilter.trim().length > 0)
         {
-        matched = matched&&(item.webUrl.toLowerCase().indexOf(this.state.pathFilter.toLowerCase()) >= 0);
+            matched = matched&&(item.webUrl.toLowerCase().indexOf(this.state.pathFilter.toLowerCase()) >= 0);
         }
         if(this.state.queryEndDate)
         {
@@ -246,6 +294,21 @@ export default class GetFilesChange extends React.Component<ISharePointOnlineQui
         }
         return matched;
     }
+    private IsMatchFilter2(item:any):boolean
+    {
+        let matched:boolean = true;
 
+        if(this.state.pathFilter && this.state.pathFilter.trim().length > 0)
+        {
+            matched = matched&&(item.Path.toLowerCase().indexOf(this.state.pathFilter.toLowerCase()) >= 0);
+        }
+        if(this.state.queryEndDate)
+        {
+            let queryEndDate:Date = new Date(this.state.queryEndDate);
+            queryEndDate.setDate(queryEndDate.getDate()+1);
+            matched = matched&&(queryEndDate >= new Date(item.ModifiedDate));
+        }
+        return matched;
+    }
 }
 

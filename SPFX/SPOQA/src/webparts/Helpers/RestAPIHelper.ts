@@ -1339,4 +1339,91 @@ export default class RestAPIHelper
         return false;
       }
     }
+
+    public static async GetSiteChanges(spHttpClient:SPHttpClient,siteID:string,siteUrl:string,startDate:Date)
+    {
+      let apiUrl = `${siteUrl}/_api/site/getChanges`;
+
+      // Set the ChangeTokenStart to two days ago to reduce how much data is returned from the change log. Depending on your requirements, you might want to change this value. 
+      // The value of the string assigned to ChangeTokenStart.StringValue is semicolon delimited, and takes the following parameters in the order listed:
+      // Version number. 
+      // The change scope (0 - Content Database, 1 - site collection, 2 - site, 3 - list).
+      // GUID of the item the scope applies to (for example, GUID of the list). 
+      // Time (in UTC) from when changes occurred.
+      // Initialize the change item on the ChangeToken using a default value of -1.
+
+      
+      //https://docs.microsoft.com/en-us/previous-versions/office/developer/sharepoint-2010/ee550385(v=office.14)
+      //https://github.com/SharePoint/sp-dev-docs/issues/5964
+      //https://docs.microsoft.com/en-us/sharepoint/dev/solution-guidance/query-sharepoint-change-log-with-changequery-and-changetoken
+      //https://docs.microsoft.com/en-us/previous-versions/office/sharepoint-visio/jj245903(v%3doffice.15)
+
+      //var startDate = new Date()
+      //startDate.setDate(startDate.getDate() - 30);
+      //let startDateUTCStr : number = startDate.getTime() + (startDate.getTimezoneOffset() * 60000);
+      let body = {};
+      if(startDate)
+      {
+        let startDateUTCStr : number = (startDate.getTime() * 10000) + 621355968000000000;
+        var stringValue1 = `1;1;${siteID};${startDateUTCStr};-1`;
+        body = { 
+          'query': {
+            //"Add":true,
+            //"Update":true,
+            //"Rename":true,
+            "Item":true,
+            "DeleteObject":true,
+            'ChangeTokenStart':{
+              'StringValue': `${stringValue1}`
+            }
+          }
+        };
+      }
+      else{
+        body = { 
+          'query': {
+            "Item":true,
+            "DeleteObject":true
+          }
+        };
+      }
+    
+      let spOpts = {  
+            headers: {         
+              "Content-Type": "application/json;odata=verbose"
+            },  
+            body: JSON.stringify(body)  
+        };  
+      var res = await spHttpClient.post(apiUrl, SPHttpClient.configurations.v1, spOpts);      
+      if(res.ok)
+      {
+         var resJson = await res.json();
+         console.log(`GetSiteChanges Done`);          
+         return resJson;
+      }
+      else
+      {
+       console.log(`GetSiteChanges Failed - ${res.text()}`);       
+      }
+    }
+
+    public static async GetListPath(spHttpClient:SPHttpClient, siteAbsoluteUrl:string, listID:string)
+    {
+      var apiUrl = `${siteAbsoluteUrl}/_api/web/lists/getbyId('${listID}')/RootFolder`;      
+      var res = await spHttpClient.get(apiUrl, SPHttpClient.configurations.v1);
+      if(res.ok)
+      {
+        var responseJson = await res.json();
+        console.log(responseJson);
+        console.log(`GetListPath done for API url ${apiUrl}`);
+        return await responseJson.ServerRelativeUrl;
+      }
+      else
+      {
+        var message = `Failed GetListPath for API url ${apiUrl}`;
+        console.log(message);
+        Promise.reject(message);
+        return null;
+      }
+    }
 }

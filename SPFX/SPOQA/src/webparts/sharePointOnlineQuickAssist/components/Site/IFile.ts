@@ -3,8 +3,9 @@ export interface IFile {
     ModifiedByName:string;
     ModifiedDate:string;
     Path:string;
-    Id:string;
+    //Id:string;
     FileName:string;
+    Library:string;
   }
 
   export interface IFiles

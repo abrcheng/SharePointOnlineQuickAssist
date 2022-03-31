@@ -1427,6 +1427,25 @@ export default class RestAPIHelper
       }
     }
 
+    public static async GetListbyId(spHttpClient:SPHttpClient, siteAbsoluteUrl:string, listID:string)
+    {
+      var apiUrl = `${siteAbsoluteUrl}/_api/web/lists/getbyId('${listID}')`;      
+      var res = await spHttpClient.get(apiUrl, SPHttpClient.configurations.v1);
+      if(res.ok)
+      {
+        var responseJson = await res.json();
+        console.log(responseJson);
+        console.log(`GetListPath done for API url ${apiUrl}`);
+        return await responseJson;
+      }
+      else
+      {
+        var message = `Failed GetListPath for API url ${apiUrl}`;
+        console.log(message);
+        Promise.reject(message);
+        return null;
+      }
+    }
     public static async GetDrives(spHttpClient:SPHttpClient, siteAbsoluteUrl:string)
     {
       var apiUrl = `${siteAbsoluteUrl}/_api/v2.0/drives?$select=id,name`;      

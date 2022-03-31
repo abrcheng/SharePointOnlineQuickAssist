@@ -118,7 +118,22 @@ export default class IFilesGrid extends React.Component<IFiles>
                 },            
                 isPadded: true,
                 onColumnClick: this.onColumnClick
-            } 
+            },
+            {
+              key: 'Library',
+              name: 'Library',
+              fieldName: 'Library',
+              minWidth: 100,
+              maxWidth: 200,
+              isResizable: true,
+              isCollapsible: true,
+              data: 'string',          
+              onRender: (item: IFile) => {
+                return <span>{item.Library}</span>;
+              },            
+              isPadded: true,
+              onColumnClick: this.onColumnClick
+            }
       ];
      
     public state = {

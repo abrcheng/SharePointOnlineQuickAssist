@@ -1426,4 +1426,24 @@ export default class RestAPIHelper
         return null;
       }
     }
+
+    public static async GetDrives(spHttpClient:SPHttpClient, siteAbsoluteUrl:string)
+    {
+      var apiUrl = `${siteAbsoluteUrl}/_api/v2.0/drives?$select=id,name`;      
+      var res = await spHttpClient.get(apiUrl, SPHttpClient.configurations.v1);
+      if(res.ok)
+      {
+        var responseJson = await res.json();
+        console.log(responseJson);
+        console.log(`GetDrives done for API url ${apiUrl}`);
+        return await responseJson.value;
+      }
+      else
+      {
+        var message = `Failed GetDrives for API url ${apiUrl}`;
+        console.log(message);
+        Promise.reject(message);
+        return null;
+      }
+    }
 }

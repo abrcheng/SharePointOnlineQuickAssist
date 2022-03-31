@@ -117,101 +117,109 @@ export default class GetFilesChange extends React.Component<ISharePointOnlineQui
             this.modifiedFiles = [];
             SPOQASpinner.Show("Querying ......");
             
-            //Get files
-            /*
-            @odata.type: "#microsoft.graph.driveItem"
-            cTag: "\"c:{94251CD1-4A09-4F49-A4AD-DDDA14654439},8\""
-            createdBy: {user: {…}}
-            createdDateTime: "2022-02-07T03:38:00Z"
-            eTag: "\"{94251CD1-4A09-4F49-A4AD-DDDA14654439},7\""
-            file: {mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', hashes: {…}}
-            fileSystemInfo: {createdDateTime: '2022-02-07T03:38:00Z', lastModifiedDateTime: '2022-03-10T09:43:52Z'}
-            id: "01JZT46KORDQSZICKKJFH2JLO53IKGKRBZ"
-            lastModifiedBy:
-            user:
-            displayName: "Patti Fernandez"
-            email: "PattiF@5bsjy7.onmicrosoft.com"
-            id: "259baaaa-f37c-4e51-993f-782d71fe6005"
-            [[Prototype]]: Object
-            [[Prototype]]: Object
-            lastModifiedDateTime: "2022-03-10T09:43:52Z"
-            name: "New Microsoft Word Document (2).docx"
-            parentReference: {driveId: 'b!uISMFsVEOk6w4T_lIDdFQ5caxuKNRo1GgEzwmh8I8Jz3RHo8T8Z-Q7f6WHSGW4yt', driveType: 'documentLibrary', id: '01JZT46KN6Y2GOVW7725BZO354PWSELRRZ', path: '/drive/root:'}
-            size: 17865
-            webUrl: "https://lingsuns.sharepoint.com/sites/SampleTeamSite/_layouts/15/Doc.aspx?sourcedoc=%7B94251CD1-4A09-4F49-A4AD-DDDA14654439%7D&file=New%20Microsoft%20Word%20Document%20(2).docx&action=default&mobileredirect=true"
-            */
+            var drives = await RestAPIHelper.GetDrives(this.props.spHttpClient,this.state.querySite);
+            console.log(drives);
 
-            
-            var nextLink = "";
-            var deltaLink = ""; 
-            do
+            for(var k=0; k<drives.length; k++)
             {
-                try
+                console.log(drives[k]['id']);
+                
+                //Get files
+                /*
+                @odata.type: "#microsoft.graph.driveItem"
+                cTag: "\"c:{94251CD1-4A09-4F49-A4AD-DDDA14654439},8\""
+                createdBy: {user: {…}}
+                createdDateTime: "2022-02-07T03:38:00Z"
+                eTag: "\"{94251CD1-4A09-4F49-A4AD-DDDA14654439},7\""
+                file: {mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', hashes: {…}}
+                fileSystemInfo: {createdDateTime: '2022-02-07T03:38:00Z', lastModifiedDateTime: '2022-03-10T09:43:52Z'}
+                id: "01JZT46KORDQSZICKKJFH2JLO53IKGKRBZ"
+                lastModifiedBy:
+                user:
+                displayName: "Patti Fernandez"
+                email: "PattiF@5bsjy7.onmicrosoft.com"
+                id: "259baaaa-f37c-4e51-993f-782d71fe6005"
+                [[Prototype]]: Object
+                [[Prototype]]: Object
+                lastModifiedDateTime: "2022-03-10T09:43:52Z"
+                name: "New Microsoft Word Document (2).docx"
+                parentReference: {driveId: 'b!uISMFsVEOk6w4T_lIDdFQ5caxuKNRo1GgEzwmh8I8Jz3RHo8T8Z-Q7f6WHSGW4yt', driveType: 'documentLibrary', id: '01JZT46KN6Y2GOVW7725BZO354PWSELRRZ', path: '/drive/root:'}
+                size: 17865
+                webUrl: "https://lingsuns.sharepoint.com/sites/SampleTeamSite/_layouts/15/Doc.aspx?sourcedoc=%7B94251CD1-4A09-4F49-A4AD-DDDA14654439%7D&file=New%20Microsoft%20Word%20Document%20(2).docx&action=default&mobileredirect=true"
+                */
+            
+                var nextLink = "";
+                var deltaLink = ""; 
+
+                do
                 {
-                    var files = await GraphAPIHelper.CheckForUpdates(this.props.msGraphClient,nextLink,siteID,this.state.queryStartDate);
-                }
-                catch
-                {
-                    
-                    this.setState({queried:true,
-                    message:`Get Files Change Exited Unexpectedly`,         
-                    messageType:MessageBarType.error
-                    });
-                    SPOQASpinner.Hide();
-                    return;
-                }
-                console.log(files);
-                for(var i=1; i<files.value.length; i++)
-                {
-                    try{
-                        if(typeof files.value[i]['deleted'] !== 'undefined')
-                        {
-                            console.log(files.value[i]);
-                        }
-                        else
-                        {
-                            let aFile:IFile = {
-                                ModifiedByEmail: "",
-                                ModifiedByName:"",
-                                ModifiedDate:"",
-                                Path:"",
-                                Id:"",
-                                FileName:""
-                            };
-                            if(this.IsMatchFilter(files.value[i]))
+                    try
+                    {
+                        var files = await GraphAPIHelper.CheckForUpdates(this.props.msGraphClient,nextLink,siteID,this.state.queryStartDate,drives[k]['id']);
+                    }
+                    catch
+                    {
+                        
+                        this.setState({queried:true,
+                        message:`Get Files Change Exited Unexpectedly`,         
+                        messageType:MessageBarType.error
+                        });
+                        SPOQASpinner.Hide();
+                        return;
+                    }
+                    console.log(files);
+                    for(var i=1; i<files.value.length; i++)
+                    {
+                        try{
+                            if(typeof files.value[i]['deleted'] !== 'undefined')
                             {
-                                /*
-                                    ModifiedByEmail:string;
-                                    ModifiedByName:string;
-                                    ModifiedDate:string;
-                                    Path:string;
-                                    FileName:string;
-                                    Id:string;
-                                */
                                 console.log(files.value[i]);
-                                aFile['ModifiedByEmail'] = `${files.value[i]['lastModifiedBy']['user']['email']}`;
-                                aFile['ModifiedByName'] = `${files.value[i]['lastModifiedBy']['user']['displayName']}`;
-                                aFile['ModifiedDate'] = `${files.value[i]['lastModifiedDateTime']}`;
-                                aFile['Path'] = `${files.value[i]['webUrl']}`;
-                                aFile['FileName'] = `${files.value[i]['name']}`;
-                                aFile['Id'] = `${files.value[i]['id']}`;
-                                this.modifiedFiles.push(aFile);
+                            }
+                            else
+                            {
+                                let aFile:IFile = {
+                                    ModifiedByEmail: "",
+                                    ModifiedByName:"",
+                                    ModifiedDate:"",
+                                    Path:"",
+                                    Id:"",
+                                    FileName:""
+                                };
+                                if(this.IsMatchFilter(files.value[i]))
+                                {
+                                    /*
+                                        ModifiedByEmail:string;
+                                        ModifiedByName:string;
+                                        ModifiedDate:string;
+                                        Path:string;
+                                        FileName:string;
+                                        Id:string;
+                                    */
+                                    console.log(files.value[i]);
+                                    aFile['ModifiedByEmail'] = `${files.value[i]['lastModifiedBy']['user']['email']}`;
+                                    aFile['ModifiedByName'] = `${files.value[i]['lastModifiedBy']['user']['displayName']}`;
+                                    aFile['ModifiedDate'] = `${files.value[i]['lastModifiedDateTime']}`;
+                                    aFile['Path'] = `${files.value[i]['webUrl']}`;
+                                    aFile['FileName'] = `${files.value[i]['name']}`;
+                                    aFile['Id'] = `${files.value[i]['id']}`;
+                                    this.modifiedFiles.push(aFile);
+                                }
                             }
                         }
+                        catch(error){
+                            SPOQAHelper.ShowMessageBar("Error", `${error}`);
+                        }
                     }
-                    catch(error){
-                        SPOQAHelper.ShowMessageBar("Error", `${error}`);
+                    if(files['@odata.nextLink'])
+                    {
+                        nextLink = files['@odata.nextLink'];
                     }
-                }
-                if(files['@odata.nextLink'])
-                {
-                    nextLink = files['@odata.nextLink'];
-                }
-                else
-                {
-                    deltaLink = files['@odata.deltaLink'];
-                }
-            }while (deltaLink.length == 0);
+                    else
+                    {
+                        deltaLink = files['@odata.deltaLink'];
+                    }
+                }while (deltaLink.length == 0);
+            }
             
             /*
             @odata.editLink: "SP.ChangeItem33a91460-981a-42b0-8a1d-861fd05778cf"

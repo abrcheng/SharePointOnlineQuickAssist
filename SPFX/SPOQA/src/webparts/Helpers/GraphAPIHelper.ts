@@ -112,7 +112,7 @@ export default class GraphAPIHelper
       }
     }
     
-    public static async CheckForUpdates(msGraphClient:MSGraphClient,nextxLink:string,siteID:string,startDate:Date)
+    public static async CheckForUpdates(msGraphClient:MSGraphClient,nextxLink:string,siteID:string,startDate:Date,driveId:string)
     {
       var apiUri = "";
       if(nextxLink)
@@ -128,11 +128,12 @@ export default class GraphAPIHelper
           + '-' + ('0' + startDate.getDate()).slice(-2)
           + 'T00%3A00%3A00Z';
           ///me/drive/root/delta?token=2021-09-29T00%3A00%3A00Z
-          apiUri = `/sites/${siteID}/drive/root/delta?token=${DS}`;
+          ///sites/01ed74ae-3f05-41fd-a81a-47359ecb3178/drives/b!rnTtAQU__UGoGkc1nssxeLAQmDVbtgtIsz-pxN0gD0sNoo9PFdTpTZXTWzJFHti4/root
+          apiUri = `/sites/${siteID}/drives/${driveId}/root/delta?token=${DS}`;
         }
         else
         {
-          apiUri = `/sites/${siteID}/drive/root/delta`;
+          apiUri = `/sites/${siteID}/drives/${driveId}/root/delta`;
         }
       }
       var res = await msGraphClient.api(apiUri).get();

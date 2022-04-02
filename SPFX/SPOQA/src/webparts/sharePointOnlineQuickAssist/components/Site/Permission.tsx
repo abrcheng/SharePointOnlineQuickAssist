@@ -11,6 +11,7 @@ import RestAPIHelper from '../../../Helpers/RestAPIHelper';
 import { ISharePointOnlineQuickAssistProps } from '../ISharePointOnlineQuickAssistProps';
 import SPOQAHelper from '../../../Helpers/SPOQAHelper';
 import SPOQASpinner from '../../../Helpers/SPOQASpinner';
+import {SPHttpClient} from '@microsoft/sp-http';
 import styles from '../SharePointOnlineQuickAssist.module.scss';
 
 export default class PermissionQA extends React.Component<ISharePointOnlineQuickAssistProps>
@@ -181,6 +182,27 @@ export default class PermissionQA extends React.Component<ISharePointOnlineQuick
             });
        }
 
+       if(isFileExisting.success)
+       {
+           // check customizations (modern/classic) in pages
+           if(this.state.affectedDocument.endsWith(".aspx")) 
+           {
+                var customzationRes =  await (this.CheckCustomziation());
+                if(customzationRes.hascustomzation)
+                {
+                    var customzationNames:string[]=[];
+                    customzationRes.customzations.forEach(customzation => {
+                        if(customzation.alias!="")
+                        {
+                            customzationNames.push(customzation.alias);
+                        }
+                    });
+                    var hasCustomzationMsg = `This page contains customzations ${customzationNames.length >0? customzationNames.join(","):""}`;
+                    this.resRef.current.innerHTML += `<span style='${this.redStyle}'>${hasCustomzationMsg}</span><br/>`;
+                }
+           }
+       }
+
        // check permission on the page/document
        var hasReadPermissionOnDocument =  await RestAPIHelper.HasPermissionOnDocument(this.props.spHttpClient, this.state.affectedSite, this.state.affectedDocument.replace(this.props.rootUrl, ""), this.state.affectedUser, SP.PermissionKind.viewListItems);
        var readPermssionOnDocumentMsg = `The user ${this.state.affectedUser} ${hasReadPermissionOnDocument? "has":"lacks"} read permission on the document`;
@@ -191,8 +213,7 @@ export default class PermissionQA extends React.Component<ISharePointOnlineQuick
                 message:readPermssionOnDocumentMsg,
                 url:`${this.state.affectedSite}/${this.state.affectedLibrary.RootFolder}`
             });
-       }
-       // check customizations (modern/classic), TBD
+       } 
 
        // check file without major version      
        var isDraftVersion = await RestAPIHelper.IsDocumentInDraftVersion(this.props.spHttpClient, this.state.affectedSite, true, this.state.affectedLibrary.Title,this.state.affectedDocument);
@@ -266,5 +287,155 @@ export default class PermissionQA extends React.Component<ISharePointOnlineQuick
         }); 
 
         this.setState({remedyStepsShowed:true});   
+    }
+    
+    private async CheckCustomziation()
+    {
+        var apiUrl = `${this.state.affectedDocument}?asjson=1`;
+        var response = await this.props.spHttpClient.get(apiUrl, SPHttpClient.configurations.v1);
+        var customzationsRes:any[] = [];
+        var isModernPage = false;
+        if(response.ok)
+        {
+            var html = await response.text();
+            try
+            {
+                var modernPage = JSON.parse(html);
+                var customzations = modernPage.manifests.filter(m => !m.isInternal);
+                customzations.forEach(customzation => {
+                    customzationsRes.push(this.GetCustomzationFromManifest(customzation));
+                }); 
+                isModernPage = true;               
+            }
+            catch(e) // classic page
+            {
+                const parser = new DOMParser();
+                const parsedDocument = parser.parseFromString(html, "text/html");               
+                
+                //parsedDocument.querySelectorAll("script")[0].attributes["src"]
+                var scripts:NodeListOf<HTMLScriptElement> = parsedDocument.querySelectorAll("script");
+                var classicRes:string[]=[];
+                for(var index=0; index <scripts.length; index++)
+                {                    
+                    if(scripts[index].attributes["src"] && scripts[index].src.indexOf(this.props.rootUrl) !=-1)
+                    {
+                        var resPath = scripts[index].src;
+                        if(resPath.indexOf("/_layouts/")=== -1 && (resPath.endsWith(".css")||resPath.endsWith(".js")))
+                        {
+                            classicRes.push(resPath);                           
+                        }
+                    }                  
+                }
+
+                // parsedDocument.querySelectorAll("link")[0].href
+                var links:NodeListOf<HTMLLinkElement> = parsedDocument.querySelectorAll("link");
+                for(var indexl=0; indexl < links.length; indexl++)
+                {
+                    if(links[indexl].attributes["href"] && links[indexl].href.indexOf(this.props.rootUrl) !=-1)
+                    {
+                        var hrefPath = links[indexl].href;
+                        if(hrefPath.indexOf("/_layouts/")=== -1 && (hrefPath.endsWith(".css")||hrefPath.endsWith(".js")))
+                        {
+                            classicRes.push(hrefPath);                           
+                        }
+                    }
+                }
+
+                // Get SPFx context in classic page JSON.parse(html.substring(129132 +"spClientSidePageContext=".length ,222623+1))
+                const spfxContextStartStr = "spClientSidePageContext=";
+                var spfxContextStartIndex = html.indexOf(spfxContextStartStr) + spfxContextStartStr.length;
+                if(spfxContextStartIndex > spfxContextStartStr.length)
+                {
+                    var spfxContextEndIndex = html.indexOf("};",spfxContextStartIndex) +1;
+                    var spfxContext = JSON.parse(html.substring(spfxContextStartIndex, spfxContextEndIndex));
+                    spfxContext.manifests.forEach(manifest => {
+                        // componentType:"WebPart", "Extension"
+                        if(manifest.componentType === "WebPart" || manifest.componentType === "Extension")
+                        {
+                            customzationsRes.push(this.GetCustomzationFromManifest(manifest));
+                        }
+                    });
+                }
+
+                if(classicRes.length >=1)
+                {
+                    customzationsRes.push(
+                        {
+                            alias:"", // alias is empty means classic page
+                            type:"",
+                            resPaths:classicRes
+                        }
+                    );
+                }
+            }    
+        }
+        else
+        {
+            console.log(`Failed to load ${apiUrl}`);
+            return {hascustomzation:false};
+        } 
+        var hascustomzation = false;
+        if(customzationsRes.length >0)
+        {
+            hascustomzation = true;
+            if(isModernPage) // modern page
+            {
+                var disable3rdcodeUrl = `${this.state.affectedDocument}?disable3PCode`;
+                this.remedySteps.push({
+                    message:`Try to disable 3rd party code by appending ?disable3PCode to page URL and open it in a new tab`,
+                    url:`${disable3rdcodeUrl}`
+                });
+            }
+            
+            customzationsRes.forEach(customzation=>{
+                customzation.resPaths.forEach(resUrl =>{
+                    this.remedySteps.push({
+                        message:`${resUrl}`,
+                        url:`${resUrl.substring(0,resUrl.lastIndexOf("/"))}`
+                    });
+                });
+            });
+         
+        }
+
+        return {hascustomzation:hascustomzation, customzations:customzationsRes};
+    }
+    
+    private GetCustomzationFromManifest(manifest:any)
+    {
+        // alias, type, resUrls
+        var baseUrl = manifest.loaderConfig.internalModuleBaseUrls[0].replace("publiccdn.sharepointonline.com/","").replace("privatecdn.sharepointonline.com/","");
+        var resUrls:string[]=[];
+        for(var key in manifest.loaderConfig.scriptResources)
+        {
+           var res = manifest.loaderConfig.scriptResources[key];
+           if(res.type === "path" || res.type === "localizedPath")
+           {
+               // path, paths, defaultPath
+               if(res.path)
+               {
+                    resUrls.push(`${baseUrl}/${res.path}`);
+               }
+
+               if(res.defaultPath)
+               {
+                    resUrls.push(`${baseUrl}/${res.defaultPath}`);
+               }
+
+               if(res.paths)
+               {
+                    for(var pathKey in res.paths)
+                    {
+                        resUrls.push(`${baseUrl}/${res.paths[pathKey]}`);
+                    }
+               }
+           }
+        }
+
+        return {
+            alias:manifest.alias,
+            type:manifest.type,
+            resPaths:resUrls
+        };
     }
 }

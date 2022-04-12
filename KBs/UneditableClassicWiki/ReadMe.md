@@ -2,6 +2,8 @@
 
 When the user enter edit mode on a classic wiki page, the ribbon menu may gray out and the page became uneditable.
 
+![image](https://user-images.githubusercontent.com/102142347/162902816-138a9530-606a-4030-a3e9-ef9bf6f666fb.png)
+
 **[Cause]**
 
 Classic wiki page holds its layout data in an OOTB field as HTML. If the field contains invalid value or the layout table in the HTML does not match the declaration, it could lead to this issue.
@@ -23,6 +25,7 @@ The value in "WikiField" is a \<div> tag containing a \<table> tag (#layoutsTabl
 The #layoutsTable descridbes the page layout in details and the #layoutsData declares whether the page has header and footer and how many columns it contains. If you are guided to this page by the tool, please make sure
 
 * #layoutsTable is valid HTML and the number of tr and td tags match a supported layout in following list.
+![image](https://user-images.githubusercontent.com/102142347/162902915-a7334235-04e8-4543-a84a-8bb300c0213c.png)
 * The inner HTML of #layoutsData should be in format as \<whether the page has header>, \<whether the page has footer>, \<the number of columns in page body> .
 * The layout described in #layoutsTable should match #layoutsData.
 

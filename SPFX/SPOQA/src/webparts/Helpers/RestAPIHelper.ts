@@ -250,6 +250,41 @@ export default class RestAPIHelper
         return resJson.value;
     }
 
+    public static async GetPageByUrl(spHttpClient:SPHttpClient, pageUrl:string)
+    {
+      var res = await spHttpClient.get(pageUrl, SPHttpClient.configurations.v1);
+      if(res.ok)
+      {
+        var html = await res.text();
+        const parser = new DOMParser();
+        const parsedDocument = parser.parseFromString(html, "text/html");
+        return parsedDocument;        
+      }
+      else
+      {
+        console.log(`Failed to load ${pageUrl}`);
+        return null;
+      }
+    }
+    
+    public static async GetWikiField(spHttpClient:SPHttpClient, webAbsoluteUrl:string, pageListId:string, pageItemId:string)
+    {
+      var requestUrl = webAbsoluteUrl + "/_api/web/lists/GetById('" + pageListId + "')/items/GetById('" + pageItemId + "')";
+      var res = await spHttpClient.get(requestUrl, SPHttpClient.configurations.v1);
+      if(res.ok)
+      {
+        var responseJson = await res.json();
+        const parser = new DOMParser();
+        const parsedDocument = parser.parseFromString(responseJson.WikiField, "text/html");
+        return parsedDocument;      
+      }
+      else
+      {
+        console.log(`Failed to get wikiField, status code: ${res.status}`);
+        return null;
+      }
+    }
+
     public static async SearchDocumentByFullPath(spHttpClient:SPHttpClient, siteAbsoluteUrl:string, fullPath:string)
     {
         var queryText = `Path:"${fullPath}"`;
@@ -1339,7 +1374,7 @@ export default class RestAPIHelper
         return false;
       }
     }
-
+    
     public static async GetSiteChanges(spHttpClient:SPHttpClient,siteID:string,siteUrl:string,startDate:Date)
     {
       let apiUrl = `${siteUrl}/_api/site/getChanges`;

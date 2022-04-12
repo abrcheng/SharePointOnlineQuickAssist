@@ -27,6 +27,7 @@ import UserInfoQA from './UserProfile/UserInfo';
 import RestoreItemsQA from './Site/RestoreItems';
 import OneDriveLockIconQA from './OneDrive/OneDriveLockIcon';
 import RepairFormQA from './List/RepairListForms';
+import RepairWikiLayoutQA from './List/RepairWikiLayout';
 import PermssionQA from './Site/Permission';
 import { WebPartContext } from "@microsoft/sp-webpart-base"; 
 import { SPComponentLoader } from '@microsoft/sp-loader';
@@ -54,6 +55,7 @@ const INITIAL_OPTIONS: IComboBoxOption[] = [
   { key: 'OneDriveLockIcon', text: 'OneDrive lock icon' }, 
   { key: 'List', text: 'List/Library Issues', itemType: SelectableOptionMenuItemType.Header },
   { key: 'ListMissingForm', text: 'Missing New/Disp/Edit Forms' }, 
+  { key: 'UneditableWiki', text: 'Uneditable wiki page' }, 
   { key: 'Site', text: 'Site', itemType: SelectableOptionMenuItemType.Header },
   { key: 'Restore', text: 'Restore Items' }, 
   { key: 'FilesDelta', text: 'Get File Changes' },
@@ -112,6 +114,7 @@ export default class SharePointOnlineQuickAssist extends React.Component<IShareP
         case "UserInfoSync":   return <UserInfoQA spHttpClient={this.props.spHttpClient} msGraphClient={this.props.msGraphClient} webUrl={this.props.webUrl} webAbsoluteUrl={this.props.webAbsoluteUrl} rootUrl={this.props.rootUrl} currentUser={this.props.currentUser} ctx={this.props.ctx}/>; 
         case "OneDriveLockIcon":   return <OneDriveLockIconQA spHttpClient={this.props.spHttpClient} msGraphClient={this.props.msGraphClient} webUrl={this.props.webUrl} webAbsoluteUrl={this.props.webAbsoluteUrl} rootUrl={this.props.rootUrl} currentUser={this.props.currentUser} ctx={this.props.ctx}/>; 
         case "ListMissingForm":   return <RepairFormQA spHttpClient={this.props.spHttpClient} msGraphClient={this.props.msGraphClient} webUrl={this.props.webUrl} webAbsoluteUrl={this.props.webAbsoluteUrl} rootUrl={this.props.rootUrl} currentUser={this.props.currentUser} ctx={this.props.ctx}/>; 
+        case "UneditableWiki":   return <RepairWikiLayoutQA spHttpClient={this.props.spHttpClient} msGraphClient={this.props.msGraphClient} webUrl={this.props.webUrl} webAbsoluteUrl={this.props.webAbsoluteUrl} rootUrl={this.props.rootUrl} currentUser={this.props.currentUser} ctx={this.props.ctx}/>; 
         case "Restore": return <RestoreItemsQA spHttpClient={this.props.spHttpClient} msGraphClient={this.props.msGraphClient} webUrl={this.props.webUrl} webAbsoluteUrl={this.props.webAbsoluteUrl} rootUrl={this.props.rootUrl} currentUser={this.props.currentUser} ctx={this.props.ctx}/>; 
         case "Permission": return <PermssionQA spHttpClient={this.props.spHttpClient} msGraphClient={this.props.msGraphClient} webUrl={this.props.webUrl} webAbsoluteUrl={this.props.webAbsoluteUrl} rootUrl={this.props.rootUrl} currentUser={this.props.currentUser} ctx={this.props.ctx}/>; 
         case "FilesDelta": return <GetFilesChange spHttpClient={this.props.spHttpClient} msGraphClient={this.props.msGraphClient} webUrl={this.props.webUrl} webAbsoluteUrl={this.props.webAbsoluteUrl} rootUrl={this.props.rootUrl} currentUser={this.props.currentUser} ctx={this.props.ctx}/>; 

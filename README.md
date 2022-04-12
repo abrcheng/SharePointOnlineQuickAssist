@@ -68,6 +68,11 @@ This feature helps user to diagnose permssion issues (get access denied or 404 w
 	  ![image](https://user-images.githubusercontent.com/21354416/158009915-15dfdc94-f472-49e0-9b5b-a36fdf8e4725.png)	  
 [More details](https://github.com/abrcheng/SharePointOnlineQuickAssist/releases/tag/1.22.02.25)
 
+*  **Uneditable wiki page** This feature helps to detect layout issue which could cause a classic wiki page being uneditable.
+	   
+	  ![image](https://user-images.githubusercontent.com/102142347/162903702-ed3ed028-6701-49b9-ab32-a88c14cb3480.png)
+
+	  [More details](https://github.com/abrcheng/SharePointOnlineQuickAssist/releases/tag/1.22.04.12)
 	  
 ## Deploy the tool tenant level app catalog 
 * Upload SPOQA.sppkg from https://github.com/abrcheng/SharePointOnlineQuickAssist/blob/main/Packages/spoqa.sppkg to your tenant App Catalog

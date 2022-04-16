@@ -395,10 +395,51 @@ export default class PermissionQA extends React.Component<ISharePointOnlineQuick
                     });
                 });
             });
-         
+            
+           await this.CheckCustomzationPermission(customzationsRes);
         }
-
+        
         return {hascustomzation:hascustomzation, customzations:customzationsRes};
+    }
+
+    private async CheckCustomzationPermission(customzationsRes:any[]) {
+        // https://chengc.sharepoint.com/sites/SPOQA/ClientSideAssets/029e4fc2-a440-4f5f-a358-b34a0eca54b5/_api/
+        // <service xmlns="http://www.w3.org/2007/app" xmlns:atom="http://www.w3.org/2005/Atom" xml:base="https://chengc.sharepoint.com/sites/SPOQA/_api/">
+      
+        for(var index =0; index < customzationsRes.length;index++)
+        {
+            var currentCustomzation = customzationsRes[index];
+            for(var indexRes=0; indexRes< currentCustomzation.resPaths.length;indexRes++)
+            {
+                var resUrl:string = currentCustomzation.resPaths[indexRes];
+                var res = await this.props.spHttpClient.get(resUrl, SPHttpClient.configurations.v1);
+                var resName = resUrl.substring(resUrl.lastIndexOf("/")+1);
+                if(res.ok)
+                {
+                    res = await this.props.spHttpClient.get(resUrl+"/_api/", SPHttpClient.configurations.v1);
+                    if(res.ok)
+                    {
+                        var resJson = await res.json();
+
+                        // https://chengc.sharepoint.com/sites/SPOQA
+                        var resWebUrl = resJson["@odata.context"].replace("/_api/$metadata","");
+                        var hasPermission = await RestAPIHelper.HasPermissionOnDocument(this.props.spHttpClient, resWebUrl,resUrl.replace(this.props.rootUrl,""), this.state.affectedUser, SP.PermissionKind.viewListItems);
+                        if(!hasPermission)
+                        {
+                            this.resRef.current.innerHTML += `<span style='${this.redStyle}'>The affected user lacks permission on <a href="${resUrl}"> ${resName}</a>!</span><br/>`;
+                        }    
+                    }
+                    else
+                    {
+                        this.resRef.current.innerHTML += `<span style='${this.redStyle}'><a href="${resUrl}"> ${resName}</a> can't be loaded!</span><br/>`;
+                    }                
+                }
+                else
+                {                   
+                    this.resRef.current.innerHTML += `<span style='${this.redStyle}'><a href="${resUrl}"> ${resName}</a> can't be loaded!</span><br/>`;                     
+                }
+            }
+        }        
     }
     
     private GetCustomzationFromManifest(manifest:any)

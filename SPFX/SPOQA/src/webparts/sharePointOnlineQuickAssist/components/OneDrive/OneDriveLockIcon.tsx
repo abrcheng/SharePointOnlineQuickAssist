@@ -69,9 +69,8 @@ export default class OneDriveLockIconQA extends React.Component<ISharePointOnlin
                                 </div>: null}
                             </div>
                             <div id="OneDriveSyncDiagnoseResult">
-                        {this.state.isChecked && this.state.siteIsVaild?<Label>Diagnose result:</Label>:null}
-                                <div style={{marginLeft:20}} id="OneDriveSyncDiagnoseResultDiv" ref={this.resRef}>
-                                </div>
+                                {this.state.isChecked && this.state.siteIsVaild?<Label>Diagnose result:</Label>:null}
+                                <div style={{marginLeft:20}} id="OneDriveSyncDiagnoseResultDiv" ref={this.resRef}></div>
                         </div>
                         <div id="CommandButtonsSection">
                             <PrimaryButton

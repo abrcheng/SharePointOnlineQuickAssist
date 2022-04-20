@@ -16,7 +16,7 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
 {
     public state = {
         affectedDocument:"",
-        affectedLibrary:"",
+        affectedLibrary:{Title:"",Id:"",RootFolder:"",BaseType:-1},
         siteLibraries:[],         
         affectedSite:this.props.webAbsoluteUrl,
         isLibrary:false,
@@ -28,6 +28,10 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
         isChecked:false
       };
     private listTitle:string="";
+    private resRef= React.createRef<HTMLDivElement>();  
+    private websNeedFixNoCrawl:string[] =[];
+    private redStyle = "color:red";
+    private greenStyle = "color:green";
     public render():React.ReactElement<ISharePointOnlineQuickAssistProps>
     {
         return (            
@@ -38,7 +42,7 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
                             <TextField
                                     label="Affected Site(press enter for loading libraries/lists):"
                                     multiline={false}
-                                    onChange={(e)=>{let text:any = e.target; this.setState({affectedSite:text.value,siteIsVaild:false});}}
+                                    onChange={(e)=>{let text:any = e.target; this.setState({affectedSite:text.value,siteIsVaild:false}); this.resRef.current.innerHTML ="";}}
                                     value={this.state.affectedSite}
                                     required={true}
                                     onKeyDown={(e)=>{if(e.keyCode ===13){this.LoadLists();}}}                          
@@ -53,41 +57,42 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
                                     options={this.state.siteLibraries} 
                                     required={true}                    
                                     onChange ={(ev: React.FormEvent<IComboBox>, option?: IComboBoxOption): void => {
-                                        this.setState({affectedLibrary: option.key, isLibrary:option.key.toString().endsWith("#1"), isChecked:false});}} 
+                                        this.setState(
+                                            {affectedLibrary:
+                                                    {Title:option.key, 
+                                                    Id:option.data.listId, 
+                                                    RootFolder:option.data.rootFolder,                                                  
+                                                    BaseType:option.data.baseType}, 
+                                                isChecked:false,
+                                                isLibrary:option.data.baseType==1});                                                
+                                                this.websNeedFixNoCrawl=[];
+                                                this.resRef.current.innerHTML ="";
+                                        }} 
                                     />   
-                                {this.state.affectedLibrary!=""? 
+                                {this.state.affectedLibrary.Title!=""? 
                                 <div><TextField
                                 label="Affected document full URL:"
                                 multiline={false}
-                                onChange={(e)=>{let text:any = e.target; this.setState({affectedDocument:text.value,isChecked:false});}}
+                                onChange={(e)=>{let text:any = e.target; this.setState({affectedDocument:text.value,isChecked:false}); this.resRef.current.innerHTML ="";}}
                                 value={this.state.affectedDocument}
                                 required={true}                                                
                                 />
-                                        {!this.state.isLibrary?<Label>e.g. {this.state.affectedSite}/Lists/{this.state.affectedLibrary.substr(0,this.state.affectedLibrary.length-2)}/DispForm.aspx?ID=xxx</Label>
-                                            :<Label>e.g. {this.state.affectedSite}/{this.state.affectedLibrary.substr(0,this.state.affectedLibrary.length-2)}/xxxx.xxxx</Label>}
+                                        {!this.state.isLibrary?<Label>e.g. {this.props.rootUrl}{this.state.affectedLibrary.RootFolder}/DispForm.aspx?ID=xxx</Label>
+                                            :<Label>e.g. {this.props.rootUrl}{this.state.affectedLibrary.RootFolder}/xxxx.xxx</Label>}
                                 </div>:null}                
                                 </div>: null}
                             </div>
-                            {this.state.siteIsVaild&&this.state.affectedLibrary!="" && this.state.isChecked? 
-                                <div id="SearchDocumentCheckResultSection">
-                                    <Label>Diagnose result,</Label>
-                                    {this.state.isWebNoIndex?<Label style={{"color":"Red",marginLeft:"20px"}} >The nocrawl has been enabled for the site {this.state.affectedSite}</Label>:
-                                        <Label style={{"color":"Green",marginLeft:"20px"}}>The nocrawl hasn't been enabled for the site {this.state.affectedSite}</Label>}
-                                    {this.state.isListNoIndex?<Label style={{"color":"Red",marginLeft:"20px"}}>The nocrawl has been enabled for this list {this.listTitle}</Label>:
-                                        <Label style={{"color":"Green",marginLeft:"20px"}}>The nocrawl hasn't been enabled for this list {this.listTitle}</Label>}
-                                    {this.state.isMissingDisplayForm && !this.state.isLibrary?<Label style={{"color":"Red",marginLeft:"20px"}}>The dispalyForm is missed for the list {this.listTitle}</Label>:
-                                        <Label style={{"color":"Green",marginLeft:"20px"}}>The dispalyForm is not missed</Label>}
-                                    {this.state.isDraftVersion?<Label style={{"color":"Red",marginLeft:"20px"}}>The document {this.state.affectedDocument} is in draft version</Label>:
-                                        <Label style={{"color":"Green",marginLeft:"20px"}}>The document {this.state.affectedDocument} is in major version</Label>}
-                                </div>:null
-                            }
+                            <div id="SearchDocumentCheckResultSection">
+                                {this.state.isChecked && this.state.siteIsVaild && this.state.affectedLibrary.Title!=""?<Label>Diagnose result:</Label>:null}
+                                <div style={{marginLeft:20}} id="SearchDocumentCheckResultDiv" ref={this.resRef}></div>
+                            </div>                           
                         <div id="CommandButtonsSection">
                             <PrimaryButton
                                 text="Check Issues"
                                 style={{ display: 'inline', marginTop: '10px' }}
                                 onClick={() => {this.state.siteIsVaild? this.CheckSearchDocument():this.LoadLists();}}
                                 />
-                            {this.state.isChecked && (this.state.isListNoIndex || this.state.isWebNoIndex || this.state.isMissingDisplayForm || this.state.isDraftVersion)?
+                            {this.state.isChecked && (this.state.isListNoIndex || this.websNeedFixNoCrawl.length>0 || this.state.isMissingDisplayForm || this.state.isDraftVersion)?
                                 <PrimaryButton
                                     text="Fix Issues"
                                     style={{ display: 'inline', marginTop: '10px', marginLeft:"10px"}}
@@ -108,10 +113,13 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
             let listOptions:IComboBoxOption[] = [];
 
             // list.BaseType ==1 means this list is a library, otherwise this list is a list
-            lists.forEach(list => {
-                listOptions.push({ key:list.Title+"#"+list.BaseType, text: list.Title});
+            lists.forEach(list => {              
+                    listOptions.push({ 
+                        key:list.Title, 
+                        text: list.Title,
+                        data:{listId:list.Id, baseType:list.BaseType,rootFolder:list.RootFolder.ServerRelativeUrl}});               
             });
-            this.setState({siteIsVaild:true, siteLibraries:listOptions});
+            this.setState({siteIsVaild:true, siteLibraries:listOptions});            
         }
         catch(err)
         {
@@ -121,7 +129,7 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
     
     public async CheckSearchDocument()
     {
-        if(this.state.affectedLibrary == "" ||this.state.affectedLibrary =="-1")
+        if(this.state.affectedLibrary.Title == "" ||this.state.affectedLibrary.Title =="-1")
         {
             SPOQAHelper.ShowMessageBar("Error", "Please select the library!");
             return;
@@ -137,7 +145,7 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
         this.setState({isChecked:false});         
         let searched:boolean = false;
         SPOQASpinner.Show("Checking document search issue ......");
-        this.listTitle = this.state.affectedLibrary.substr(0,this.state.affectedLibrary.length-2);
+        this.listTitle = this.state.affectedLibrary.Title;
         try
         {
            var searchDocRes = await RestAPIHelper.SearchDocumentByFullPath(this.props.spHttpClient, this.state.affectedSite, this.state.affectedDocument);
@@ -158,8 +166,10 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
         {
             try
             {
-                var noCrawl = await RestAPIHelper.IsWebNoCrawl(this.props.spHttpClient, this.state.affectedSite);
-                this.setState({isWebNoIndex:noCrawl});            
+                /*var noCrawl = await RestAPIHelper.IsWebNoCrawl(this.props.spHttpClient, this.state.affectedSite);
+                this.setState({isWebNoIndex:noCrawl});*/
+                await this.CheckWebNoCrawl();   
+                this.setState({isChecked:true});         
             }
             catch(err)
             {
@@ -171,6 +181,8 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
             {
                 var resIsListNoCrawl = await RestAPIHelper.IsListNoCrawl(this.props.spHttpClient, this.state.affectedSite, this.listTitle);
                 this.setState({isListNoIndex:resIsListNoCrawl});
+                var listNoCrawlMsg =  `<span style="${resIsListNoCrawl? this.redStyle:this.greenStyle}" >The nocrawl ${resIsListNoCrawl?"has":"hasn't"} been enabled for the list ${this.state.affectedLibrary.Title}.</span><br/>`;
+                this.resRef.current.innerHTML += listNoCrawlMsg;
             }
             catch(err)
             {
@@ -185,6 +197,8 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
                     var resIsListMissedForm = await RestAPIHelper.IsListMissDisplayForm(this.props.spHttpClient, this.state.affectedSite, this.listTitle);
                     // isMissingDisplayForm
                     this.setState({isMissingDisplayForm:resIsListMissedForm});
+                    var listMissedDisplayFormMsg =  `<span style="${resIsListMissedForm? this.redStyle:this.greenStyle}" >The dispalyForm ${resIsListMissedForm?"is":"isn't"} missed for the list ${this.state.affectedLibrary.Title}.</span><br/>`;
+                    this.resRef.current.innerHTML += listMissedDisplayFormMsg;
                 }
                 catch(err)
                 {
@@ -197,6 +211,8 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
             {
                 var resIsDraftVersion = await RestAPIHelper.IsDocumentInDraftVersion(this.props.spHttpClient, this.state.affectedSite, this.state.isLibrary, this.listTitle,this.state.affectedDocument);
                 this.setState({isDraftVersion:resIsDraftVersion});
+                var docIsDraftVersionMsg =  `<span style="${resIsListMissedForm? this.redStyle:this.greenStyle}" >The document ${this.state.affectedDocument} ${resIsListMissedForm?"is":"isn't"} in draft version.</span><br/>`;
+                this.resRef.current.innerHTML += docIsDraftVersionMsg;
             }
             catch(err)
             {
@@ -218,6 +234,7 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
         {
             try
             {
+                SPOQASpinner.Show("Fixing list no crawl .......");
                 var fixListNoIndexRes = await RestAPIHelper.FixListNoCrawl(this.props.spHttpClient, this.state.affectedSite, this.listTitle);
             }
             catch(err)
@@ -227,15 +244,25 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
             }
         }
         
-        if(this.state.isWebNoIndex)
+        if(this.websNeedFixNoCrawl.length >0)
         {
-            try{
-                var fixWebNoIndexRes = await RestAPIHelper.FixWebNoCrawl(this.props.spHttpClient, this.state.affectedSite);
-            }
-            catch(err)
+            for(var index =0; index <this.websNeedFixNoCrawl.length;index++)
             {
-                SPOQAHelper.ShowMessageBar("Error",`Get exception when try to check FixWebNoCrawl with error message ${err}`);
-                hasError = true;
+                try{
+                    var currentWeb = this.websNeedFixNoCrawl[index];
+                    SPOQASpinner.Show(`Fixing web no crawl for ${currentWeb} .......`);
+                    var fixWebNoIndexRes = await RestAPIHelper.FixWebNoCrawl(this.props.spHttpClient, currentWeb);
+                    if(!fixWebNoIndexRes.ok)
+                    {
+                        SPOQAHelper.ShowMessageBar("Error",`Unable to fix no crawl for ${currentWeb}, please make sure you have permision and <a href="https://docs.microsoft.com/en-us/sharepoint/allow-or-prevent-custom-script">allow script</a> is enabled for the site collection`);
+                        hasError = true;
+                    }
+                }
+                catch(err)
+                {
+                    SPOQAHelper.ShowMessageBar("Error",`Get exception when try to check FixWebNoCrawl with error message ${err}`);
+                    hasError = true;
+                }
             }
         }
 
@@ -243,6 +270,7 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
         {
             try
             {
+                SPOQASpinner.Show(`Fixing document draft version .......`);
                 var fixDraftVersionRes = await RestAPIHelper.FixDraftVersion(this.props.spHttpClient, this.state.affectedSite, this.state.isLibrary, this.listTitle, this.state.affectedDocument);
             }
             catch(err)
@@ -256,6 +284,7 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
         {
             try
             {
+                SPOQASpinner.Show(`Fixing missed display form .......`);
                 var fixMissingDisplayFormRes = await RestAPIHelper.FixMissDisForm(this.props.spHttpClient, this.state.affectedSite, this.listTitle);
             }
             catch(err)
@@ -268,10 +297,33 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
         if(!hasError)
         {
             SPOQAHelper.ShowMessageBar("Success", `Fixed all detected issues please try to reindex the affected library/site and wait for 20~30 minutes then verify it`);
-            this.setState({isChecked:false});
-            
+            this.setState({isChecked:false});            
         }
 
         SPOQASpinner.Hide();
     }
+
+    public async CheckWebNoCrawl() // check the current web and all parent web
+    {
+        this.resRef.current.innerHTML ="";
+        this.websNeedFixNoCrawl = [];
+        let properties:string[] = ["NoCrawl"];
+        let resList:any[] = [];
+        var hasParentWeb = true;
+        let currentWebUrl = this.state.affectedSite;
+        while(hasParentWeb)
+        {
+            var webInfo = await RestAPIHelper.GetWebInfo(this.props.spHttpClient, currentWebUrl, properties);
+            if(webInfo.NoCrawl)
+            {               
+                this.websNeedFixNoCrawl.push(currentWebUrl);
+            }
+            
+            var noIndexMsg = `<span style="${webInfo.NoCrawl? this.redStyle:this.greenStyle}" >The nocrawl ${webInfo.NoCrawl?"has":"hasn't"} been enabled for the site ${currentWebUrl}.</span><br/>`;
+            this.resRef.current.innerHTML += noIndexMsg;
+            currentWebUrl = await RestAPIHelper.GetParentWebUrl(this.props.spHttpClient, currentWebUrl);
+            hasParentWeb = currentWebUrl && currentWebUrl!="";
+        }       
+    }
+
 }

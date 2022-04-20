@@ -39,7 +39,7 @@ export default class PermissionQA extends React.Component<ISharePointOnlineQuick
     public render():React.ReactElement<ISharePointOnlineQuickAssistProps>
     {
         return (            
-            <div id="SearchDocumentContainer">
+            <div id="PermssionQAContainer">
                 <div className={ styles.row }>
                     <div className={ styles.column }>
                         <div id="QuestionsSection">
@@ -91,9 +91,9 @@ export default class PermissionQA extends React.Component<ISharePointOnlineQuick
                                     </div>:null}                                        
                                 </div>:null}
                             </div>
-                            <div id="OneDriveSyncDiagnoseResult">
+                    <div id="PermssionDiagnoseResult">
                         {this.state.isChecked && this.state.siteIsVaild?<Label>Diagnose result:</Label>:null}
-                                <div style={{marginLeft:20}} id="OneDriveSyncDiagnoseResultDiv" ref={this.resRef}>
+                                <div style={{marginLeft:20}} id="PermssionDiagnoseResultDiv" ref={this.resRef}>
                                 </div>
                         </div>
                         <div id="CommandButtonsSection">

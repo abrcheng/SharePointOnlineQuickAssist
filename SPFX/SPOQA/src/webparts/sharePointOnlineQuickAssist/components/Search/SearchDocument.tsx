@@ -211,13 +211,15 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
             {
                 var resIsDraftVersion = await RestAPIHelper.IsDocumentInDraftVersion(this.props.spHttpClient, this.state.affectedSite, this.state.isLibrary, this.listTitle,this.state.affectedDocument);
                 this.setState({isDraftVersion:resIsDraftVersion});
-                var docIsDraftVersionMsg =  `<span style="${resIsListMissedForm? this.redStyle:this.greenStyle}" >The document ${this.state.affectedDocument} ${resIsListMissedForm?"is":"isn't"} in draft version.</span><br/>`;
+                var docIsDraftVersionMsg =  `<span style="${resIsDraftVersion? this.redStyle:this.greenStyle}" >The document ${this.state.affectedDocument} ${resIsDraftVersion?"is":"isn't"} in draft version.</span><br/>`;
                 this.resRef.current.innerHTML += docIsDraftVersionMsg;
             }
             catch(err)
             {
                 SPOQAHelper.ShowMessageBar("Error",`Get exception when try to check IsDocumentInDraftVersion with error message ${err}`);                
             }
+
+            // TBD: Check the approve status, OData__ModerationStatus, https://docs.microsoft.com/en-us/dotnet/api/microsoft.sharepoint.spmoderationstatustype?view=sharepoint-server
 
             this.setState({isChecked:true});           
         }

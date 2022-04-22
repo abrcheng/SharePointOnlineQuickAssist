@@ -1,5 +1,4 @@
 import {SPHttpClient,ISPHttpClientOptions} from '@microsoft/sp-http';
-import { format } from 'office-ui-fabric-react';
 import SPOQAHelper from './SPOQAHelper';
 import { WebPartContext } from '@microsoft/sp-webpart-base';
 
@@ -1500,4 +1499,22 @@ export default class RestAPIHelper
         return null;
       }
     }
+    
+    public static async IsObjectExisting(spHttpClient:SPHttpClient, apiUrl:string)
+    {
+        var objRes = await spHttpClient.get(apiUrl, SPHttpClient.configurations.v1);
+        if(objRes.ok)
+        {
+            var resJson = await objRes.json();
+            if(resJson.error)
+            {
+                console.error(`${resJson.error.message} ${apiUrl}.`);
+                return false;
+            }
+            return true;
+        }
+        
+        console.error(`Failed to get data from request ${apiUrl}.`);
+        return false;    
+    }    
 }

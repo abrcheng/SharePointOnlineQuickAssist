@@ -12,6 +12,8 @@ import { ISharePointOnlineQuickAssistProps } from '../ISharePointOnlineQuickAssi
 import SPOQAHelper from '../../../Helpers/SPOQAHelper';
 import SPOQASpinner from '../../../Helpers/SPOQASpinner';
 import styles from '../SharePointOnlineQuickAssist.module.scss';
+import  { ItemType, ModerationStatusHelper} from '../../../Helpers/ModerationStatusHelper';
+
 export default class SearchDocumentQA extends React.Component<ISharePointOnlineQuickAssistProps>
 {
     public state = {
@@ -25,13 +27,18 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
         isWebNoIndex:false,
         isDraftVersion:false,
         isMissingDisplayForm:false,
-        isChecked:false
+        isChecked:false,
+        needRemedy:false,       
+        remedyStepsShowed:false
       };
     private listTitle:string="";
-    private resRef= React.createRef<HTMLDivElement>();  
+    private resRef= React.createRef<HTMLDivElement>(); 
+    private remedyRef = React.createRef<HTMLDivElement>();
     private websNeedFixNoCrawl:string[] =[];
     private redStyle = "color:red";
     private greenStyle = "color:green";
+    private remedyStyle = "color:black";
+    private remedySteps:any[] =[]; 
     public render():React.ReactElement<ISharePointOnlineQuickAssistProps>
     {
         return (            
@@ -64,16 +71,19 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
                                                     RootFolder:option.data.rootFolder,                                                  
                                                     BaseType:option.data.baseType}, 
                                                 isChecked:false,
-                                                isLibrary:option.data.baseType==1});                                                
-                                                this.websNeedFixNoCrawl=[];
-                                                this.resRef.current.innerHTML ="";
+                                                isLibrary:option.data.baseType==1,
+                                                affectedDocument:""});  
                                         }} 
                                     />   
                                 {this.state.affectedLibrary.Title!=""? 
                                 <div><TextField
                                 label="Affected document full URL:"
                                 multiline={false}
-                                onChange={(e)=>{let text:any = e.target; this.setState({affectedDocument:text.value,isChecked:false}); this.resRef.current.innerHTML ="";}}
+                                onChange={(e)=>{
+                                    let text:any = e.target;
+                                    this.setState({affectedDocument:text.value}); 
+                                    this.CleanPreviousResult();
+                                    }}
                                 value={this.state.affectedDocument}
                                 required={true}                                                
                                 />
@@ -92,12 +102,15 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
                                 style={{ display: 'inline', marginTop: '10px' }}
                                 onClick={() => {this.state.siteIsVaild? this.CheckSearchDocument():this.LoadLists();}}
                                 />
-                            {this.state.isChecked && (this.state.isListNoIndex || this.websNeedFixNoCrawl.length>0 || this.state.isMissingDisplayForm || this.state.isDraftVersion)?
+                            {this.state.needRemedy && !this.state.remedyStepsShowed && this.state.siteIsVaild?
                                 <PrimaryButton
-                                    text="Fix Issues"
+                                    text="Show Remedy Steps"
                                     style={{ display: 'inline', marginTop: '10px', marginLeft:"10px"}}
-                                    onClick={() => {this.FixIssues();}}
+                                    onClick={() => {this.ShowRemedySteps();}}
                                 />:null}
+                        </div>
+                        <div id="RemedyStepsDiv" ref={this.remedyRef}>
+                                
                         </div>
                     </div>
                 </div>  
@@ -141,8 +154,8 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
             return;
         }
 
-        SPOQAHelper.ResetFormStaus();
-        this.setState({isChecked:false});         
+        SPOQAHelper.ResetFormStaus();        
+        this.CleanPreviousResult(); 
         let searched:boolean = false;
         SPOQASpinner.Show("Checking document search issue ......");
         this.listTitle = this.state.affectedLibrary.Title;
@@ -183,6 +196,12 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
                 this.setState({isListNoIndex:resIsListNoCrawl});
                 var listNoCrawlMsg =  `<span style="${resIsListNoCrawl? this.redStyle:this.greenStyle}" >The nocrawl ${resIsListNoCrawl?"has":"hasn't"} been enabled for the list ${this.state.affectedLibrary.Title}.</span><br/>`;
                 this.resRef.current.innerHTML += listNoCrawlMsg;
+                if(resIsListNoCrawl)
+                {
+                    this.remedySteps.push({
+                        message:"Dectected nocrawl for the list.",
+                        url:`${this.state.affectedSite}/_layouts/15/advsetng.aspx?List={${this.state.affectedLibrary.Id}}`});
+                }
             }
             catch(err)
             {
@@ -197,8 +216,12 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
                     var resIsListMissedForm = await RestAPIHelper.IsListMissDisplayForm(this.props.spHttpClient, this.state.affectedSite, this.listTitle);
                     // isMissingDisplayForm
                     this.setState({isMissingDisplayForm:resIsListMissedForm});
-                    var listMissedDisplayFormMsg =  `<span style="${resIsListMissedForm? this.redStyle:this.greenStyle}" >The dispalyForm ${resIsListMissedForm?"is":"isn't"} missed for the list ${this.state.affectedLibrary.Title}.</span><br/>`;
+                    var listMissedDisplayFormMsg =  `<span style="${resIsListMissedForm? this.redStyle:this.greenStyle}" >The dispalyForm ${resIsListMissedForm?"is":"isn't"} missed for the list ${this.state.affectedLibrary.Title}</span><br/>`;
                     this.resRef.current.innerHTML += listMissedDisplayFormMsg;
+                    if(resIsListMissedForm)
+                    {
+                        this.remedySteps.push({message:`Dectected display form is missing, please use the feature "Missing New/Disp/Edit" Forms to fix it`});
+                    }
                 }
                 catch(err)
                 {
@@ -206,27 +229,59 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
                 }
             }
 
+            // Check the approve status, OData__ModerationStatus, https://docs.microsoft.com/en-us/dotnet/api/microsoft.sharepoint.spmoderationstatustype?view=sharepoint-server
+            var resNotApprovedItems = await ModerationStatusHelper.GetNotApprovedItems(this.props.spHttpClient, this.state.affectedSite, this.state.affectedLibrary.RootFolder, this.state.affectedDocument);
+            if(resNotApprovedItems.success)
+               {
+                    resNotApprovedItems.items.forEach((item)=>{
+                        var notApproveMsg = `<a href='${item.url}'>${item.name}</a>'s approve status is ${item.status}.`;
+                        this.remedySteps.push({
+                            message:notApproveMsg,
+                            url:item.parentUrl});
+                        this.resRef.current.innerHTML += `<span style="${this.redStyle}" >${notApproveMsg}</span><br/>`;
+                });                  
+               }      
+
             // check the draft version issue
-            try
+            if(resNotApprovedItems.itemType == ItemType.Document || resNotApprovedItems.itemType == ItemType.ListItem)
             {
-                var resIsDraftVersion = await RestAPIHelper.IsDocumentInDraftVersion(this.props.spHttpClient, this.state.affectedSite, this.state.isLibrary, this.listTitle,this.state.affectedDocument);
-                this.setState({isDraftVersion:resIsDraftVersion});
-                var docIsDraftVersionMsg =  `<span style="${resIsDraftVersion? this.redStyle:this.greenStyle}" >The document ${this.state.affectedDocument} ${resIsDraftVersion?"is":"isn't"} in draft version.</span><br/>`;
-                this.resRef.current.innerHTML += docIsDraftVersionMsg;
-            }
-            catch(err)
-            {
-                SPOQAHelper.ShowMessageBar("Error",`Get exception when try to check IsDocumentInDraftVersion with error message ${err}`);                
-            }
-
-            // TBD: Check the approve status, OData__ModerationStatus, https://docs.microsoft.com/en-us/dotnet/api/microsoft.sharepoint.spmoderationstatustype?view=sharepoint-server
-
-            this.setState({isChecked:true});           
+                try
+                {
+                    var resIsDraftVersion = await RestAPIHelper.IsDocumentInDraftVersion(this.props.spHttpClient, this.state.affectedSite, this.state.isLibrary, this.listTitle,this.state.affectedDocument);
+                    this.setState({isDraftVersion:resIsDraftVersion});
+                    var docIsDraftVersionMsg =  `<span style="${resIsDraftVersion? this.redStyle:this.greenStyle}" >The document ${this.state.affectedDocument} ${resIsDraftVersion?"is":"isn't"} in draft version.</span><br/>`;
+                    this.resRef.current.innerHTML += docIsDraftVersionMsg;
+                    if(resIsDraftVersion)
+                    {
+                        this.remedySteps.push({
+                            message:`The object ${this.state.affectedDocument} is in draft version`,
+                            url:this.props.rootUrl + this.state.affectedLibrary.RootFolder});    
+                    }                
+                }
+                catch(err)
+                {
+                    SPOQAHelper.ShowMessageBar("Error",`Get exception when try to check IsDocumentInDraftVersion with error message ${err}`);                
+                } 
+           }
+           else if(resNotApprovedItems.itemType == ItemType.Folder)
+           {
+                this.resRef.current.innerHTML += `${this.state.affectedDocument} is a folder, skip draft version checking`;
+           } 
+           else // ItemType is unknow
+           {
+                SPOQAHelper.ShowMessageBar("Error",`${resNotApprovedItems.error}`);   
+           }                        
+        }
+        
+        if(this.remedySteps.length >0)
+        {
+            this.setState({needRemedy:true,remedyStepsShowed:false});  
         }
 
         SPOQASpinner.Hide();
     }
-
+    
+    // Auto fix will be deprecated
     public async FixIssues()
     {
         SPOQAHelper.ResetFormStaus();
@@ -319,6 +374,9 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
             if(webInfo.NoCrawl)
             {               
                 this.websNeedFixNoCrawl.push(currentWebUrl);
+                this.remedySteps.push({
+                    message:`Dectected nocrawl for the site ${currentWebUrl}.`,
+                    url:`${currentWebUrl}/_layouts/15/srchvis.aspx`});
             }
             
             var noIndexMsg = `<span style="${webInfo.NoCrawl? this.redStyle:this.greenStyle}" >The nocrawl ${webInfo.NoCrawl?"has":"hasn't"} been enabled for the site ${currentWebUrl}.</span><br/>`;
@@ -326,6 +384,35 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
             currentWebUrl = await RestAPIHelper.GetParentWebUrl(this.props.spHttpClient, currentWebUrl);
             hasParentWeb = currentWebUrl && currentWebUrl!="";
         }       
+    }
+
+    public async ShowRemedySteps()
+    {    
+        this.remedyRef.current.innerHTML+=`<br/><label class="ms-Label" style='${this.remedyStyle};font-size:14px;font-weight:bold'>Remedy Steps:</label><br/>`;
+        // Dispaly remedy steps
+        this.remedySteps.forEach(step=>{
+            var message =step.message;
+            if(step.message[step.message.length-1] ==".")
+            {
+                message = message.substr(0, step.message.length-1);                
+            }
+            var fixpage = "";
+            if(step.url)
+            {
+                fixpage = ` can be fixed in <a href='${step.url}' target='_blank'>this page</a>`;
+            }
+            this.remedyRef.current.innerHTML+=`<div style='${this.remedyStyle};margin-left:20px'>${message}${fixpage}.</div>`;
+        }); 
+
+        this.setState({remedyStepsShowed:true});   
+    }
+
+    private CleanPreviousResult() {
+        this.websNeedFixNoCrawl=[];
+        this.resRef.current.innerHTML ="";
+        this.remedyRef.current.innerHTML =""; 
+        this.remedySteps =[];
+        this.setState({isChecked:false, needRemedy:false});
     }
 
 }

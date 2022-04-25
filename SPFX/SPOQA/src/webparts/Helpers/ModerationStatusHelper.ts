@@ -42,7 +42,7 @@ export class NotApprovedItem
         }
 }
 
-// Class for the result of not approved items
+// Class for getting the result of items which haven't been approved
 export class NotApprovedItemsResult
 {
     // Indicates whether execute the GetNotApprovedItems succesful or not

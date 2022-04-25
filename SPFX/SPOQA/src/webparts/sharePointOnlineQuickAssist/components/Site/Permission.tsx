@@ -13,6 +13,8 @@ import SPOQAHelper from '../../../Helpers/SPOQAHelper';
 import SPOQASpinner from '../../../Helpers/SPOQASpinner';
 import {SPHttpClient} from '@microsoft/sp-http';
 import styles from '../SharePointOnlineQuickAssist.module.scss';
+import {RemedyHelper} from '../../../Helpers/RemedyHelper';
+import  { ItemType, ModerationStatusHelper} from '../../../Helpers/ModerationStatusHelper';
 
 export default class PermissionQA extends React.Component<ISharePointOnlineQuickAssistProps>
 {
@@ -32,8 +34,7 @@ export default class PermissionQA extends React.Component<ISharePointOnlineQuick
     private listId:string="";
     private remedySteps =[]; 
     private redStyle = "color:red";
-    private greenStyle = "color:green";
-    private remedyStyle = "color:black";
+    private greenStyle = "color:green";   
     private resRef= React.createRef<HTMLDivElement>();  
     private remedyRef = React.createRef<HTMLDivElement>();
     public render():React.ReactElement<ISharePointOnlineQuickAssistProps>
@@ -170,6 +171,19 @@ export default class PermissionQA extends React.Component<ISharePointOnlineQuick
             });
        }
        
+       // Check the approve status, OData__ModerationStatus, https://docs.microsoft.com/en-us/dotnet/api/microsoft.sharepoint.spmoderationstatustype?view=sharepoint-server
+       var resNotApprovedItems = await ModerationStatusHelper.GetNotApprovedItems(this.props.spHttpClient, this.state.affectedSite, this.state.affectedLibrary.RootFolder, this.state.affectedDocument);
+       if(resNotApprovedItems.success)
+              {
+                   resNotApprovedItems.items.forEach((item)=>{
+                       var notApproveMsg = `<a href='${item.url}'>${item.name}</a>'s approve status is ${item.status}.`;
+                       this.remedySteps.push({
+                           message:notApproveMsg,
+                           url:item.parentUrl});
+                       this.resRef.current.innerHTML += `<span style="${this.redStyle}" >${notApproveMsg}</span><br/>`;
+               });                  
+              }  
+       
        // check file existing
        var isFileExisting = await RestAPIHelper.IsDocumentExisting(this.props.spHttpClient, this.state.affectedSite, this.state.affectedDocument.replace(this.props.rootUrl, ""));
        var fileExistingMsg = `The file ${isFileExisting.success? "can":"can't"} be found.`;
@@ -272,20 +286,9 @@ export default class PermissionQA extends React.Component<ISharePointOnlineQuick
         SPOQASpinner.Hide();
     } 
 
-    private async ShowRemedySteps()
+    private ShowRemedySteps()
     {    
-        this.remedyRef.current.innerHTML+=`<br/><label class="ms-Label" style='${this.remedyStyle};font-size:14px;font-weight:bold'>Remedy Steps:</label><br/>`;
-        // Dispaly remedy steps
-        this.remedySteps.forEach(step=>{
-            var message =step.message;
-            if(step.message[step.message.length-1] ==".")
-            {
-                message = message.substr(0, step.message.length-1);                
-            }
-
-            this.remedyRef.current.innerHTML+=`<div style='${this.remedyStyle};margin-left:20px'>${message} can be fixed in <a href='${step.url}' target='_blank'>this page</a>.</div>`;
-        }); 
-
+        this.remedyRef.current.innerHTML = RemedyHelper.GetRemedyHtml(this.remedySteps);
         this.setState({remedyStepsShowed:true});   
     }
     

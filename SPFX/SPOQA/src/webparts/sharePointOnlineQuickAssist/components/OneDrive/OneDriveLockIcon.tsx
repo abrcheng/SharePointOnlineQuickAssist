@@ -12,6 +12,8 @@ import { ISharePointOnlineQuickAssistProps } from '../ISharePointOnlineQuickAssi
 import SPOQAHelper from '../../../Helpers/SPOQAHelper';
 import SPOQASpinner from '../../../Helpers/SPOQASpinner';
 import styles from '../SharePointOnlineQuickAssist.module.scss';
+import {RemedyHelper} from '../../../Helpers/RemedyHelper';
+
 export default class OneDriveLockIconQA extends React.Component<ISharePointOnlineQuickAssistProps>
 {
     public state = {         
@@ -28,8 +30,7 @@ export default class OneDriveLockIconQA extends React.Component<ISharePointOnlin
     private listId:string="";
     private remedySteps =[]; 
     private redStyle = "color:red";
-    private greenStyle = "color:green";
-    private remedyStyle = "color:black";
+    private greenStyle = "color:green"; 
     private resRef= React.createRef<HTMLDivElement>();  
     private remedyRef = React.createRef<HTMLDivElement>();
     public render():React.ReactElement<ISharePointOnlineQuickAssistProps>
@@ -303,20 +304,9 @@ export default class OneDriveLockIconQA extends React.Component<ISharePointOnlin
         }
     }
 
-    public async ShowRemedySteps()
+    private async ShowRemedySteps()
     {    
-        this.remedyRef.current.innerHTML+=`<br/><label class="ms-Label" style='${this.remedyStyle};font-size:14px;font-weight:bold'>Remedy Steps:</label><br/>`;
-        // Dispaly remedy steps
-        this.remedySteps.forEach(step=>{
-            var message =step.message;
-            if(step.message[step.message.length-1] ==".")
-            {
-                message = message.substr(0, step.message.length-1);                
-            }
-
-            this.remedyRef.current.innerHTML+=`<div style='${this.remedyStyle};margin-left:20px'>${message} can be fixed in <a href='${step.url}' target='_blank'>this page</a>.</div>`;
-        }); 
-
+        this.remedyRef.current.innerHTML = RemedyHelper.ShowRemedySteps(this.remedySteps);
         this.setState({remedyStepsShowed:true});   
     }
 }

@@ -13,6 +13,7 @@ import SPOQAHelper from '../../../Helpers/SPOQAHelper';
 import SPOQASpinner from '../../../Helpers/SPOQASpinner';
 import styles from '../SharePointOnlineQuickAssist.module.scss';
 import  { ItemType, ModerationStatusHelper} from '../../../Helpers/ModerationStatusHelper';
+import {RemedyHelper} from '../../../Helpers/RemedyHelper';
 
 export default class SearchDocumentQA extends React.Component<ISharePointOnlineQuickAssistProps>
 {
@@ -36,8 +37,7 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
     private remedyRef = React.createRef<HTMLDivElement>();
     private websNeedFixNoCrawl:string[] =[];
     private redStyle = "color:red";
-    private greenStyle = "color:green";
-    private remedyStyle = "color:black";
+    private greenStyle = "color:green";    
     private remedySteps:any[] =[]; 
     public render():React.ReactElement<ISharePointOnlineQuickAssistProps>
     {
@@ -386,24 +386,9 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
         }       
     }
 
-    public async ShowRemedySteps()
+    private ShowRemedySteps()
     {    
-        this.remedyRef.current.innerHTML+=`<br/><label class="ms-Label" style='${this.remedyStyle};font-size:14px;font-weight:bold'>Remedy Steps:</label><br/>`;
-        // Dispaly remedy steps
-        this.remedySteps.forEach(step=>{
-            var message =step.message;
-            if(step.message[step.message.length-1] ==".")
-            {
-                message = message.substr(0, step.message.length-1);                
-            }
-            var fixpage = "";
-            if(step.url)
-            {
-                fixpage = ` can be fixed in <a href='${step.url}' target='_blank'>this page</a>`;
-            }
-            this.remedyRef.current.innerHTML+=`<div style='${this.remedyStyle};margin-left:20px'>${message}${fixpage}.</div>`;
-        }); 
-
+        this.remedyRef.current.innerHTML = RemedyHelper.ShowRemedySteps(this.remedySteps);
         this.setState({remedyStepsShowed:true});   
     }
 

@@ -3,6 +3,7 @@ declare interface ISharePointOnlineQuickAssistWebPartStrings {
   BasicGroupName: string;
   DescriptionFieldLabel: string;
   WebPartTitle: string;   
+  SearchIssue:string;
 }
 
 declare module 'SharePointOnlineQuickAssistWebPartStrings' {

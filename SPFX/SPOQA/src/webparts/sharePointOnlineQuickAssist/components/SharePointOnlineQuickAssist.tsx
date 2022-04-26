@@ -39,7 +39,7 @@ import { initializeIcons } from '@uifabric/icons';
 //import { Button } from 'office-ui-fabric-react/lib/Button';
 // https://developer.microsoft.com/en-us/fluentui?fabricVer=6#/controls/web/combobox
 const INITIAL_OPTIONS: IComboBoxOption[] = [
-  { key: 'Search', text: 'Search Issues', itemType: SelectableOptionMenuItemType.Header },
+  { key: 'Search', text: strings.SearchIssue, itemType: SelectableOptionMenuItemType.Header },
   { key: 'SearchDocument', text: '  Specified Document' },
   // { key: 'SearchPeople', text: 'People' },
   //{ key: 'SearchLibrary', text: 'Specified Library' },

@@ -15,6 +15,7 @@ import {SPHttpClient} from '@microsoft/sp-http';
 import styles from '../SharePointOnlineQuickAssist.module.scss';
 import {RemedyHelper} from '../../../Helpers/RemedyHelper';
 import  { ItemType, ModerationStatusHelper} from '../../../Helpers/ModerationStatusHelper';
+import * as strings from 'SharePointOnlineQuickAssistWebPartStrings';
 
 export default class PermissionQA extends React.Component<ISharePointOnlineQuickAssistProps>
 {
@@ -45,14 +46,14 @@ export default class PermissionQA extends React.Component<ISharePointOnlineQuick
                     <div className={ styles.column }>
                         <div id="QuestionsSection">
                         <TextField
-                                label="Affected User:"
+                                label={strings.AffectedUser}
                                 multiline={false}
                                 onChange={(e)=>{let text:any = e.target; this.setState({affectedUser:text.value});}}
                                 value={this.state.affectedUser}
                                 required={true}                                                
                         />
                             <TextField
-                                    label="Affected Site(press enter for loading libraries/lists):"
+                                    label={strings.AffectedSiteLoadList}
                                     multiline={false}
                                     onChange={(e)=>{let text:any = e.target; this.setState({affectedSite:text.value,siteIsVaild:false,isChecked:false}); this.resRef.current.innerHTML=""; this.remedyRef.current.innerHTML="";}}
                                     value={this.state.affectedSite}
@@ -63,7 +64,7 @@ export default class PermissionQA extends React.Component<ISharePointOnlineQuick
                                 <div>
                                     <ComboBox
                                     defaultSelectedKey="-1"
-                                    label="Please select the affected library/list"
+                                    label={strings.SelectList}
                                     allowFreeform
                                     autoComplete="on"
                                     options={this.state.siteLibraries} 
@@ -82,7 +83,7 @@ export default class PermissionQA extends React.Component<ISharePointOnlineQuick
                                     />
                                     {this.state.affectedLibrary.Title!=""? 
                                         <div><TextField
-                                        label="Affected document full URL:"
+                                        label={strings.AffectedDocument}
                                         multiline={false}
                                         onChange={(e)=>{let text:any = e.target; this.setState({affectedDocument:text.value,isChecked:false});}}
                                         value={this.state.affectedDocument}
@@ -99,13 +100,13 @@ export default class PermissionQA extends React.Component<ISharePointOnlineQuick
                         </div>
                         <div id="CommandButtonsSection">
                             <PrimaryButton
-                                text="Check Issues"
+                                text={strings.CheckIssues}
                                 style={{ display: 'inline', marginTop: '10px' }}
                                 onClick={() => {this.state.siteIsVaild? this.CheckPermissionQAIssues():this.LoadLists();}}
                                 />
                             {this.state.needRemedy && !this.state.remedyStepsShowed && this.state.siteIsVaild?
                                 <PrimaryButton
-                                    text="Show Remedy Steps"
+                                    text={strings.ShowRemedySteps}
                                     style={{ display: 'inline', marginTop: '10px', marginLeft:"10px"}}
                                     onClick={() => {this.ShowRemedySteps();}}
                                 />:null}
@@ -140,7 +141,7 @@ export default class PermissionQA extends React.Component<ISharePointOnlineQuick
         }
         catch(err)
         {
-            SPOQAHelper.ShowMessageBar("Error", `Failed to load lists from the site, please make sure the site URL is correct and you have the permssion, detail error is ${err}`);
+            SPOQAHelper.ShowMessageBar("Error", `${strings.FailedLoadSiteList} ${err}`);
         }        
     }
     
@@ -148,7 +149,7 @@ export default class PermissionQA extends React.Component<ISharePointOnlineQuick
     {
         if(this.state.affectedLibrary.Title == "" ||this.state.affectedLibrary.Title =="-1")
         {
-            SPOQAHelper.ShowMessageBar("Error", "Please select the library!");
+            SPOQAHelper.ShowMessageBar("Error", strings.PleaseSelectList);
             return;
         }
 
@@ -157,11 +158,11 @@ export default class PermissionQA extends React.Component<ISharePointOnlineQuick
         this.remedySteps = []; // Clean RemedySteps
         this.resRef.current.innerHTML = ""; // Clean the OneDriveSyncDiagnoseResultDiv
         this.remedyRef.current.innerHTML =""; // Clean the RemedyStepsDiv
-        SPOQASpinner.Show(`Checking ${this.state.affectedUser}'s permission issue for URL ${this.state.affectedDocument}......`); 
+        SPOQASpinner.Show(`${strings.Checking} ${this.state.affectedUser}${strings.PC_PermissionUrl} ${this.state.affectedDocument}......`); 
         
        // check file without check-in version 
        var hasFileWithOutCheckVersion = await RestAPIHelper.HasFileWithOutCheckInVersion(this.props.spHttpClient, this.state.affectedSite, this.state.affectedLibrary.Id);
-       var fileWithOutCheckVersionMsg = `There ${hasFileWithOutCheckVersion?"are ":"isn't any " } documents without check-in version in the library.`;
+       var fileWithOutCheckVersionMsg = hasFileWithOutCheckVersion? strings.PC_DocumentsWithoutCheckin:strings.PC_NoDocumentsWithoutCheckin;
        this.resRef.current.innerHTML += `<span style='${hasFileWithOutCheckVersion? this.redStyle:this.greenStyle}'>${fileWithOutCheckVersionMsg}</span><br/>`;
        if(hasFileWithOutCheckVersion)
        {
@@ -176,7 +177,7 @@ export default class PermissionQA extends React.Component<ISharePointOnlineQuick
        if(resNotApprovedItems.success)
               {
                    resNotApprovedItems.items.forEach((item)=>{
-                       var notApproveMsg = `<a href='${item.url}'>${item.name}</a>'s approve status is ${item.status}.`;
+                       var notApproveMsg = `<a href='${item.url}'>${item.name}</a>${strings.PC_ApproveStatusIs} ${item.status}.`;
                        this.remedySteps.push({
                            message:notApproveMsg,
                            url:item.parentUrl});
@@ -186,7 +187,7 @@ export default class PermissionQA extends React.Component<ISharePointOnlineQuick
        
        // check file existing
        var isFileExisting = await RestAPIHelper.IsDocumentExisting(this.props.spHttpClient, this.state.affectedSite, this.state.affectedDocument.replace(this.props.rootUrl, ""));
-       var fileExistingMsg = `The file ${isFileExisting.success? "can":"can't"} be found.`;
+       var fileExistingMsg = isFileExisting.success? strings.PC_FileExistingMsg:strings.PC_FileNotExistingMsg;
        this.resRef.current.innerHTML += `<span style='${!isFileExisting.success? this.redStyle:this.greenStyle}'>${fileExistingMsg}</span><br/>`;
        if(!isFileExisting.success)
        {
@@ -211,7 +212,7 @@ export default class PermissionQA extends React.Component<ISharePointOnlineQuick
                             customzationNames.push(customzation.alias);
                         }
                     });
-                    var hasCustomzationMsg = `This page contains customzations ${customzationNames.length >0? customzationNames.join(","):""}`;
+                    var hasCustomzationMsg = `${strings.PC_PageCustomized} ${customzationNames.length >0? customzationNames.join(","):""}`;
                     this.resRef.current.innerHTML += `<span style='${this.redStyle}'>${hasCustomzationMsg}</span><br/>`;
                 }
            }
@@ -219,7 +220,7 @@ export default class PermissionQA extends React.Component<ISharePointOnlineQuick
 
        // check permission on the page/document
        var hasReadPermissionOnDocument =  await RestAPIHelper.HasPermissionOnDocument(this.props.spHttpClient, this.state.affectedSite, this.state.affectedDocument.replace(this.props.rootUrl, ""), this.state.affectedUser, SP.PermissionKind.viewListItems);
-       var readPermssionOnDocumentMsg = `The user ${this.state.affectedUser} ${hasReadPermissionOnDocument? "has":"lacks"} read permission on the document`;
+       var readPermssionOnDocumentMsg = hasReadPermissionOnDocument? strings.PC_UserHasPermssionOnDocument:strings.PC_UserHasNoPermssionOnDocument;
        this.resRef.current.innerHTML += `<span style='${!hasReadPermissionOnDocument? this.redStyle:this.greenStyle}'>${readPermssionOnDocumentMsg}</span><br/>`;
        if(!hasReadPermissionOnDocument)
        {
@@ -231,7 +232,7 @@ export default class PermissionQA extends React.Component<ISharePointOnlineQuick
 
        // check file without major version      
        var isDraftVersion = await RestAPIHelper.IsDocumentInDraftVersion(this.props.spHttpClient, this.state.affectedSite, true, this.state.affectedLibrary.Title,this.state.affectedDocument);
-       var draftVersionMsg = `The document ${isDraftVersion? "is":"is not"} in draft version`;
+       var draftVersionMsg = isDraftVersion? strings.PC_DocumentIsInDraft:strings.PC_DocumentIsNotInDraft;
        this.resRef.current.innerHTML += `<span style='${isDraftVersion? this.redStyle:this.greenStyle}'>${draftVersionMsg}</span><br/>`;
        if(isDraftVersion)
        {
@@ -243,7 +244,7 @@ export default class PermissionQA extends React.Component<ISharePointOnlineQuick
 
        // check library's read/write security is 2 (only the author can read/write the item) 
        var hasSecurityLevelIssue = this.state.affectedLibrary.readSecurity ===2 || this.state.affectedLibrary.writeSecurity ===2;
-       var securityLevelIssueMsg = `The library ${hasSecurityLevelIssue? "has":"hasn't"} been set to only the author can read/write the item`;
+       var securityLevelIssueMsg = hasSecurityLevelIssue? strings.PC_ListSecurityLevelHasIssue:strings.PC_ListSecurityLevelHasNoIssue;
        this.resRef.current.innerHTML += `<span style='${hasSecurityLevelIssue? this.redStyle:this.greenStyle}'>${securityLevelIssueMsg}</span><br/>`;
        if(hasSecurityLevelIssue)
        {
@@ -256,7 +257,7 @@ export default class PermissionQA extends React.Component<ISharePointOnlineQuick
        // check lock down mode
        // Check site features, ViewFormPagesLockDown feature ID:7c637b23-06c4-472d-9a9a-7c175762c5c4, Limited-access user permission lockdown mode
         var isLockDownEnabled = await RestAPIHelper.IsSiteFeatureEnabled(this.props.spHttpClient, this.state.affectedSite, "7c637b23-06c4-472d-9a9a-7c175762c5c4");
-        var lockDownMsg = `Limited-access user permission lockdown mode of the site collection has been ${isLockDownEnabled? "enabled":"disabled"}`;
+        var lockDownMsg = isLockDownEnabled? strings.PC_LockDownEnabled:strings.PC_LockDownNotEnabled;
         if(isLockDownEnabled)
         {
             this.remedySteps.push({
@@ -268,7 +269,7 @@ export default class PermissionQA extends React.Component<ISharePointOnlineQuick
 
         // Check affected user's permssion on the library/list
         var hasViewPermission = await RestAPIHelper.HasPermissionOnList(this.props.spHttpClient, this.state.affectedSite, this.state.affectedLibrary.Title, this.state.affectedUser, SP.PermissionKind.viewListItems);
-        var hasViewPermssionMsg = `The affected user ${hasViewPermission? "has":"doesn't have"} view permission on the library.`;
+        var hasViewPermssionMsg = hasViewPermission? strings.PC_HasViewPermissionOnList:strings.PC_HasNoViewPermissionOnList;
         if(!hasViewPermission)
         {
             this.remedySteps.push({

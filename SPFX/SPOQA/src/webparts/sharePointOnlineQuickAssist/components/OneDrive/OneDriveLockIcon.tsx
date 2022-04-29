@@ -306,7 +306,7 @@ export default class OneDriveLockIconQA extends React.Component<ISharePointOnlin
 
     private async ShowRemedySteps()
     {    
-        this.remedyRef.current.innerHTML = RemedyHelper.ShowRemedySteps(this.remedySteps);
+        this.remedyRef.current.innerHTML = RemedyHelper.GetRemedyHtml(this.remedySteps);
         this.setState({remedyStepsShowed:true});   
     }
 }

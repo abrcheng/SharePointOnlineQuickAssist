@@ -1,6 +1,7 @@
 import {SPHttpClient,ISPHttpClientOptions} from '@microsoft/sp-http';
 import SPOQAHelper from './SPOQAHelper';
 import RestAPIHelper from './RestAPIHelper';
+import * as strings from 'SharePointOnlineQuickAssistWebPartStrings';
 
 // https://docs.microsoft.com/en-us/dotnet/api/microsoft.sharepoint.spmoderationstatustype?view=sharepoint-server
 export enum SPModerationStatusType {
@@ -83,7 +84,7 @@ export class ModerationStatusHelper
         var apiUrl = `${siteAbsoluteUrl}/_api/web/`;
         if(fullDocmentPath.indexOf(listRootFolderFullUrl+"/")==-1) // fullDocmentPath must match listRootFolderFullUrl
         {           
-            res.error = `The document full path ${fullDocmentPath} doesn't match list root folder ${listRootFolderFullUrl}.`;
+            res.error = `${strings.RI_FullDocumentPath} ${fullDocmentPath} ${strings.RI_NotMatchListRootFolder} ${listRootFolderFullUrl}.`;
             return res;
         }
         
@@ -100,13 +101,13 @@ export class ModerationStatusHelper
             var isItemExisting = await RestAPIHelper.IsObjectExisting(spHttpClient, apiUrl);
             if(!isItemExisting)
             {
-                throw new Error(`Failed to load item via ${apiUrl}`);
+                throw new Error(`${strings.RI_FailedToLoadItem} ${apiUrl}`);
             }
             itemType = ItemType.ListItem;
           }
           catch
           {
-            res.error = `The document full path ${fullDocmentPath} is not a valid list item URL or the item doesn't exist.`;
+            res.error = `${strings.RI_FullDocumentPath} ${fullDocmentPath} ${strings.RI_URLInvalid}.`;
             return res;
           }
         }
@@ -135,7 +136,7 @@ export class ModerationStatusHelper
         
         if(itemType == ItemType.UnKnown)
         {
-            res.error = `The full path ${fullDocmentPath} is not a valid URL or the item doesn't exist, ItemType is UnKnown.`;
+            res.error = `${strings.RI_FullDocumentPath} ${fullDocmentPath} ${strings.RI_URLInvalid}, ${strings.RI_ItemTypeUnKnow}.`;
             return res;
         }    
         
@@ -195,7 +196,7 @@ export class ModerationStatusHelper
             return {success:true,res:resJson};
         }
         
-        var failedMsg = `Failed to get data from request ${itemApiUrl}.`;
+        var failedMsg = `${strings.RI_FailedToGetData} ${itemApiUrl}.`;
         console.error(failedMsg);
         return {success:false, error:failedMsg};   
     }

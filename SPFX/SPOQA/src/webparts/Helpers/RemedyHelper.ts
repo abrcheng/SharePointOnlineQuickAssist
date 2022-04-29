@@ -1,12 +1,13 @@
+import * as strings from 'SharePointOnlineQuickAssistWebPartStrings';
 // Helper class for Remedy Steps
 export class RemedyHelper
 {
     private static remedyStyle = "color:black";
 
     // Build the html string according to the remedySteps 
-    public static ShowRemedySteps(remedySteps:any[])
+    public static GetRemedyHtml(remedySteps:any[])
     {    
-        var remedyHtml=`<br/><label class="ms-Label" style='${RemedyHelper.remedyStyle};font-size:14px;font-weight:bold'>Remedy Steps:</label><br/>`;
+        var remedyHtml=`<br/><label class="ms-Label" style='${RemedyHelper.remedyStyle};font-size:14px;font-weight:bold'>${strings.RemedySteps}</label><br/>`;
         // Dispaly remedy steps
         remedySteps.forEach(step=>{
             var message =step.message;
@@ -17,7 +18,7 @@ export class RemedyHelper
             var fixpage = "";
             if(step.url)
             {
-                fixpage = ` can be fixed in <a href='${step.url}' target='_blank'>this page</a>`;
+                fixpage = ` ${strings.CanBeFixedIn} <a href='${step.url}' target='_blank'>${strings.ThisPage}</a>`;
             }
             remedyHtml+=`<div style='${this.remedyStyle};margin-left:20px'>${message}${fixpage}.</div>`;
         }); 

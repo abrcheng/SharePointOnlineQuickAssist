@@ -386,7 +386,7 @@ export default class PermissionQA extends React.Component<ISharePointOnlineQuick
             {
                 var disable3rdcodeUrl = `${this.state.affectedDocument}?disable3PCode`;
                 this.remedySteps.push({
-                    message:`Try to disable 3rd party code by appending ?disable3PCode to page URL and open it in a new tab`,
+                    message:strings.PC_TryDisable3PCode,
                     url:`${disable3rdcodeUrl}`
                 });
             }
@@ -430,17 +430,17 @@ export default class PermissionQA extends React.Component<ISharePointOnlineQuick
                         var hasPermission = await RestAPIHelper.HasPermissionOnDocument(this.props.spHttpClient, resWebUrl,resUrl.replace(this.props.rootUrl,""), this.state.affectedUser, SP.PermissionKind.viewListItems);
                         if(!hasPermission)
                         {
-                            this.resRef.current.innerHTML += `<span style='${this.redStyle}'>The affected user lacks permission on <a href="${resUrl}"> ${resName}</a>!</span><br/>`;
+                            this.resRef.current.innerHTML += `<span style='${this.redStyle}'>${strings.PC_LackPermissionOn} <a href="${resUrl}"> ${resName}</a>!</span><br/>`;
                         }    
                     }
                     else
                     {
-                        this.resRef.current.innerHTML += `<span style='${this.redStyle}'><a href="${resUrl}"> ${resName}</a> can't be loaded!</span><br/>`;
+                        this.resRef.current.innerHTML += `<span style='${this.redStyle}'><a href="${resUrl}"> ${resName}</a> ${strings.PC_CanNotLoad}</span><br/>`;
                     }                
                 }
                 else
                 {                   
-                    this.resRef.current.innerHTML += `<span style='${this.redStyle}'><a href="${resUrl}"> ${resName}</a> can't be loaded!</span><br/>`;                     
+                    this.resRef.current.innerHTML += `<span style='${this.redStyle}'><a href="${resUrl}"> ${resName}</a> ${strings.PC_CanNotLoad}</span><br/>`;                     
                 }
             }
         }        

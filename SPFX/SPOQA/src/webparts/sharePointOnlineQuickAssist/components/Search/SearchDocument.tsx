@@ -388,7 +388,7 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
 
     private ShowRemedySteps()
     {    
-        this.remedyRef.current.innerHTML = RemedyHelper.ShowRemedySteps(this.remedySteps);
+        this.remedyRef.current.innerHTML = RemedyHelper.GetRemedyHtml(this.remedySteps);
         this.setState({remedyStepsShowed:true});   
     }
 

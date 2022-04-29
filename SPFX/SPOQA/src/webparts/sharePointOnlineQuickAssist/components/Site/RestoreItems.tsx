@@ -14,6 +14,7 @@ import RestoreItemsQAGrid from "./RestoreItemsQAGrid";
 import styles from '../SharePointOnlineQuickAssist.module.scss';
 import { ISharePointOnlineQuickAssistProps } from '../ISharePointOnlineQuickAssistProps';
 import { IRestoreItem,IRestoreItems } from "./IRestoreItem";
+import * as strings from 'SharePointOnlineQuickAssistWebPartStrings';
 export default class RestoreItemsQA extends React.Component<ISharePointOnlineQuickAssistProps>
 {
   private recycleBinItems:IRestoreItem[];
@@ -52,7 +53,7 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
             <div id="RestoreItemsQA_FilterSection" className={styles.msgrid}>
               <div className={styles.msrow} id="affectedSite_row">
                 <TextField
-                      label="Affected Site:"
+                      label={strings.AffectedSite}
                       multiline={false}
                       onChange={(e)=>{let text:any = e.target; this.setState({affectedSite:text.value});}}
                       value={this.state.affectedSite}
@@ -62,7 +63,7 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
               <div className={styles.msrow} id="deleteByUser_row">
               <div className={styles.mscol6}>
                 <TextField
-                            label="Deleted User:"                        
+                            label={strings.RI_DeletedBy}                       
                             multiline={false}
                             onChange={(e)=>{let text:any = e.target; this.setState({deleteByUser:text.value});}}
                             value={this.state.deleteByUser}
@@ -71,7 +72,7 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
                 </div>          
                 <div className={styles.mscol6}>
                   <TextField 
-                              label="Path Filter:"
+                              label={strings.RI_PathFilter}
                               className='ms-Grid-col ms-u-sm6 block'
                               multiline={false}
                               onChange={(e)=>{let text:any = e.target; this.setState({pathFilter:text.value});}}
@@ -82,9 +83,9 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
               <div className={styles.msrow} id="deleteStartDate_row">
                     <div className={styles.mscol6}>
                       <DatePicker
-                          label='Start Date:'
-                          placeholder="Select a date..."
-                          ariaLabel="Select a date"   
+                          label={strings.RI_StartDate}
+                          placeholder={strings.RI_SelectADate}
+                          ariaLabel={strings.RI_SelectADate} 
                           // onChange={(e)=>{let datePicker:any = e.target; this.setState({deleteStartDate:datePicker.value});}}
                           onSelectDate={(e)=>{ this.setState({deleteStartDate:e});}}
                           value={this.state.deleteStartDate}                    
@@ -92,9 +93,9 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
                     </div>
                     <div className={styles.mscol6}>
                       <DatePicker
-                          label='End Date:'
-                          placeholder="Select a date..."
-                          ariaLabel="Select a date"   
+                          label={strings.RI_EndDate}
+                          placeholder={strings.RI_SelectADate}
+                          ariaLabel={strings.RI_SelectADate} 
                           // onChange={(e)=>{let datePicker:any = e.target; this.setState({deleteEndDate:datePicker.value});}}
                           onSelectDate={(e)=>{ this.setState({deleteEndDate:e});}}
                           value={this.state.deleteEndDate}                           
@@ -109,19 +110,19 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
             <div className={ styles.column }>
               <div id="RestoreItemsQA_CommandButtonsSection">
                   <PrimaryButton
-                            text="Query Items"
+                            text={strings.RI_QueryItems}
                             style={{ display: 'inline', marginTop: '10px' }}
                             onClick={() => {this.QueryRecycleBinItems();}}
                             />
                   {this.state.queried && this.state.currentItems.length >0?
                             <div style={{ display: 'inline'}}>
                             <PrimaryButton
-                                text="Restore"
+                                text={strings.RI_Restore}
                                 style={{ display: 'inline', marginTop: '10px', marginLeft:"10px"}}
                                 onClick={() => {this.Restore();}}
                             /> 
                                <PrimaryButton
-                                text="Export"
+                                text= {strings.RI_Export}
                                 style={{ display: 'inline', marginTop: '10px', marginLeft:"10px"}}
                                 onClick={() => {this.DoExport();}}
                             />
@@ -155,7 +156,7 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
          var currentCount=-1;
          this.recycleBinItems = []; // clean previous data set
          this.setState({queried:false});
-         SPOQASpinner.Show("Querying ......");
+         SPOQASpinner.Show(`${strings.RI_Querying} ......`);
          var itemState = 1;
          this.queryCount = 0;
          var queryStartTime = new Date();
@@ -221,7 +222,7 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
            }
 
            pageInfo = URI_Encoding.encodeURIComponent(`'id=${URI_Encoding.encodeURIComponent(lastId)}&title=${URI_Encoding.encodeURIComponent(lastTitle)}&searchValue=${URI_Encoding.encodeURIComponent(lastDeletedDate)}'`);  
-           SPOQASpinner.Show(`Queried ${this.queryCount} items, filtered ${this.recycleBinItems.length} items ......`);  
+           SPOQASpinner.Show(`${strings.RI_Queried} ${this.queryCount} ${strings.RI_Items}, ${strings.RI_Filtered} ${this.recycleBinItems.length} ${strings.RI_Items} ......`);  
            if(currentCount <500)    
            {
               if(itemState ==1)
@@ -239,7 +240,7 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
          this.querySeconds = ((new Date()).getTime()- queryStartTime.getTime())/1000;
          this.recycleBinItems.sort((a,b) =>a.Path > b.Path ?1:-1);
          this.setState({currentItems:this.recycleBinItems,
-              message:`Queried ${this.queryCount} items, filtered ${this.recycleBinItems.length} items in ${this.querySeconds} seconds.`,
+              message:`${strings.RI_Queried} ${this.queryCount} ${strings.RI_Items}, ${strings.RI_Filtered} ${this.recycleBinItems.length} ${strings.RI_Items} ${strings.RI_Items} ${this.querySeconds} ${strings.RI_Seconds}.`,
               queried:true,
               messageType:MessageBarType.success
           });        
@@ -302,7 +303,7 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
         ids.push(this.recycleBinItems[index].Id);
       }
       this.setState({     
-        spinnerMessage:`Restoring item from ${startIndex + 1} to ${endIndex}, please wait ...`
+        spinnerMessage:`${strings.RI_RestoreItemFrom} ${startIndex + 1} ${strings.RI_To} ${endIndex}, ${strings.RI_PleaseWait} ...`
         });  
 
       let restoreRes = await RestAPIHelper.RestoreByIds(this.props.spHttpClient, this.state.affectedSite, ids);
@@ -312,7 +313,7 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
           {
             var restoreSeconds = ((new Date()).getTime()- restoreStartTime.getTime())/1000;
             this.setState({
-              message:`Restored ${this.recycleBinItems.length} items in ${restoreSeconds} seconds.`,         
+              message:`${strings.RI_Restored} ${this.recycleBinItems.length} ${strings.RI_Items} ${strings.RI_In} ${restoreSeconds} ${strings.RI_Seconds}.`,         
               messageType:MessageBarType.success,
               spinnerMessage:""
               }); 
@@ -320,7 +321,7 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
           else
           {
             this.setState({
-              message:`Restored items from ${startIndex + 1} to ${endIndex}.`,         
+              message:`${strings.RI_RestoreItemFrom} ${startIndex + 1} ${strings.RI_To} ${endIndex}.`,         
               messageType:MessageBarType.success,
               spinnerMessage:""
               });  
@@ -332,7 +333,7 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
         const { errorDetail} = this.state;  
         errorDetail.push(restoreRes.error.message);
         this.setState({
-          message:`Restored item from ${startIndex} to ${endIndex} with error message: ${restoreRes.error.message}.`,         
+          message:`${strings.RI_RestoreItemFrom} ${startIndex} ${strings.RI_To} ${endIndex} ${strings.RI_WithErrorMessage}: ${restoreRes.error.message}.`,         
           messageType:MessageBarType.error,
           spinnerMessage:"",
           errorDetail:errorDetail

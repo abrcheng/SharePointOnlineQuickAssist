@@ -2,6 +2,7 @@ import { IRestoreItem,IRestoreItems } from "./IRestoreItem";
 import { DetailsList, DetailsListLayoutMode, ColumnActionsMode, SelectionMode, IColumn,IDetailsHeaderProps } from 'office-ui-fabric-react/lib/DetailsList';
 import {ContextualMenu, IContextualMenuProps, IContextualMenuItem, DirectionalHint} from 'office-ui-fabric-react/lib/ContextualMenu';
 import * as React from 'react';
+import * as strings from 'SharePointOnlineQuickAssistWebPartStrings';
 
 export default class RestoreItemsQAGrid extends React.Component<IRestoreItems>
 {   
@@ -40,7 +41,7 @@ export default class RestoreItemsQAGrid extends React.Component<IRestoreItems>
     private columns: IColumn[] = [       
         {
             key: 'Path',
-            name: 'Path',
+            name: strings.RI_Path,
             fieldName: 'Path',
             minWidth: 200,
             maxWidth: 330,
@@ -55,7 +56,7 @@ export default class RestoreItemsQAGrid extends React.Component<IRestoreItems>
           },
           {
             key: 'DeletedDate',
-            name: 'DeletedDate',
+            name: strings.RI_DeletedDate,
             fieldName: 'DeletedDate',
             minWidth: 100,
             maxWidth: 140,
@@ -70,7 +71,7 @@ export default class RestoreItemsQAGrid extends React.Component<IRestoreItems>
           },
           {
                 key: 'DeletedByEmail',
-                name: 'DeletedByEmail',
+                name: strings.RI_DeletedByEmail,
                 fieldName: 'DeletedByEmail',
                 minWidth: 120,
                 maxWidth: 180,
@@ -85,7 +86,7 @@ export default class RestoreItemsQAGrid extends React.Component<IRestoreItems>
             },
             {
                 key: 'DeletedByName',
-                name: 'DeletedByName',
+                name: strings.RI_DeletedByEmail,
                 fieldName: 'DeletedByName',
                 minWidth: 100,
                 maxWidth: 120,
@@ -122,7 +123,7 @@ export default class RestoreItemsQAGrid extends React.Component<IRestoreItems>
               selectionMode={SelectionMode.none}            
               layoutMode={DetailsListLayoutMode.justified}
               isHeaderVisible={true}                            
-            />: "No data"}    
+            />: strings.RI_NoData}    
              {this.state.contextualMenuProps && <ContextualMenu {...this.state.contextualMenuProps} />}        
         </div>;
     }

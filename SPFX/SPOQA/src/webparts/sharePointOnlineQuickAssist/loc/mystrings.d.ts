@@ -87,6 +87,47 @@ declare interface ISharePointOnlineQuickAssistWebPartStrings {
   RI_URLInvalid:string;
   RI_ItemTypeUnKnow:string;
   RI_FailedToGetData:string;
+
+  // Strings for Search document
+  SD_DocumentPathCanNotBeNull:string;
+  SD_DocumentCanBeSearched:string;
+  SD_SearchByFullPathException:string;
+  SD_IsWebNoCrawlException:string;
+  SD_DectectedNocrawlList:string;
+  SD_IsListNoCrawlException:string;
+  SD_DectectedDisplayFormIsMissing:string;
+  SD_IsListMissDisplayFormException:string;
+  SD_TheNocrawlEnabledList:string;
+  SD_TheNocrawlNotEnabledList:string;
+  SD_TheDisplayFormMissed:string;
+  SD_TheDisplayFormNotMissed:string;
+  SD_IsDocumentInDraftVersionException:string;
+  SD_FolderSkipDraftCheck:string;
+  SD_DectectedNocrawlSite:string;
+  SD_NocrawlEnabledSite:string;
+  SD_NocrawlNotEnabledSite:string;
+
+  // Strings for OneDrive Lock Icon issue
+  OL_CheckingIssueForLibrary:string;
+  OL_LockdownEanbled:string;
+  OL_LockdownNotEanbled:string;
+  OL_HasEditPermssionOnLibrary:string;
+  OL_LackEditPermssionOnLibrary:string;
+  OL_OfflineAvailability:string;
+  OL_RequireCheckOut:string;
+  OL_DraftItemSecurity:string;
+  OL_AnyUserCanRead:string;
+  OL_EditUserCanRead:string;
+  OL_ApproverCanRead:string;
+  OL_ContentApproval:string;
+  OL_ValidationFormula:string;
+  OL_OfflineAvailabilityForWeb:string;
+  OL_SchemaCheckPassed:string;
+  OL_ColumnHasBeenSetTo:string;
+  OL_Required:string;
+  OL_Formula:string;
+  OL_ValidationMessage:string;
+
 }
 
 declare module 'SharePointOnlineQuickAssistWebPartStrings' {

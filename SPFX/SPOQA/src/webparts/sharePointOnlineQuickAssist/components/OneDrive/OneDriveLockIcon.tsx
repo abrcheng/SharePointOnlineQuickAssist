@@ -13,6 +13,7 @@ import SPOQAHelper from '../../../Helpers/SPOQAHelper';
 import SPOQASpinner from '../../../Helpers/SPOQASpinner';
 import styles from '../SharePointOnlineQuickAssist.module.scss';
 import {RemedyHelper} from '../../../Helpers/RemedyHelper';
+import * as strings from 'SharePointOnlineQuickAssistWebPartStrings';
 
 export default class OneDriveLockIconQA extends React.Component<ISharePointOnlineQuickAssistProps>
 {
@@ -41,14 +42,14 @@ export default class OneDriveLockIconQA extends React.Component<ISharePointOnlin
                     <div className={ styles.column }>
                         <div id="QuestionsSection">
                         <TextField
-                                label="Affected User:"
+                                label={strings.AffectedUser}
                                 multiline={false}
                                 onChange={(e)=>{let text:any = e.target; this.setState({affectedUser:text.value});}}
                                 value={this.state.affectedUser}
                                 required={true}                                                
                         />
                             <TextField
-                                    label="Affected Site(press enter for loading libraries/lists):"
+                                    label={strings.AffectedSiteLoadList}
                                     multiline={false}
                                     onChange={(e)=>{let text:any = e.target; this.setState({affectedSite:text.value,siteIsVaild:false,isChecked:false}); this.resRef.current.innerHTML=""; this.remedyRef.current.innerHTML="";}}
                                     value={this.state.affectedSite}
@@ -59,7 +60,7 @@ export default class OneDriveLockIconQA extends React.Component<ISharePointOnlin
                                 <div>
                                     <ComboBox
                                     defaultSelectedKey="-1"
-                                    label="Please select the affected library/list"
+                                    label={strings.SelectList}
                                     allowFreeform
                                     autoComplete="on"
                                     options={this.state.siteLibraries} 
@@ -75,13 +76,13 @@ export default class OneDriveLockIconQA extends React.Component<ISharePointOnlin
                         </div>
                         <div id="CommandButtonsSection">
                             <PrimaryButton
-                                text="Check Issues"
+                                text={strings.CheckIssues}
                                 style={{ display: 'inline', marginTop: '10px' }}
                                 onClick={() => {this.state.siteIsVaild? this.CheckOneDriveLockIconQAIssues():this.LoadLists();}}
                                 />
                             {this.state.needRemedy && !this.state.remedyStepsShowed && this.state.siteIsVaild?
                                 <PrimaryButton
-                                    text="Show Remedy Steps"
+                                    text={strings.ShowRemedySteps}
                                     style={{ display: 'inline', marginTop: '10px', marginLeft:"10px"}}
                                     onClick={() => {this.ShowRemedySteps();}}
                                 />:null}
@@ -113,7 +114,7 @@ export default class OneDriveLockIconQA extends React.Component<ISharePointOnlin
         }
         catch(err)
         {
-            SPOQAHelper.ShowMessageBar("Error", `Failed to load lists from the site, please make sure the site URL is correct and you have the permssion, detail error is ${err}`);
+            SPOQAHelper.ShowMessageBar("Error", `${strings.FailedLoadSiteList} ${err}`);
         }        
     }
     
@@ -121,7 +122,7 @@ export default class OneDriveLockIconQA extends React.Component<ISharePointOnlin
     {
         if(this.state.affectedLibrary == "" ||this.state.affectedLibrary =="-1")
         {
-            SPOQAHelper.ShowMessageBar("Error", "Please select the library!");
+            SPOQAHelper.ShowMessageBar("Error", strings.PleaseSelectList);
             return;
         }
 
@@ -130,7 +131,7 @@ export default class OneDriveLockIconQA extends React.Component<ISharePointOnlin
         this.remedySteps = []; // Clean RemedySteps
         this.resRef.current.innerHTML = ""; // Clean the OneDriveSyncDiagnoseResultDiv
         this.remedyRef.current.innerHTML =""; // Clean the RemedyStepsDiv
-        SPOQASpinner.Show(`Checking OneDrive read only issue for library ${this.state.affectedLibrary}......`);
+        SPOQASpinner.Show(`${strings.OL_CheckingIssueForLibrary} ${this.state.affectedLibrary}......`);
         this.listTitle = this.state.affectedLibrary.split("#")[0];
         this.listId = this.state.affectedLibrary.split("#")[1];
 
@@ -150,7 +151,7 @@ export default class OneDriveLockIconQA extends React.Component<ISharePointOnlin
 
         // Check site features, ViewFormPagesLockDown feature ID:7c637b23-06c4-472d-9a9a-7c175762c5c4, Limited-access user permission lockdown mode
         var isLockDownEnabled = await RestAPIHelper.IsSiteFeatureEnabled(this.props.spHttpClient, this.state.affectedSite, "7c637b23-06c4-472d-9a9a-7c175762c5c4");
-        var lockDownMsg = `Limited-access user permission lockdown mode of the site collection has been ${isLockDownEnabled? "enabled":"disabled"}`;
+        var lockDownMsg = isLockDownEnabled?strings.OL_LockdownEanbled:strings.OL_LockdownNotEanbled;
         if(isLockDownEnabled)
         {
             this.remedySteps.push({
@@ -162,7 +163,7 @@ export default class OneDriveLockIconQA extends React.Component<ISharePointOnlin
 
         // Check affected user's permssion
         var hasEditPermission = await RestAPIHelper.HasPermissionOnList(this.props.spHttpClient, this.state.affectedSite, this.listTitle, this.state.affectedUser, SP.PermissionKind.editListItems);
-        var hasEditPermssionMsg = `The affected user ${hasEditPermission? "has":"doesn't have"} edit permssion on the library.`;
+        var hasEditPermssionMsg =  hasEditPermission?strings.OL_HasEditPermssionOnLibrary:strings.OL_LackEditPermssionOnLibrary;
         if(!hasEditPermission)
         {
             this.remedySteps.push({
@@ -182,7 +183,7 @@ export default class OneDriveLockIconQA extends React.Component<ISharePointOnlin
     // Check ExcludeFromOfflineClient,ForceCheckout,DraftVersionVisibility,EnableModeration,ValidationFormula,ValidationMessage
     private CheckListProperties(listInfo:any)
     {
-        let excludeFromOfflineClientMsg = `Offline Client Availability for the library has been set to ${!listInfo.ExcludeFromOfflineClient}.`;
+        let excludeFromOfflineClientMsg = `${strings.OL_OfflineAvailability} ${!listInfo.ExcludeFromOfflineClient}.`;
         if(listInfo.ExcludeFromOfflineClient)
         {
             this.remedySteps.push({
@@ -193,7 +194,7 @@ export default class OneDriveLockIconQA extends React.Component<ISharePointOnlin
         }
         this.resRef.current.innerHTML += `<span style='${listInfo.ExcludeFromOfflineClient? this.redStyle:this.greenStyle}'>${excludeFromOfflineClientMsg}</span><br/>`;
 
-        let forceCheckoutMsg = `Require Check Out for the library has been set to ${listInfo.ForceCheckout}.`;
+        let forceCheckoutMsg = `${strings.OL_RequireCheckOut} ${listInfo.ForceCheckout}.`;
         if(listInfo.ForceCheckout)
         {
             this.remedySteps.push({
@@ -203,8 +204,8 @@ export default class OneDriveLockIconQA extends React.Component<ISharePointOnlin
         }
         this.resRef.current.innerHTML += `<span style='${listInfo.ForceCheckout? this.redStyle:this.greenStyle}'>${forceCheckoutMsg}</span><br/>`;
         
-        let draftVisiblitys = ["Any user who can read items", "Only users who can edit items", "Only users who can approve items (and the author of the item)"];
-        let draftVersionVisibilityMsg =`Draft Item Security of this library has been set to ${draftVisiblitys[listInfo.DraftVersionVisibility]}.`;
+        let draftVisiblitys = [strings.OL_AnyUserCanRead, strings.OL_EditUserCanRead, strings.OL_ApproverCanRead];
+        let draftVersionVisibilityMsg =`${strings.OL_DraftItemSecurity} ${draftVisiblitys[listInfo.DraftVersionVisibility]}.`;
         if(listInfo.DraftVersionVisibility ==2)
         {
             this.remedySteps.push({
@@ -214,7 +215,7 @@ export default class OneDriveLockIconQA extends React.Component<ISharePointOnlin
         }        
         this.resRef.current.innerHTML += `<span style='${listInfo.DraftVersionVisibility==2? this.redStyle:this.greenStyle}'>${draftVersionVisibilityMsg}</span><br/>`;
 
-        let enableModerationMsg = `Content Approval of this library has been set to ${listInfo.EnableModeration}.`;
+        let enableModerationMsg = `${strings.OL_ContentApproval} ${listInfo.EnableModeration}.`;
         if(listInfo.EnableModeration)
         {
             this.remedySteps.push({
@@ -224,7 +225,7 @@ export default class OneDriveLockIconQA extends React.Component<ISharePointOnlin
         }
         this.resRef.current.innerHTML += `<span style='${listInfo.EnableModeration? this.redStyle:this.greenStyle}'>${enableModerationMsg}</span><br/>`;
         
-        let validationFormulaMsg=`Validation formula/message of this library is ${listInfo.ValidationFormula?listInfo.ValidationFormula:"null"}/${listInfo.ValidationMessage?listInfo.ValidationMessage:"null"}.`;
+        let validationFormulaMsg=`${strings.OL_ValidationFormula} ${listInfo.ValidationFormula?listInfo.ValidationFormula:"null"}/${listInfo.ValidationMessage?listInfo.ValidationMessage:"null"}.`;
         if(listInfo.ValidationFormula || listInfo.ValidationMessage)
         {
             this.remedySteps.push({
@@ -240,7 +241,7 @@ export default class OneDriveLockIconQA extends React.Component<ISharePointOnlin
     private CheckSiteProperties(websInfo:any[])
     {
         websInfo.forEach(webInfo =>{
-            var webExcludeFromOfflineClientMsg = `Offline Client Availability of the web ${webInfo.webUrl} has been set to ${!webInfo.ExcludeFromOfflineClient}.`;
+            var webExcludeFromOfflineClientMsg = `${webInfo.webUrl} ${strings.OL_OfflineAvailabilityForWeb} ${!webInfo.ExcludeFromOfflineClient}.`;
             if(webInfo.ExcludeFromOfflineClient)
             {
                 this.remedySteps.push({
@@ -256,16 +257,16 @@ export default class OneDriveLockIconQA extends React.Component<ISharePointOnlin
     private CheckListFields(fields:any[])
     {   
         let schemaCheckPassed:boolean = true;
-        let schemaCheckPassedMsg = "Schema check for this library passed.";
+        let schemaCheckPassedMsg = strings.OL_SchemaCheckPassed;
         let re = /\-/gi;
         fields.forEach(field =>{
             if(field.InternalName!="FileLeafRef")  // skip the system field FileLeafRef
             {
                 var remdyUrl = `${this.state.affectedSite}/_layouts/15/FldEdit.aspx?List=%7B${this.listId.toUpperCase().replace(re, "%2D")}%7D&Field=${field.InternalName}`;
-                var commonMsg = `of the column named ${field.Title} has been set to`;
+                var commonMsg = `<b>"${field.Title}"</b> ${strings.OL_ColumnHasBeenSetTo}`;
                 if(field.Required)
                 {
-                    var requiredMsg =`The Required ${commonMsg} true.`;
+                    var requiredMsg =` ${strings.OL_Required}=${field.Required}.`;
                     schemaCheckPassed = false;
                     this.remedySteps.push({
                         message:requiredMsg,
@@ -278,7 +279,7 @@ export default class OneDriveLockIconQA extends React.Component<ISharePointOnlin
                 if(field.ValidationFormula)
                 {
                     schemaCheckPassed = false;
-                    var validationFormulaMsg = `The ValidationFormula ${commonMsg} ${field.ValidationFormula}.`;
+                    var validationFormulaMsg = ` ${strings.OL_Formula}=${field.ValidationFormula}.`;
                     this.remedySteps.push({
                         message:validationFormulaMsg,
                         url:remdyUrl
@@ -288,7 +289,7 @@ export default class OneDriveLockIconQA extends React.Component<ISharePointOnlin
                 if(field.ValidationMessage)
                 {
                     schemaCheckPassed = false;
-                    var validationMessageMsg = `The ValidationMessage ${commonMsg} ${field.ValidationMessage}.`;
+                    var validationMessageMsg = ` ${strings.OL_ValidationMessage}=${field.ValidationMessage}.`;
                     this.remedySteps.push({
                         message:validationMessageMsg,
                         url:remdyUrl

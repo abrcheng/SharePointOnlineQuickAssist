@@ -14,6 +14,7 @@ import SPOQASpinner from '../../../Helpers/SPOQASpinner';
 import styles from '../SharePointOnlineQuickAssist.module.scss';
 import  { ItemType, ModerationStatusHelper} from '../../../Helpers/ModerationStatusHelper';
 import {RemedyHelper} from '../../../Helpers/RemedyHelper';
+import * as strings from 'SharePointOnlineQuickAssistWebPartStrings';
 
 export default class SearchDocumentQA extends React.Component<ISharePointOnlineQuickAssistProps>
 {
@@ -47,7 +48,7 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
                     <div className={ styles.column }>
                         <div id="QuestionsSection">
                             <TextField
-                                    label="Affected Site(press enter for loading libraries/lists):"
+                                    label={strings.AffectedSiteLoadList}
                                     multiline={false}
                                     onChange={(e)=>{let text:any = e.target; this.setState({affectedSite:text.value,siteIsVaild:false}); this.resRef.current.innerHTML ="";}}
                                     value={this.state.affectedSite}
@@ -58,7 +59,7 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
                                 <div>
                                     <ComboBox
                                     defaultSelectedKey="-1"
-                                    label="Please select the affected library/list"
+                                    label={strings.SelectList}
                                     allowFreeform
                                     autoComplete="on"
                                     options={this.state.siteLibraries} 
@@ -77,7 +78,7 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
                                     />   
                                 {this.state.affectedLibrary.Title!=""? 
                                 <div><TextField
-                                label="Affected document full URL:"
+                                label={strings.AffectedDocument}
                                 multiline={false}
                                 onChange={(e)=>{
                                     let text:any = e.target;
@@ -98,13 +99,13 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
                             </div>                           
                         <div id="CommandButtonsSection">
                             <PrimaryButton
-                                text="Check Issues"
+                                text={strings.CheckIssues}
                                 style={{ display: 'inline', marginTop: '10px' }}
                                 onClick={() => {this.state.siteIsVaild? this.CheckSearchDocument():this.LoadLists();}}
                                 />
                             {this.state.needRemedy && !this.state.remedyStepsShowed && this.state.siteIsVaild?
                                 <PrimaryButton
-                                    text="Show Remedy Steps"
+                                    text={strings.ShowRemedySteps}
                                     style={{ display: 'inline', marginTop: '10px', marginLeft:"10px"}}
                                     onClick={() => {this.ShowRemedySteps();}}
                                 />:null}
@@ -136,7 +137,7 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
         }
         catch(err)
         {
-            SPOQAHelper.ShowMessageBar("Error", `Failed to load lists from the site, please make sure the site URL is correct and you have the permssion, detail error is ${err}`);
+            SPOQAHelper.ShowMessageBar("Error", `${strings.FailedLoadSiteList} ${err}`);
         }        
     }
     
@@ -144,20 +145,20 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
     {
         if(this.state.affectedLibrary.Title == "" ||this.state.affectedLibrary.Title =="-1")
         {
-            SPOQAHelper.ShowMessageBar("Error", "Please select the library!");
+            SPOQAHelper.ShowMessageBar("Error", strings.PleaseSelectList);
             return;
         }
 
         if(!this.state.affectedDocument || this.state.affectedDocument =="" || this.state.affectedDocument.trim()=="")
         {
-            SPOQAHelper.ShowMessageBar("Error", "Please provide the affected document full URL!");
+            SPOQAHelper.ShowMessageBar("Error", strings.SD_DocumentPathCanNotBeNull);
             return;
         }
 
         SPOQAHelper.ResetFormStaus();        
         this.CleanPreviousResult(); 
         let searched:boolean = false;
-        SPOQASpinner.Show("Checking document search issue ......");
+        SPOQASpinner.Show(`${strings.Checking} ......`);
         this.listTitle = this.state.affectedLibrary.Title;
         try
         {
@@ -165,13 +166,14 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
            console.log(searchDocRes);
            if(searchDocRes.RowCount >0)
            {
-                SPOQAHelper.ShowMessageBar("Success", `Searched out ${searchDocRes.RowCount} items, looks like the affected document can be searched.`);   
+                // SPOQAHelper.ShowMessageBar("Success", `Searched out ${searchDocRes.RowCount} items, looks like the affected document can be searched.`); 
+                SPOQAHelper.ShowMessageBar("Success", strings.SD_DocumentCanBeSearched);   
                 searched = true;             
            }           
         }
         catch(err)
         {
-            SPOQAHelper.ShowMessageBar("Error",`Get exception when try to SearchDocumentByFullPath with error message ${err}`);             
+            SPOQAHelper.ShowMessageBar("Error",`${strings.SD_SearchByFullPathException} ${err}`);             
         }
 
         // Check web no-index
@@ -186,7 +188,7 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
             }
             catch(err)
             {
-                SPOQAHelper.ShowMessageBar("Error",`Get exception when try to check IsWebNoCrawl with error message ${err}`);                 
+                SPOQAHelper.ShowMessageBar("Error",`${strings.SD_IsWebNoCrawlException} ${err}`);                 
             }
 
             // check library no-index
@@ -194,18 +196,18 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
             {
                 var resIsListNoCrawl = await RestAPIHelper.IsListNoCrawl(this.props.spHttpClient, this.state.affectedSite, this.listTitle);
                 this.setState({isListNoIndex:resIsListNoCrawl});
-                var listNoCrawlMsg =  `<span style="${resIsListNoCrawl? this.redStyle:this.greenStyle}" >The nocrawl ${resIsListNoCrawl?"has":"hasn't"} been enabled for the list ${this.state.affectedLibrary.Title}.</span><br/>`;
+                var listNoCrawlMsg =  `<span style="${resIsListNoCrawl? this.redStyle:this.greenStyle}" >${resIsListNoCrawl?strings.SD_TheNocrawlEnabledList:strings.SD_TheNocrawlNotEnabledList} ${this.state.affectedLibrary.Title}.</span><br/>`;
                 this.resRef.current.innerHTML += listNoCrawlMsg;
                 if(resIsListNoCrawl)
                 {
                     this.remedySteps.push({
-                        message:"Dectected nocrawl for the list.",
+                        message:strings.SD_DectectedNocrawlList,
                         url:`${this.state.affectedSite}/_layouts/15/advsetng.aspx?List={${this.state.affectedLibrary.Id}}`});
                 }
             }
             catch(err)
             {
-                SPOQAHelper.ShowMessageBar("Error",`Get exception when try to check IsListNoCrawl with error message ${err}`);                
+                SPOQAHelper.ShowMessageBar("Error",`${strings.SD_IsListNoCrawlException} ${err}`);                
             }
 
             // check the list form missed issue
@@ -216,16 +218,16 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
                     var resIsListMissedForm = await RestAPIHelper.IsListMissDisplayForm(this.props.spHttpClient, this.state.affectedSite, this.listTitle);
                     // isMissingDisplayForm
                     this.setState({isMissingDisplayForm:resIsListMissedForm});
-                    var listMissedDisplayFormMsg =  `<span style="${resIsListMissedForm? this.redStyle:this.greenStyle}" >The dispalyForm ${resIsListMissedForm?"is":"isn't"} missed for the list ${this.state.affectedLibrary.Title}</span><br/>`;
+                    var listMissedDisplayFormMsg =  `<span style="${resIsListMissedForm? this.redStyle:this.greenStyle}" >${resIsListMissedForm?strings.SD_TheDisplayFormMissed:strings.SD_TheDisplayFormNotMissed} ${this.state.affectedLibrary.Title}</span><br/>`;
                     this.resRef.current.innerHTML += listMissedDisplayFormMsg;
                     if(resIsListMissedForm)
                     {
-                        this.remedySteps.push({message:`Dectected display form is missing, please use the feature "Missing New/Disp/Edit" Forms to fix it`});
+                        this.remedySteps.push({message:strings.SD_DectectedDisplayFormIsMissing});
                     }
                 }
                 catch(err)
                 {
-                    SPOQAHelper.ShowMessageBar("Error",`Get exception when try to check IsListMissDisplayForm with error message ${err}`);                     
+                    SPOQAHelper.ShowMessageBar("Error",`${strings.SD_IsListMissDisplayFormException} ${err}`);                     
                 }
             }
 
@@ -234,7 +236,7 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
             if(resNotApprovedItems.success)
                {
                     resNotApprovedItems.items.forEach((item)=>{
-                        var notApproveMsg = `<a href='${item.url}'>${item.name}</a>'s approve status is ${item.status}.`;
+                        var notApproveMsg = `<a href='${item.url}'>${item.name}</a>${strings.PC_ApproveStatusIs} ${item.status}.`;
                         this.remedySteps.push({
                             message:notApproveMsg,
                             url:item.parentUrl});
@@ -249,23 +251,23 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
                 {
                     var resIsDraftVersion = await RestAPIHelper.IsDocumentInDraftVersion(this.props.spHttpClient, this.state.affectedSite, this.state.isLibrary, this.listTitle,this.state.affectedDocument);
                     this.setState({isDraftVersion:resIsDraftVersion});
-                    var docIsDraftVersionMsg =  `<span style="${resIsDraftVersion? this.redStyle:this.greenStyle}" >The document ${this.state.affectedDocument} ${resIsDraftVersion?"is":"isn't"} in draft version.</span><br/>`;
+                    var docIsDraftVersionMsg =  `<span style="${resIsDraftVersion? this.redStyle:this.greenStyle}" > ${resIsDraftVersion?strings.PC_DocumentIsInDraft:strings.PC_DocumentIsNotInDraft}</span><br/>`;
                     this.resRef.current.innerHTML += docIsDraftVersionMsg;
                     if(resIsDraftVersion)
                     {
                         this.remedySteps.push({
-                            message:`The object ${this.state.affectedDocument} is in draft version`,
+                            message:strings.PC_DocumentIsInDraft,
                             url:this.props.rootUrl + this.state.affectedLibrary.RootFolder});    
                     }                
                 }
                 catch(err)
                 {
-                    SPOQAHelper.ShowMessageBar("Error",`Get exception when try to check IsDocumentInDraftVersion with error message ${err}`);                
+                    SPOQAHelper.ShowMessageBar("Error",`${strings.SD_IsDocumentInDraftVersionException} ${err}`);                
                 } 
            }
            else if(resNotApprovedItems.itemType == ItemType.Folder)
            {
-                this.resRef.current.innerHTML += `${this.state.affectedDocument} is a folder, skip draft version checking`;
+                this.resRef.current.innerHTML += `${this.state.affectedDocument} ${strings.SD_FolderSkipDraftCheck}`;
            } 
            else // ItemType is unknow
            {
@@ -281,7 +283,7 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
         SPOQASpinner.Hide();
     }
     
-    // Auto fix will be deprecated
+    // Auto fix has been deprecated, needn't to localize it
     public async FixIssues()
     {
         SPOQAHelper.ResetFormStaus();
@@ -375,11 +377,11 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
             {               
                 this.websNeedFixNoCrawl.push(currentWebUrl);
                 this.remedySteps.push({
-                    message:`Dectected nocrawl for the site ${currentWebUrl}.`,
+                    message:`${strings.SD_DectectedNocrawlSite} ${currentWebUrl}.`,
                     url:`${currentWebUrl}/_layouts/15/srchvis.aspx`});
             }
             
-            var noIndexMsg = `<span style="${webInfo.NoCrawl? this.redStyle:this.greenStyle}" >The nocrawl ${webInfo.NoCrawl?"has":"hasn't"} been enabled for the site ${currentWebUrl}.</span><br/>`;
+            var noIndexMsg = `<span style="${webInfo.NoCrawl? this.redStyle:this.greenStyle}" >${webInfo.NoCrawl?strings.SD_NocrawlEnabledSite:strings.SD_NocrawlNotEnabledSite} ${currentWebUrl}.</span><br/>`;
             this.resRef.current.innerHTML += noIndexMsg;
             currentWebUrl = await RestAPIHelper.GetParentWebUrl(this.props.spHttpClient, currentWebUrl);
             hasParentWeb = currentWebUrl && currentWebUrl!="";

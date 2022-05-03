@@ -8,10 +8,12 @@ import {
     IComboBoxOption,
   } from 'office-ui-fabric-react/lib/index';
 import RestAPIHelper from '../../../Helpers/RestAPIHelper';
+import FormsHelper from '../../../Helpers/FormsHelper';
 import { ISharePointOnlineQuickAssistProps } from '../ISharePointOnlineQuickAssistProps';
 import SPOQAHelper from '../../../Helpers/SPOQAHelper';
 import SPOQASpinner from '../../../Helpers/SPOQASpinner';
 import styles from '../SharePointOnlineQuickAssist.module.scss';
+import * as strings from 'SharePointOnlineQuickAssistWebPartStrings';
 export default class RepairFormQA extends React.Component<ISharePointOnlineQuickAssistProps>
 {
     public state = {
@@ -34,7 +36,7 @@ export default class RepairFormQA extends React.Component<ISharePointOnlineQuick
                     <div className={ styles.column }>
                         <div id="QuestionsSection">
                             <TextField
-                                    label="Affected Site(press enter for loading libraries/lists):"
+                                    label={strings.MF_Label_AffectedSite}
                                     multiline={false}
                                     onChange={(e)=>{let text:any = e.target; this.setState({affectedSite:text.value,siteIsVaild:false});}}
                                     value={this.state.affectedSite}
@@ -45,7 +47,7 @@ export default class RepairFormQA extends React.Component<ISharePointOnlineQuick
                                 <div>
                                     <ComboBox
                                     defaultSelectedKey="-1"
-                                    label="Please select the affected library/list"
+                                    label={strings.MF_Label_SelectList}
                                     allowFreeform
                                     autoComplete="on"
                                     options={this.state.siteLists} 
@@ -57,13 +59,13 @@ export default class RepairFormQA extends React.Component<ISharePointOnlineQuick
                             </div>
                             {this.state.siteIsVaild&&this.state.affectedList!="" && this.state.isChecked? 
                                 <div id="SearchDocumentCheckResultSection">
-                                    <Label>Diagnose result,</Label>
-                                    {this.state.isMissingDisplayForm?<Label style={{"color":"Red",marginLeft:"20px"}}>The dispForm is missing for {this.listTitle}</Label>:
-                                        <Label style={{"color":"Green",marginLeft:"20px"}}>The dispForm exists</Label>}
-                                    {this.state.isMissingNewForm?<Label style={{"color":"Red",marginLeft:"20px"}}>The newForm is missing for {this.listTitle}</Label>:
-                                        <Label style={{"color":"Green",marginLeft:"20px"}}>The newForm exists</Label>}
-                                    {this.state.isMissingEditForm?<Label style={{"color":"Red",marginLeft:"20px"}}>The editForm is missing for {this.listTitle}</Label>:
-                                        <Label style={{"color":"Green",marginLeft:"20px"}}>The editForm exists</Label>}
+                                    <Label>{strings.MF_Label_DiagnoseResult}</Label>
+                                    {this.state.isMissingDisplayForm?<Label style={{"color":"Red",marginLeft:"20px"}}>{strings.MF_Message_DispFormMiss} {this.listTitle}</Label>:
+                                        <Label style={{"color":"Green",marginLeft:"20px"}}>{strings.MF_Message_DispFormExist}</Label>}
+                                    {this.state.isMissingNewForm?<Label style={{"color":"Red",marginLeft:"20px"}}>{strings.MF_Message_NewFormMiss} {this.listTitle}</Label>:
+                                        <Label style={{"color":"Green",marginLeft:"20px"}}>{strings.MF_Message_NewFormExist}</Label>}
+                                    {this.state.isMissingEditForm?<Label style={{"color":"Red",marginLeft:"20px"}}>{strings.MF_Message_EditFormMiss} {this.listTitle}</Label>:
+                                        <Label style={{"color":"Green",marginLeft:"20px"}}>{strings.MF_Message_EditFormExist}</Label>}
                                 </div>:null
                             }
                         <div id="CommandButtonsSection">
@@ -100,7 +102,7 @@ export default class RepairFormQA extends React.Component<ISharePointOnlineQuick
         }
         catch(err)
         {
-            SPOQAHelper.ShowMessageBar("Error", `Failed to load lists from the site, please make sure the site URL is correct and you have the permssion, detail error is ${err}`);
+            SPOQAHelper.ShowMessageBar("Error", `${strings.MF_Ex_LoadListsError} ${err}`);
         }        
     }
     
@@ -108,7 +110,7 @@ export default class RepairFormQA extends React.Component<ISharePointOnlineQuick
     {
         if(this.state.affectedList == "" ||this.state.affectedList =="-1")
         {
-            SPOQAHelper.ShowMessageBar("Error", "Please select the list/library!");
+            SPOQAHelper.ShowMessageBar("Error", `${strings.MF_Ex_ListNotSelected}`);
             return;
         }
 
@@ -117,7 +119,7 @@ export default class RepairFormQA extends React.Component<ISharePointOnlineQuick
         this.setState({isMissingDisplayForm:false});
         this.setState({isMissingNewForm:false});
         this.setState({isMissingEditForm:false});
-        SPOQASpinner.Show("Checking if the forms exist ......");
+        SPOQASpinner.Show(`${strings.MF_Message_CheckingForms}`);
         this.listTitle = this.state.affectedList.substr(0,this.state.affectedList.length-2);
         
         // check the list form missed issue
@@ -135,7 +137,7 @@ export default class RepairFormQA extends React.Component<ISharePointOnlineQuick
         }
         catch(err)
         {
-            SPOQAHelper.ShowMessageBar("Error",`Get exception when try to check forms with error message ${err}`);                     
+            SPOQAHelper.ShowMessageBar("Error",`${strings.MF_Ex_CheckFormsError} ${err}`);                     
         }
 
         this.setState({isChecked:true});           
@@ -146,18 +148,18 @@ export default class RepairFormQA extends React.Component<ISharePointOnlineQuick
     public async FixIssues()
     {
         SPOQAHelper.ResetFormStaus();
-        SPOQASpinner.Show("Repair missing forms ......");
+        SPOQASpinner.Show(`${strings.MF_Message_FixForms}`);
         let hasError:boolean = false;
         
         if(this.state.isMissingDisplayForm)
         {
             try
             {
-                await RestAPIHelper.FixMissDisForm(this.props.spHttpClient, this.state.affectedSite, this.listTitle);
+                await FormsHelper.FixMissDisForm(this.props.spHttpClient, this.state.affectedSite, this.listTitle);
             }
             catch(err)
             {
-                SPOQAHelper.ShowMessageBar("Error",`Get exception when try fixing the display form with error message ${err}`);
+                SPOQAHelper.ShowMessageBar("Error",`${strings.MF_Ex_FixDispFormError} ${err}`);
                 hasError = true;
             }
         }
@@ -166,11 +168,11 @@ export default class RepairFormQA extends React.Component<ISharePointOnlineQuick
         {
             try
             {
-                await RestAPIHelper.FixMissNewForm(this.props.spHttpClient, this.state.affectedSite, this.listTitle);
+                await FormsHelper.FixMissNewForm(this.props.spHttpClient, this.state.affectedSite, this.listTitle);
             }
             catch(err)
             {
-                SPOQAHelper.ShowMessageBar("Error",`Get exception when try fixing the new form with error message ${err}`);
+                SPOQAHelper.ShowMessageBar("Error",`${strings.MF_Ex_FixNewFormError} ${err}`);
                 hasError = true;
             }
         }
@@ -179,18 +181,18 @@ export default class RepairFormQA extends React.Component<ISharePointOnlineQuick
         {
             try
             {
-                await RestAPIHelper.FixMissEditForm(this.props.spHttpClient, this.state.affectedSite, this.listTitle);
+                await FormsHelper.FixMissEditForm(this.props.spHttpClient, this.state.affectedSite, this.listTitle);
             }
             catch(err)
             {
-                SPOQAHelper.ShowMessageBar("Error",`Get exception when try fixing the edit form with error message ${err}`);
+                SPOQAHelper.ShowMessageBar("Error",`${strings.MF_Ex_FixEditFormError} ${err}`);
                 hasError = true;
             }
         }
 
         if(!hasError)
         {
-            SPOQAHelper.ShowMessageBar("Success", `Fixed all missing forms`);
+            SPOQAHelper.ShowMessageBar("Success", `${strings.MF_Message_FixedAll}`);
             this.setState({isChecked:false});
             
         }

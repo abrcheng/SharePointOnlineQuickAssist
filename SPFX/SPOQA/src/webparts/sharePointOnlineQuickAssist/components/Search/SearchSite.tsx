@@ -36,7 +36,8 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
                             multiline={false}
                             onChange={(e)=>{let text:any = e.target; this.setState({affectedSite:text.value}); this.setState({isChecked:false});}}
                             value={this.state.affectedSite}
-                            required={true}                                                
+                            required={true}
+                            onKeyDown={(e)=>{if(e.keyCode ===13){this.ResetSatus(); this.CheckSiteSearchSettings();}}}
                       />
                         {this.state.affectedSite!="" && this.state.isChecked? 
                             <div id="SearchSiteResultSection">

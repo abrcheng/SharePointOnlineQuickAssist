@@ -155,6 +155,25 @@ declare interface ISharePointOnlineQuickAssistWebPartStrings {
   SS_Ex_AddUserInMembersError:string;
   SS_Message_FxiedAll:string;
 
+  // Strings for Missing Forms
+  MF_Label_AffectedSite:string;
+  MF_Label_SelectList:string;
+  MF_Label_DiagnoseResult:string;
+  MF_Message_DispFormMiss:string;
+  MF_Message_DispFormExist:string;
+  MF_Message_NewFormMiss:string;
+  MF_Message_NewFormExist:string;
+  MF_Message_EditFormMiss:string;
+  MF_Message_EditFormExist:string;
+  MF_Ex_LoadListsError:string;
+  MF_Ex_ListNotSelected:string;
+  MF_Message_CheckingForms:string;
+  MF_Ex_CheckFormsError:string;
+  MF_Message_FixForms:string;
+  MF_Ex_FixDispFormError:string;
+  MF_Ex_FixNewFormError:string;
+  MF_Ex_FixEditFormError:string;
+  MF_Message_FixedAll:string;
 }
 
 declare module 'SharePointOnlineQuickAssistWebPartStrings' {

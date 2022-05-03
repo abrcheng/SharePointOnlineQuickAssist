@@ -15,6 +15,7 @@ import styles from '../SharePointOnlineQuickAssist.module.scss';
 import  { ItemType, ModerationStatusHelper} from '../../../Helpers/ModerationStatusHelper';
 import {RemedyHelper} from '../../../Helpers/RemedyHelper';
 import * as strings from 'SharePointOnlineQuickAssistWebPartStrings';
+import FormsHelper from '../../../Helpers/FormsHelper';
 
 export default class SearchDocumentQA extends React.Component<ISharePointOnlineQuickAssistProps>
 {
@@ -344,7 +345,7 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
             try
             {
                 SPOQASpinner.Show(`Fixing missed display form .......`);
-                var fixMissingDisplayFormRes = await RestAPIHelper.FixMissDisForm(this.props.spHttpClient, this.state.affectedSite, this.listTitle);
+                var fixMissingDisplayFormRes = await FormsHelper.FixMissDisForm(this.props.spHttpClient, this.state.affectedSite, this.listTitle);
             }
             catch(err)
             {

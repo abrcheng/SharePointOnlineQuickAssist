@@ -120,9 +120,10 @@ export default class RepairWikiLayoutQA extends React.Component<ISharePointOnlin
             var detectedLayout = "";
             var isInvalidDetectedLayout = false;
             var row = wikiField.querySelectorAll("#layoutsTable>tbody>tr").length;
+            var col = -1;
             switch (row){
                 case 1:{
-                    var col = wikiField.querySelectorAll("#layoutsTable>tbody>tr>td").length;
+                    col = wikiField.querySelectorAll("#layoutsTable>tbody>tr>td").length;
                     if (col==1){
                         detectedLayout = "One column.";
                     } else if (col==2){
@@ -135,7 +136,7 @@ export default class RepairWikiLayoutQA extends React.Component<ISharePointOnlin
                     break;
                 }
                 case 2:{
-                    var col = wikiField.querySelectorAll("#layoutsTable>tbody>tr:nth-child(2)>td").length;
+                    col = wikiField.querySelectorAll("#layoutsTable>tbody>tr:nth-child(2)>td").length;
                     if (col==2){
                         detectedLayout = "Two column with header.";
                     } else if (col==3){
@@ -146,7 +147,7 @@ export default class RepairWikiLayoutQA extends React.Component<ISharePointOnlin
                     break;
                 }
                 case 3:{
-                    var col = wikiField.querySelectorAll("#layoutsTable>tbody>tr:nth-child(2)>td").length;
+                    col = wikiField.querySelectorAll("#layoutsTable>tbody>tr:nth-child(2)>td").length;
                     if (col==2){
                         detectedLayout = "Two column with header and footer.";
                     } else if (col==3){

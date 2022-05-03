@@ -128,6 +128,33 @@ declare interface ISharePointOnlineQuickAssistWebPartStrings {
   OL_Formula:string;
   OL_ValidationMessage:string;
 
+  // Strings for Search Site
+  SS_DiagnoseResultLabel:string;
+  SS_FoundSite:string;
+  SS_SiteNoExist1:string;
+  SS_SiteNoExist2:string;
+  SS_NoCrawlEnabled:sting;
+  SS_SiteSearchable1:string;
+  SS_SiteSearchable2:string;
+  SS_HaveAccess:string;
+  SS_NoAccess:string;
+  SS_InMembers:string;
+  SS_NotInMembers:string;
+  SS_Label_AffectedSite:string;
+  SS_Label_CheckIssues:string;
+  SS_Label_FixIssues:string;
+  SS_Message_Checking:string;
+  SS_Message_NoSearchResult:string;
+  SS_Ex_GetWebError:string;
+  SS_Ex_IsWebNoCrawlError:string;
+  SS_Ex_GetUserInfoError:string;
+  SS_Message_ResultDuplicate:string;
+  SS_Message_SiteSearchable:string;
+  SS_Message_FixSite:string;
+  SS_Ex_FixWebNoCrawlError:string;
+  SS_Ex_AddUserInMembersError:string;
+  SS_Message_FxiedAll:string;
+
 }
 
 declare module 'SharePointOnlineQuickAssistWebPartStrings' {

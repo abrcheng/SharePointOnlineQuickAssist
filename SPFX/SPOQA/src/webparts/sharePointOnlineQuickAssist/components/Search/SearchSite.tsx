@@ -11,6 +11,7 @@ import SPOQASpinner from '../../../Helpers/SPOQASpinner';
 import SPOQAHelper from '../../../Helpers/SPOQAHelper';
 import { ISharePointOnlineQuickAssistProps } from '../ISharePointOnlineQuickAssistProps';
 import styles from '../SharePointOnlineQuickAssist.module.scss';
+import * as strings from 'SharePointOnlineQuickAssistWebPartStrings';
 export default class SearchSiteQA extends React.Component<ISharePointOnlineQuickAssistProps>
 {
     public state = {
@@ -31,7 +32,7 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
                  <div className={ styles.row }>
                     <div className={ styles.column }>
                       <TextField
-                            label="Affected Site:"
+                            label={strings.SS_Label_AffectedSite}
                             multiline={false}
                             onChange={(e)=>{let text:any = e.target; this.setState({affectedSite:text.value}); this.setState({isChecked:false});}}
                             value={this.state.affectedSite}
@@ -39,32 +40,32 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
                       />
                         {this.state.affectedSite!="" && this.state.isChecked? 
                             <div id="SearchSiteResultSection">
-                                <Label>Diagnose result:</Label>
-                                {this.state.isWebThere?<Label style={{"color":"Green",marginLeft:20}}>Found site with URL {this.state.affectedSite}</Label>:
-                                    <Label style={{"color":"Red",marginLeft:20}} >Site with URL {this.state.affectedSite} doesn't exist</Label>}
+                                <Label>{strings.SS_DiagnoseResultLabel}</Label>
+                                {this.state.isWebThere?<Label style={{"color":"Green",marginLeft:20}}>{strings.SS_FoundSite} {this.state.affectedSite}</Label>:
+                                    <Label style={{"color":"Red",marginLeft:20}} >{strings.SS_SiteNoExist1} {this.state.affectedSite} {strings.SS_SiteNoExist2}</Label>}
                                 {this.state.isWebThere?
                                 <div>
-                                {this.state.isWebNoIndex?<Label style={{"color":"Red",marginLeft:20}}>The nocrawl has been enabled for site {this.state.affectedSite}</Label>:
-                                    <Label style={{"color":"Green",marginLeft:20}}>Site {this.state.affectedSite} is searchable</Label>}
-                                {this.state.userPerm?<Label style={{"color":"Green",marginLeft:20}}>You have access to the site</Label>:
-                                    <Label style={{"color":"Red",marginLeft:20}}>You don't have access to the site</Label>}
+                                {this.state.isWebNoIndex?<Label style={{"color":"Red",marginLeft:20}}>{strings.SS_NoCrawlEnabled} {this.state.affectedSite}</Label>:
+                                    <Label style={{"color":"Green",marginLeft:20}}>{strings.SS_SiteSearchable1} {this.state.affectedSite} {strings.SS_SiteSearchable2}</Label>}
+                                {this.state.userPerm?<Label style={{"color":"Green",marginLeft:20}}>{strings.SS_HaveAccess}</Label>:
+                                    <Label style={{"color":"Red",marginLeft:20}}>{strings.SS_NoAccess}</Label>}
                                 </div>:null}
                                 {this.state.GroupId?
                                 <div>
-                                {this.state.isinMembers?<Label style={{"color":"Green",marginLeft:20}}>You are in the members of the site</Label>:
-                                    <Label style={{"color":"Red",marginLeft:20}}>You are not in the members of the site</Label>}
+                                {this.state.isinMembers?<Label style={{"color":"Green",marginLeft:20}}>{strings.SS_InMembers}</Label>:
+                                    <Label style={{"color":"Red",marginLeft:20}}>{strings.SS_NotInMembers}</Label>}
                                 </div>:null}
                             </div>:null
                         }
                       <div id="CommandButtonsSection">
                         <PrimaryButton
-                          text="Check Issues"
+                          text={strings.SS_Label_CheckIssues}
                           style={{ display: 'inline', marginTop: '10px' }}
                           onClick={() => {this.ResetSatus(); this.CheckSiteSearchSettings();}} //When click: Reset banner status & check if the site is searchable
                         />
                         {this.state.isChecked && this.state.isWebThere && (this.state.isWebNoIndex || (this.state.GroupId && !this.state.isinMembers))?
                             <PrimaryButton
-                                text="Fix Issues"
+                                text={strings.SS_Label_FixIssues}
                                 style={{ display: 'inline', marginTop: '10px', marginLeft:"10px"}}
                                 onClick={() => {this.FixIssues();}}
                             />:null}
@@ -117,7 +118,7 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
     public async CheckSiteSearchSettings()
     {
         this.setState({isChecked:false});
-        SPOQASpinner.Show("Checking ......");
+        SPOQASpinner.Show(`${strings.SS_Message_Checking}`);
         try
         {
           let url:URL = new URL(this.state.affectedSite);
@@ -132,8 +133,8 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
           {
             if(sum.totalNoDup == 0)
             {
-              console.log(`No Search Result for the site`);
-              SPOQAHelper.ShowMessageBar("Error", "No Search Result for the site."); 
+              console.log(`${strings.SS_Message_NoSearchResult}`);
+              SPOQAHelper.ShowMessageBar("Error", `${strings.SS_Message_NoSearchResult}`); 
 
               //Site is not searchable. Proceed to check more
               //1. Check if the site exists
@@ -148,7 +149,7 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
               }
               catch(err)
               {
-                SPOQAHelper.ShowMessageBar("Error",`Get exception when try to get web with error message ${err}`);
+                SPOQAHelper.ShowMessageBar("Error",`${strings.SS_Ex_GetWebError} ${err}`);
                 return;
               }
               if(webInfo)
@@ -161,7 +162,7 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
                 }
                 catch(err)
                 {
-                  SPOQAHelper.ShowMessageBar("Error",`Get exception when try to check IsWebNoCrawl with error message ${err}`);
+                  SPOQAHelper.ShowMessageBar("Error",`${strings.SS_Ex_IsWebNoCrawlError} ${err}`);
                   return;
                 }
 
@@ -223,21 +224,21 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
                 }
                 catch(err)
                 {
-                  SPOQAHelper.ShowMessageBar("Error",`Get exception when try to get user info with error message ${err}`);
+                  SPOQAHelper.ShowMessageBar("Error",`${strings.SS_Ex_GetUserInfoError} ${err}`);
                   return;
                 }
               }
             }
             else
             {
-              console.log(`Search Result in Duplicate for the site`);
-              SPOQAHelper.ShowMessageBar("Warning", "Search Result in Duplicate for the site."); 
+              console.log(`${strings.SS_Message_ResultDuplicate}`);
+              SPOQAHelper.ShowMessageBar("Warning", `${strings.SS_Message_ResultDuplicate}`); 
             }
           }
           else
           {
-            console.log(`The site is searchable`);
-            SPOQAHelper.ShowMessageBar("Success", "The site is searchable."); 
+            console.log(`${strings.SS_Message_SiteSearchable}`);
+            SPOQAHelper.ShowMessageBar("Success", `${strings.SS_Message_SiteSearchable}`); 
             SPOQASpinner.Hide();
             this.setState({isChecked:false});
             return;
@@ -256,7 +257,7 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
     public async FixIssues()
     {
         SPOQAHelper.ResetFormStaus();
-        SPOQASpinner.Show("Fix detected site search issues ......");
+        SPOQASpinner.Show(`${strings.SS_Message_FixSite}`);
         let hasError:boolean = false;
         
         if(this.state.isWebNoIndex)
@@ -266,7 +267,7 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
             }
             catch(err)
             {
-                SPOQAHelper.ShowMessageBar("Error",`Get exception when try to check FixWebNoCrawl with error message ${err}`);
+                SPOQAHelper.ShowMessageBar("Error",`${strings.SS_Ex_FixWebNoCrawlError} ${err}`);
                 hasError = true;
             }
         }
@@ -279,14 +280,14 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
             }
             catch(err)
             {
-                SPOQAHelper.ShowMessageBar("Error",`Get exception when try to check AddUserinMembers with error message ${err}`);
+                SPOQAHelper.ShowMessageBar("Error",`${strings.SS_Ex_AddUserInMembersError} ${err}`);
                 hasError = true;
             }
         }
 
         if(!hasError)
         {
-            SPOQAHelper.ShowMessageBar("Success", `Fixed all detected issues please try to reindex the affected site and wait for 20~30 minutes then verify it`);
+            SPOQAHelper.ShowMessageBar("Success", `${strings.SS_Message_FxiedAll}`);
             this.setState({isChecked:false});
         }
 

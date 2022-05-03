@@ -164,5 +164,18 @@ define([], function() {
      MF_Ex_FixNewFormError:"Get exception when try fixing the new form with error message",
      MF_Ex_FixEditFormError:"Get exception when try fixing the edit form with error message",
      MF_Message_FixedAll:"Fixed all missing forms",
+     FC_Label_QuerySite:"Query Site:",
+     FC_Lable_ModifedUser:"Modified User:",
+     FC_Label_PathFilter:"Path Filter:",
+     FC_Label_StartDate:"Start Date:",
+     FC_Message_SelectDate:"Select a date...",
+     FC_Label_EndDate:"End Date:",
+     FC_Label_GetFiles:"Get Files",
+     FC_Label_Export:"Export",
+     FC_Message_Quering:"Querying ......",
+     FC_Ex_GetFilesChangeError:"Get Files Change Exited Unexpectedly",
+     FC_Message_QueryDone:"Query Complete. Changes Number:",
+     FC_Ex_GetSiteError:"Failed to get the site",
+
   }
 });

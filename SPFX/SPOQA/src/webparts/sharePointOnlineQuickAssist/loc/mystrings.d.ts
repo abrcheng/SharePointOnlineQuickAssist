@@ -174,6 +174,20 @@ declare interface ISharePointOnlineQuickAssistWebPartStrings {
   MF_Ex_FixNewFormError:string;
   MF_Ex_FixEditFormError:string;
   MF_Message_FixedAll:string;
+
+  // Strings for Get Files Changes
+  FC_Label_QuerySite:string;
+  FC_Lable_ModifedUser:string;
+  FC_Label_PathFilter:string;
+  FC_Label_StartDate:string;
+  FC_Message_SelectDate:string;
+  FC_Label_EndDate:string;
+  FC_Label_GetFiles:string;
+  FC_Label_Export:string;
+  FC_Message_Quering:string;
+  FC_Ex_GetFilesChangeError:string;
+  FC_Message_QueryDone:string;
+  FC_Ex_GetSiteError:string;
 }
 
 declare module 'SharePointOnlineQuickAssistWebPartStrings' {

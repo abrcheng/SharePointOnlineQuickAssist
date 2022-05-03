@@ -14,6 +14,7 @@ import SPOQASpinner from '../../../Helpers/SPOQASpinner';
 import SPOQAHelper from '../../../Helpers/SPOQAHelper';
 import IFilesGrid from "./IFilesGrid";
 import { IFile } from "./IFile";
+import * as strings from 'SharePointOnlineQuickAssistWebPartStrings';
 export default class GetFilesChange extends React.Component<ISharePointOnlineQuickAssistProps>
 {
     private modifiedFiles:IFile[];    
@@ -37,7 +38,7 @@ export default class GetFilesChange extends React.Component<ISharePointOnlineQui
                         <div id="IFiles_FilterSection" className={styles.msgrid}>
                             <div className={styles.msrow} id="siteURL_row">
                                 <TextField
-                                    label="Query Site:"
+                                    label={strings.FC_Label_QuerySite}
                                     multiline={false}
                                     onChange={(e)=>{let text:any = e.target; this.setState({querySite:text.value});}}
                                     value={this.state.querySite}
@@ -47,7 +48,7 @@ export default class GetFilesChange extends React.Component<ISharePointOnlineQui
                             <div className={styles.msrow} id="queryFilter_row">
                                 <div className={styles.mscol6}>
                                     <TextField
-                                        label="Modified User:"                        
+                                        label={strings.FC_Lable_ModifedUser}                  
                                         multiline={false}
                                         onChange={(e)=>{let text:any = e.target; this.setState({modifiedByUser:text.value});}}
                                         value={this.state.modifiedByUser}
@@ -55,7 +56,7 @@ export default class GetFilesChange extends React.Component<ISharePointOnlineQui
                                     </div>          
                                     <div className={styles.mscol6}>
                                     <TextField 
-                                        label="Path Filter:"
+                                        label={strings.FC_Label_PathFilter}
                                         className='ms-Grid-col ms-u-sm6 block'
                                         multiline={false}
                                         onChange={(e)=>{let text:any = e.target; this.setState({pathFilter:text.value});}}
@@ -66,8 +67,8 @@ export default class GetFilesChange extends React.Component<ISharePointOnlineQui
                             <div className={styles.msrow} id="queryDate_row">
                                 <div className={styles.mscol6}>
                                     <DatePicker
-                                        label='Start Date:'
-                                        placeholder="Select a date..."
+                                        label={strings.FC_Label_StartDate}
+                                        placeholder={strings.FC_Message_SelectDate}
                                         ariaLabel="Select a date"
                                         onSelectDate={(e)=>{ this.setState({queryStartDate:e});}}
                                         value={this.state.queryStartDate}                    
@@ -75,8 +76,8 @@ export default class GetFilesChange extends React.Component<ISharePointOnlineQui
                                 </div>
                                 <div className={styles.mscol6}>
                                     <DatePicker
-                                        label='End Date:'
-                                        placeholder="Select a date..."
+                                        label={strings.FC_Label_EndDate}
+                                        placeholder={strings.FC_Message_SelectDate}
                                         ariaLabel="Select a date"
                                         onSelectDate={(e)=>{ this.setState({queryEndDate:e});}}
                                         value={this.state.queryEndDate}                           
@@ -90,12 +91,12 @@ export default class GetFilesChange extends React.Component<ISharePointOnlineQui
                     <div className={ styles.column }>
                         <div id="IFiles_CommandButtonsSection">
                             <PrimaryButton
-                                text="Get Files"
+                                text={strings.FC_Label_GetFiles}
                                 style={{ display: 'inline', marginTop: '10px' }}
                                 onClick={() => {SPOQAHelper.ResetFormStaus();this.QueryFiles();}}
                             />
                             <PrimaryButton
-                                text="Export"
+                                text={strings.FC_Label_Export}
                                 style={{ display: 'inline', marginTop: '10px', marginLeft:"10px"}}
                                 onClick={() => {this.DoExport();}}
                             />
@@ -120,7 +121,7 @@ export default class GetFilesChange extends React.Component<ISharePointOnlineQui
         if(siteID)
         {   
             this.modifiedFiles = [];
-            SPOQASpinner.Show("Querying ......");
+            SPOQASpinner.Show(`${strings.FC_Message_Quering}`);
             
             var drives = await RestAPIHelper.GetDrives(this.props.spHttpClient,this.state.querySite);
             console.log(drives);
@@ -166,7 +167,7 @@ export default class GetFilesChange extends React.Component<ISharePointOnlineQui
                     {
                         
                         this.setState({queried:true,
-                        message:`Get Files Change Exited Unexpectedly`,         
+                        message:`${strings.FC_Ex_GetFilesChangeError}`,         
                         messageType:MessageBarType.error
                         });
                         SPOQASpinner.Hide();
@@ -284,7 +285,7 @@ export default class GetFilesChange extends React.Component<ISharePointOnlineQui
             }
 
             this.setState({queried:true,
-            message:`Query Complete. Changes Number: ${this.modifiedFiles.length}`,
+            message:`${strings.FC_Message_QueryDone}  ${this.modifiedFiles.length}`,
             messageType:MessageBarType.success
             });
             
@@ -292,7 +293,7 @@ export default class GetFilesChange extends React.Component<ISharePointOnlineQui
         }
         else
         {
-            SPOQAHelper.ShowMessageBar("Error", `Failed to get the site ${this.state.querySite}!`);
+            SPOQAHelper.ShowMessageBar("Error", `${strings.FC_Ex_GetSiteError} ${this.state.querySite}!`);
         }
     }
 

@@ -155,6 +155,59 @@ declare interface ISharePointOnlineQuickAssistWebPartStrings {
   SS_Ex_AddUserInMembersError:string;
   SS_Message_FxiedAll:string;
 
+  // Strings for UserInfo
+  UI_Label_AffectedSite:string;
+  UI_Label_Email:string;
+  UI_CheckIssueforUser:string;
+  UI_FixIssues:string;
+  UI_Result1:string;
+  UI_Result2:string;
+  UI_Result3:string;
+  UI_Result4:string;
+  UI_Result5:string;
+  UI_Result6:string;
+  UI_Result7:string;
+  UI_Result8:string;
+  UI_NonAffectedSite:string;
+  UI_NonAffectedUser:string;
+  UI_FixEmail:string;
+  UI_NonAADUser:string;
+  UI_NonUserListUser:string;
+  UI_OneUserAAD:string;
+  UI_OneGroupAAD:string;
+  UI_NonUserListGroup:string;
+  UI_FixSuccess:string;
+  UI_FixFailed:string;
+
+  //Strings for User Profile Department
+  UPD_CheckDepartment:string;
+  
+  //Strings for User Profile Email
+  UPE_CheckEmail:string;
+
+  //String for User Profile Manager
+  UPM_CheckManager:string;
+  
+  //Strings for User Profile Photo
+  UPP_PhotoURL:string;
+  UPP_PhotoAAD:string;
+  UPP_PhotoUserProfile:string;
+  UPP_PhotoSuccess:string;
+  UPP_PhotoFailed:string;
+  UPP_NonAADPhoto:string;
+
+  //Strings for User Profile Title
+  UPT_AADTitle:string;
+  UPT_UserProfileTitle:string;
+  UPT_UserInfoListTitle:string;
+  UPT_NonAADTitle:string;
+  UPT_NonSiteTitle:string;
+  UPT_FixSiteTitle:string;
+  UPT_FixUserProfileTitle:string;
+  UPT_FailedUserProfileTitle:string;
+  UPT_SuccessUserInfoListTitle:string;
+  UPT_FailedUserInfoListTitle:string;
+
   // Strings for Missing Forms
   MF_Label_AffectedSite:string;
   MF_Label_SelectList:string;

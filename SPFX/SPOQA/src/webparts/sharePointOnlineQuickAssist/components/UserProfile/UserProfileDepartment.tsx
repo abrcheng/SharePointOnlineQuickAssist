@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as strings from 'SharePointOnlineQuickAssistWebPartStrings';
 import {  
     PrimaryButton    
   } from 'office-ui-fabric-react/lib/index';
@@ -10,7 +11,7 @@ export default class UserProfileDepartmentQA extends React.Component<ISharePoint
         return (
             <div>
                   <PrimaryButton
-                      text="Check UserProfile Department"
+                      text={strings.UPD_CheckDepartment}
                       style={{ display: 'block', marginTop: '10px' }}
                       onClick={() => {alert("clicked"); }}
                     />

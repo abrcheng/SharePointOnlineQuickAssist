@@ -10,6 +10,7 @@ import SPOQASpinner from '../../../Helpers/SPOQASpinner';
 import SPOQAHelper from '../../../Helpers/SPOQAHelper';
 import { ISharePointOnlineQuickAssistProps } from '../ISharePointOnlineQuickAssistProps';
 import styles from '../SharePointOnlineQuickAssist.module.scss';
+import * as strings from 'SharePointOnlineQuickAssistWebPartStrings';
 export default class UserProfileTitleQA extends React.Component<ISharePointOnlineQuickAssistProps>
 {
     public state = {
@@ -28,32 +29,32 @@ export default class UserProfileTitleQA extends React.Component<ISharePointOnlin
                 <div className={ styles.row }>
                     <div className={ styles.column }>
                       <TextField
-                              label="Affected Site:"
+                              label={strings.AffectedSite}
                               multiline={false}
                               onChange={(e)=>{let text:any = e.target; this.setState({affectedSite:text.value});}}
                               value={this.state.affectedSite}
                               required={true}                        
                         /> 
                       <TextField
-                              label="Affected User:"
+                              label={strings.AffectedUser}
                               multiline={false}
                               onChange={(e)=>{let text:any = e.target; this.setState({affectedUser:text.value});}}
                               value={this.state.affectedUser}
                               required={true}                                                
                         />                  
-                        {this.state.aadJobTitle != ""? <Label>JobTitle from AAD is <span style={{"color":"Green"}}>{this.state.aadJobTitle}</span></Label> : null}
-                        {this.state.aadJobTitle != "" && this.state.userId && this.state.userId !=-1? <Label>JobTitle from User Profile is <span style={this.state.uapJobtitle != this.state.aadJobTitle? {"color":"Red"}:{"color":"Green"}}>{this.state.uapJobtitle}</span></Label>: null}
-                        {this.state.aadJobTitle != "" && this.state.userId && this.state.userId !=-1?<Label>JobTitle from site user info list is <span style={this.state.siteJobTitle != this.state.aadJobTitle? {"color":"Red"}:{"color":"Green"}}>{this.state.siteJobTitle}</span></Label>: null}
+                        {this.state.aadJobTitle != ""? <Label>{strings.UPT_AADTitle} <span style={{"color":"Green"}}>{this.state.aadJobTitle}</span></Label> : null}
+                        {this.state.aadJobTitle != "" && this.state.userId && this.state.userId !=-1? <Label>{strings.UPT_UserProfileTitle} <span style={this.state.uapJobtitle != this.state.aadJobTitle? {"color":"Red"}:{"color":"Green"}}>{this.state.uapJobtitle}</span></Label>: null}
+                        {this.state.aadJobTitle != "" && this.state.userId && this.state.userId !=-1?<Label>{strings.UPT_UserInfoListTitle} <span style={this.state.siteJobTitle != this.state.aadJobTitle? {"color":"Red"}:{"color":"Green"}}>{this.state.siteJobTitle}</span></Label>: null}
 
                         <PrimaryButton
-                            text="Check Issues"
+                            text={strings.CheckIssues}
                             style={{ display: 'inline', marginTop: '10px' }}
                             onClick={() => {this.CheckUserProfileTitle();}}
                           />
                           
                           { (this.state.siteJobTitle != this.state.aadJobTitle || this.state.aadJobTitle != this.state.uapJobtitle) && this.state.userId && this.state.userId !=-1 ? 
                           <PrimaryButton
-                            text="Fix Issues"
+                            text={strings.UI_FixIssues}
                             style={{ display: 'inline', marginTop: '10px', marginLeft:"20px"}}
                             hidden={this.state.siteJobTitle == this.state.aadJobTitle && this.state.uapJobtitle == this.state.aadJobTitle}
                             onClick={() => {this.FixJobTitle();}}
@@ -71,17 +72,17 @@ export default class UserProfileTitleQA extends React.Component<ISharePointOnlin
         
         if(this.state.affectedSite =="" || !this.state.affectedSite || !SPOQAHelper.ValidateUrl(this.state.affectedSite))
         {
-          SPOQAHelper.ShowMessageBar("Error", "Affected site can't be null or invalid!");          
+          SPOQAHelper.ShowMessageBar("Error", strings.UI_NonAffectedSite);          
           return;
         }
 
         if(this.state.affectedUser =="" || !this.state.affectedUser || !SPOQAHelper.ValidateEmail(this.state.affectedUser))
         {
-          SPOQAHelper.ShowMessageBar("Error", "Affected user can't be null or invalid!");
+          SPOQAHelper.ShowMessageBar("Error", strings.UI_NonAffectedUser);
           return;
         }      
 
-        SPOQASpinner.Show("Checking ...");
+        SPOQASpinner.Show(strings.Checking);
         console.log("Start to CheckUserProfileTitle");
         try
         {
@@ -102,11 +103,11 @@ export default class UserProfileTitleQA extends React.Component<ISharePointOnlin
            this.forceUpdate();
            if(this.state.aadJobTitle == "" || !this.state.aadJobTitle)
            {
-              SPOQAHelper.ShowMessageBar("Error", "Failed to get the user/job title from AAD!");              
+              SPOQAHelper.ShowMessageBar("Error", strings.UPT_NonAADTitle);              
            }
            else if(this.state.userId ==-1)
            {
-              SPOQAHelper.ShowMessageBar("Error", "Failed to get the user from the site!");
+              SPOQAHelper.ShowMessageBar("Error", strings.UPT_NonSiteTitle);
            }
         }
 
@@ -117,12 +118,12 @@ export default class UserProfileTitleQA extends React.Component<ISharePointOnlin
     {
         if(this.state.siteJobTitle != this.state.aadJobTitle) // fix the job title in the user info list
         {
-          SPOQASpinner.Show("Fixing JobTitle in the site ...");
+          SPOQASpinner.Show(strings.UPT_FixSiteTitle);
           RestAPIHelper.FixJobTitleInUserInfoList(this.state.userId, this.props.spHttpClient, this.state.affectedSite, this.state.aadJobTitle, this.SuccessCallBack, this.FailedCallback);            
         }
         else if(this.state.uapJobtitle != this.state.aadJobTitle)
         {
-          SPOQASpinner.Show("Fixing JobTitle user profile ...");
+          SPOQASpinner.Show(strings.UPT_FixUserProfileTitle);
           try
           {
             var fixResult =  await RestAPIHelper.FixJobTitleInUserProfile(this.state.affectedUser, this.props.spHttpClient, this.state.affectedSite, this.state.aadJobTitle);
@@ -130,7 +131,7 @@ export default class UserProfileTitleQA extends React.Component<ISharePointOnlin
           }
           catch(err)
           {
-            SPOQAHelper.ShowMessageBar("Error", "Fix JobTitle in the user profile failed."); 
+            SPOQAHelper.ShowMessageBar("Error", strings.UPT_FailedUserProfileTitle); 
           }
         }
     }
@@ -138,13 +139,13 @@ export default class UserProfileTitleQA extends React.Component<ISharePointOnlin
     public SuccessCallBack()
     {    
         SPOQASpinner.Hide();
-        SPOQAHelper.ShowMessageBar("Success", "Fix JobTitle in the user info list completed, please recheck for verfiying it."); 
+        SPOQAHelper.ShowMessageBar("Success", strings.UPT_SuccessUserInfoListTitle); 
     }
 
     public FailedCallback()
     {
         SPOQASpinner.Hide();
-        SPOQAHelper.ShowMessageBar("Error", "Fix JobTitle in the user info list failed.");     
+        SPOQAHelper.ShowMessageBar("Error", strings.UPT_FailedUserInfoListTitle);     
     }
 
     private ResetStatus():void

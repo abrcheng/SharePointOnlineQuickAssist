@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as strings from 'SharePointOnlineQuickAssistWebPartStrings';
 import {  
     PrimaryButton    
   } from 'office-ui-fabric-react/lib/index';
@@ -10,7 +11,7 @@ export default class UserProfileManagerQA extends React.Component<ISharePointOnl
         return (
             <div>
                   <PrimaryButton
-                      text="Check UserProfile Manager"
+                      text={strings.UPM_CheckManager}
                       style={{ display: 'block', marginTop: '10px' }}
                       onClick={() => {alert("clicked"); }}
                     />

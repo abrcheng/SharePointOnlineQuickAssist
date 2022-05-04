@@ -10,6 +10,8 @@ import SPOQASpinner from '../../../Helpers/SPOQASpinner';
 import SPOQAHelper from '../../../Helpers/SPOQAHelper';
 import { ISharePointOnlineQuickAssistProps } from '../ISharePointOnlineQuickAssistProps';
 import styles from '../SharePointOnlineQuickAssist.module.scss';
+import * as strings from 'SharePointOnlineQuickAssistWebPartStrings';
+
 export default class UserInfoQA extends React.Component<ISharePointOnlineQuickAssistProps>
 {
   public state = {
@@ -35,34 +37,35 @@ export default class UserInfoQA extends React.Component<ISharePointOnlineQuickAs
           <div className={ styles.row }>
             <div className={ styles.column }>
               <TextField
-                      label="Affected Site:"
+                      label={strings.UI_Label_AffectedSite}
                       multiline={false}
                       onChange={(e)=>{let text:any = e.target; this.setState({affectedSite:text.value});}}
                       value={this.state.affectedSite}
                       required={true}                        
                 /> 
               <TextField
-                      label="Email of Affected User/Group:"
+                      
+                      label={strings.UI_Label_Email}
                       multiline={false}
                       onChange={(e)=>{let text:any = e.target; this.setState({email:text.value});}}
                       value={this.state.email}
                       required={true}                                                
                 />                  
                 <div id="UserInfoSyncDiagnoseResult">
-                      {this.state.isChecked?<Label>Diagnose result:</Label>:null}
+                      {this.state.isChecked?<Label>{strings.SS_DiagnoseResultLabel}</Label>:null}
                       <div style={{marginLeft:20}} id="UserInfoSyncDiagnoseResultDiv" ref={this.resRef}>
 
                       </div>
                 </div>
                 <PrimaryButton
-                    text="Check Issues"
+                    text={strings.UI_CheckIssueforUser}
                     style={{ display: 'inline', marginTop: '10px' }}
                     onClick={() => {this.Check();}}
                   />
                   
                   { this.state.isNeedFix ? 
                   <PrimaryButton
-                    text="Fix Issues"
+                    text={strings.UI_FixIssues}
                     style={{ display: 'inline', marginTop: '10px', marginLeft:"20px"}}             
                     onClick={() => {this.Fix();}}
                   />: null}
@@ -80,17 +83,17 @@ export default class UserInfoQA extends React.Component<ISharePointOnlineQuickAs
       var greenStyle = "color:green";
       if(this.state.affectedSite =="" || !this.state.affectedSite || !SPOQAHelper.ValidateUrl(this.state.affectedSite))
       {
-        SPOQAHelper.ShowMessageBar("Error", "Affected site can't be null or invalid!");          
+        SPOQAHelper.ShowMessageBar("Error", strings.UI_NonAffectedSite);          
         return;
       }
 
       if(this.state.email =="" || !this.state.email || !SPOQAHelper.ValidateEmail(this.state.email))
       {
-        SPOQAHelper.ShowMessageBar("Error", "Affected user can't be null or invalid!");
+        SPOQAHelper.ShowMessageBar("Error", strings.UI_NonAffectedUser);
         return;
       }      
 
-      SPOQASpinner.Show("Checking ...");
+      SPOQASpinner.Show(strings.SS_Message_Checking);
       console.log(`Start to check sync for eamil ${this.state.email}`);
       try
       {
@@ -103,16 +106,16 @@ export default class UserInfoQA extends React.Component<ISharePointOnlineQuickAs
             var userInfo = await GraphAPIHelper.GetUserByEmail(this.props.msGraphClient, this.state.email);
             if(userInfo.value.length ==0) // can't find group and user
             {
-              SPOQAHelper.ShowMessageBar("Error", `In the AAD can't find any group or user with the email address ${this.state.email}!`); 
+              SPOQAHelper.ShowMessageBar("Error", `${strings.UI_NonAADUser} ${this.state.email}!`); 
             }
             else
             {
-              this.resRef.current.innerHTML += `<span style='${greenStyle}'>Get one user ${userInfo.value[0].userPrincipalName} from AAD.</span>`;
+              this.resRef.current.innerHTML += `<span style='${greenStyle}'>${strings.UI_OneUserAAD} ${userInfo.value[0].userPrincipalName}</span>`;
               // Get user from user info list by userPrincipalName
               var userFromList = await RestAPIHelper.GetUserFromUserInfoList(userInfo.value[0].userPrincipalName, this.props.spHttpClient, this.state.affectedSite);
               if(userFromList == null)
               {
-                SPOQAHelper.ShowMessageBar("Error", `In the user info list can't find any user with the UPN ${userInfo.value[0].userPrincipalName}!`);
+                SPOQAHelper.ShowMessageBar("Error", `${strings.UI_NonUserListUser} ${userInfo.value[0].userPrincipalName}!`);
               }
               else
               {
@@ -121,17 +124,17 @@ export default class UserInfoQA extends React.Component<ISharePointOnlineQuickAs
                 this.state.userId = userFromList.Id;
                 this.userInfo1 = userInfo.value[0];
                 var displayNameMismatched = this.userInfo1.displayName != userFromList.Title;
-                this.resRef.current.innerHTML+=`</br><span style='${displayNameMismatched? redStyle:greenStyle}'>Display name in AAD is ${this.userInfo1.displayName}, display name in user info list is ${userFromList.Title}</span>`;
+                this.resRef.current.innerHTML+=`</br><span style='${displayNameMismatched? redStyle:greenStyle}'>${strings.UI_Result1} ${this.userInfo1.displayName}, ${strings.UI_Result2} ${userFromList.Title}</span>`;
                 var emailMismatched = this.userInfo1.mail != userFromList.EMail;
-                this.resRef.current.innerHTML+=`</br><span style='${emailMismatched? redStyle:greenStyle}'>Email in AAD is ${this.userInfo1.mail}, email in user info list is ${userFromList.EMail}</span>`;
+                this.resRef.current.innerHTML+=`</br><span style='${emailMismatched? redStyle:greenStyle}'>${strings.UI_Result3} ${this.userInfo1.mail}, ${strings.UI_Result4} ${userFromList.EMail}</span>`;
                 var jobTitleMismatched = this.userInfo1.jobTitle != userFromList.JobTitle;
-                this.resRef.current.innerHTML+=`</br><span style='${jobTitleMismatched? redStyle:greenStyle}'>JobTitle in AAD is ${this.userInfo1.jobTitle}, JobTitle in user info list is ${userFromList.JobTitle}</span>`;
+                this.resRef.current.innerHTML+=`</br><span style='${jobTitleMismatched? redStyle:greenStyle}'>${strings.UI_Result5} ${this.userInfo1.jobTitle}, ${strings.UI_Result6} ${userFromList.JobTitle}</span>`;
                 var workPhoneMismatched = false;
                 if(this.userInfo1.businessPhones && this.userInfo1.businessPhones.length && this.userInfo1.businessPhones.length >0)
                 {
                   workPhoneMismatched = this.userInfo1.businessPhones[0] != userFromList.WorkPhone;
                   this.userInfo1.WorkPhone = this.userInfo1.businessPhones[0];
-                  this.resRef.current.innerHTML+=`</br><span style='${workPhoneMismatched? redStyle:greenStyle}'>WorkPhone in AAD is ${this.userInfo1.WorkPhone}, WorkPhone in user info list is ${userFromList.WorkPhone}</span>`;
+                  this.resRef.current.innerHTML+=`</br><span style='${workPhoneMismatched? redStyle:greenStyle}'>${strings.UI_Result7} ${this.userInfo1.WorkPhone}, ${strings.UI_Result8} ${userFromList.WorkPhone}</span>`;
                 }
                 
                 this.setState({isNeedFix:displayNameMismatched||emailMismatched||jobTitleMismatched||workPhoneMismatched});
@@ -143,12 +146,12 @@ export default class UserInfoQA extends React.Component<ISharePointOnlineQuickAs
             this.state.isGroup = true;
             this.groupInfo1 = groupInfo.value[0];
             var groupType = this.groupInfo1.groupTypes.length ==0 ?"null":this.groupInfo1.groupTypes[0];
-            this.resRef.current.innerHTML += `<span style='${greenStyle}'>Get one group from AAD, securityEnabled=${this.groupInfo1.securityEnabled}, groupType=${groupType}</span>`;
+            this.resRef.current.innerHTML += `<span style='${greenStyle}'>${strings.UI_OneGroupAAD}, securityEnabled=${this.groupInfo1.securityEnabled}, groupType=${groupType}</span>`;
              // Get group from user info list by group Id
              var groupFromList = await RestAPIHelper.GetGroupFromUserInfoList(this.groupInfo1.id, this.props.spHttpClient, this.state.affectedSite);
              if(groupFromList == null)
               {
-                SPOQAHelper.ShowMessageBar("Error", `In the user info list can't find any group with group Id ${this.groupInfo1.id}!`);
+                SPOQAHelper.ShowMessageBar("Error", `${strings.UI_NonUserListGroup} ${this.groupInfo1.id}!`);
               }
               else
               {
@@ -161,9 +164,9 @@ export default class UserInfoQA extends React.Component<ISharePointOnlineQuickAs
                   this.groupInfo1.displayName = this.groupInfo1.displayName + " Members";
                 }
                 var groupDisplayNameMismatched = this.groupInfo1.displayName != groupFromList.Title;
-                this.resRef.current.innerHTML+=`</br><span style='${groupDisplayNameMismatched? redStyle:greenStyle}'>Display name in AAD is ${this.groupInfo1.displayName}, display name in user info list is ${groupFromList.Title}</span>`;
+                this.resRef.current.innerHTML+=`</br><span style='${groupDisplayNameMismatched? redStyle:greenStyle}'>${strings.UI_Result1} ${this.groupInfo1.displayName}, ${strings.UI_Result2} ${groupFromList.Title}</span>`;
                 var groupEmailMismatched = this.groupInfo1.mail != groupFromList.EMail;
-                this.resRef.current.innerHTML+=`</br><span style='${groupEmailMismatched? redStyle:greenStyle}'>Email in AAD is ${this.groupInfo1.mail}, email in user info list is ${groupFromList.EMail}</span>`;
+                this.resRef.current.innerHTML+=`</br><span style='${groupEmailMismatched? redStyle:greenStyle}'>${strings.UI_Result3} ${this.groupInfo1.mail}, ${strings.UI_Result4} ${groupFromList.EMail}</span>`;
                 this.setState({isNeedFix:groupEmailMismatched||groupDisplayNameMismatched});
               }
           }
@@ -178,7 +181,7 @@ export default class UserInfoQA extends React.Component<ISharePointOnlineQuickAs
 
   public async Fix()
   {
-    SPOQASpinner.Show(`Fixing user info item with eamil ${this.state.email} in the site ...`);
+    SPOQASpinner.Show(`${strings.UI_FixEmail} ${this.state.email} ...`);
       var properties: Array<any>=[];
       if(!this.state.isGroup)
       {
@@ -199,13 +202,13 @@ export default class UserInfoQA extends React.Component<ISharePointOnlineQuickAs
   public SuccessCallBack()
   {    
       SPOQASpinner.Hide();
-      SPOQAHelper.ShowMessageBar("Success", "Fix in the user info list completed, please recheck for verfiying it."); 
+      SPOQAHelper.ShowMessageBar("Success", `${strings.UI_FixSuccess}`); 
   }
 
   public FailedCallback()
   {
       SPOQASpinner.Hide();
-      SPOQAHelper.ShowMessageBar("Error", "Fix in the user info list failed.");     
+      SPOQAHelper.ShowMessageBar("Error", `${strings.UI_FixFailed}`);     
   }
 
   private ResetStatus():void

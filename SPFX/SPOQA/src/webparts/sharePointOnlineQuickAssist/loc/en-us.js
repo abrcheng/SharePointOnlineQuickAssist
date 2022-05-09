@@ -54,7 +54,6 @@ define([], function() {
      "RemedySteps":"Remedy Steps:",
      "CanBeFixedIn":"can be fixed in",
      "ThisPage":"this page",   
-     "AffectedSite":"Affected Site:",
      "RI_DeletedBy":"Deleted By:",
      "RI_PathFilter":"Path Filter",
      "RI_StartDate":"Start Date",

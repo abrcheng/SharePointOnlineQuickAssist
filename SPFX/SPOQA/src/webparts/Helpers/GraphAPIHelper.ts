@@ -112,6 +112,7 @@ export default class GraphAPIHelper
       }
     }
     
+    // Run Delta Query to get file changes in the library with a given driveId
     public static async CheckForUpdates(msGraphClient:MSGraphClient,nextxLink:string,siteID:string,startDate:Date,driveId:string)
     {
       var apiUri = "";

@@ -107,7 +107,7 @@ export default class RestAPIHelper
       return res;
     }
 
-    public static async GetUserPermissions(user:string, spHttpClient:SPHttpClient, webAbsoluteUrl:string)
+    public static async GetUserReadPermissions(user:string, spHttpClient:SPHttpClient, webAbsoluteUrl:string)
     {
       var account =  `i:0#.f|membership|${user}`;
       var apiUrl = `${webAbsoluteUrl}/_api/web/getUserEffectivePermissions(@username)?@username='${encodeURIComponent(account)}'`;      
@@ -119,7 +119,6 @@ export default class RestAPIHelper
         var permissions = new SP.BasePermissions();
         permissions.fromJson(responseJson);
         //let result = {};
-        var hasPermission = permissions.has(SP.PermissionKind.viewPages);
         /*
         for(var levelName in SP.PermissionKind) {
             if (SP.PermissionKind.hasOwnProperty(levelName)) {
@@ -134,11 +133,19 @@ export default class RestAPIHelper
                 }
             }     
         }*/
-        return hasPermission;
+        if((permissions.has(SP.PermissionKind.viewListItems)) && (permissions.has(SP.PermissionKind.openItems)) && (permissions.has(SP.PermissionKind.viewVersions)) && (permissions.has(SP.PermissionKind.viewFormPages)) && (permissions.has(SP.PermissionKind.open))
+        && (permissions.has(SP.PermissionKind.viewPages)) && (permissions.has(SP.PermissionKind.browseUserInfo)) && (permissions.has(SP.PermissionKind.useClientIntegration)) && (permissions.has(SP.PermissionKind.useRemoteAPIs)) && (permissions.has(SP.PermissionKind.createAlerts)))
+        {
+          return true;
+        }
+        else
+        {
+          return false;
+        }
       }
       else
       {
-        var message = `Failed GetUserPermissions for API url ${apiUrl}`;
+        var message = `Failed GetUserReadPermissions for API url ${apiUrl}`;
         console.log(message);
         Promise.reject(message);
       }

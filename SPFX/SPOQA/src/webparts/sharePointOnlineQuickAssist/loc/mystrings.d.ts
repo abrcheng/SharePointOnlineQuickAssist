@@ -133,9 +133,10 @@ declare interface ISharePointOnlineQuickAssistWebPartStrings {
   SS_FoundSite:string;
   SS_SiteNoExist1:string;
   SS_SiteNoExist2:string;
-  SS_NoCrawlEnabled:sting;
-  SS_SiteSearchable1:string;
-  SS_SiteSearchable2:string;
+  SS_NoCrawlEnabled1:string;
+  SS_NoCrawlEnabled2:string;
+  SS_SiteIndexEnabled1:string;
+  SS_SiteIndexEnabled2:string;
   SS_HaveAccess:string;
   SS_NoAccess:string;
   SS_InMembers:string;
@@ -154,6 +155,10 @@ declare interface ISharePointOnlineQuickAssistWebPartStrings {
   SS_Ex_FixWebNoCrawlError:string;
   SS_Ex_AddUserInMembersError:string;
   SS_Message_FxiedAll:string;
+  SS_Message_SearchAndOffline:string;
+  SS_Message_WaitAfterFix:string;
+  SS_Message_CheckPermissions:string;
+  SS_Message_AddInMembers:string;
 
   // Strings for UserInfo
   UI_Label_AffectedSite:string;

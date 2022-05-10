@@ -137,7 +137,7 @@ export default class SharePointOnlineQuickAssist extends React.Component<IShareP
                   <div>                    
                     <ComboBox
                       defaultSelectedKey="-1"
-                      label="Please select issue which you want to check"
+                      label= {strings.SelectIssueTip}
                       allowFreeform
                       autoComplete="on"                      
                       options={INITIAL_OPTIONS} 

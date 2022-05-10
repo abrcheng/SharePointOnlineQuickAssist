@@ -20,7 +20,7 @@ import * as strings from 'SharePointOnlineQuickAssistWebPartStrings';
 export default class PermissionQA extends React.Component<ISharePointOnlineQuickAssistProps>
 {
     public state = {         
-        affectedLibrary:{Title:"",Id:"",RootFolder:"", readSecurity:0, writeSecurity:0},
+        affectedLibrary:{Title:"",Id:"",RootFolder:"", readSecurity:0, writeSecurity:0,baseType:-1},
         affectedDocument:"",
         siteLibraries:[],         
         affectedSite:this.props.webAbsoluteUrl,        
@@ -76,7 +76,8 @@ export default class PermissionQA extends React.Component<ISharePointOnlineQuick
                                                     Id:option.data.listId, 
                                                     RootFolder:option.data.rootFolder, 
                                                     writeSecurity:option.data.writeSecurity,
-                                                    readSecurity:option.data.readSecurity}, 
+                                                    readSecurity:option.data.readSecurity,
+                                                    baseType:option.data.baseType}, 
                                                 isChecked:false}); 
                                                 this.resRef.current.innerHTML="";
                                                  this.remedyRef.current.innerHTML="";}} 
@@ -89,7 +90,8 @@ export default class PermissionQA extends React.Component<ISharePointOnlineQuick
                                         value={this.state.affectedDocument}
                                         required={true}                                                
                                         />                                               
-                                        <Label>e.g. {this.props.rootUrl}{this.state.affectedLibrary.RootFolder}/xxxx.xxx, if the affected URL is a site, then fill home page full URL</Label>
+                                        {!(this.state.affectedLibrary.baseType==1)?<Label>e.g. {this.props.rootUrl}{this.state.affectedLibrary.RootFolder}/DispForm.aspx?ID=xxx</Label>
+                                            :<Label>e.g. {this.props.rootUrl}{this.state.affectedLibrary.RootFolder}/xxxx.xxx</Label>}
                                     </div>:null}                                        
                                 </div>:null}
                             </div>
@@ -129,13 +131,13 @@ export default class PermissionQA extends React.Component<ISharePointOnlineQuick
 
             // list.BaseType ==1 means this list is a library, otherwise this list is a list
             lists.forEach(list => {
-                if(list.BaseType ==1) // OneDrive only can sync library, so only libary need to be checked
-                {
+                // if(list.BaseType ==1) // 
+                //{
                     listOptions.push({ 
                         key:list.Title, 
                         text: list.Title,
-                        data:{listId:list.Id, rootFolder:list.RootFolder.ServerRelativeUrl, writeSecurity:list.writeSecurity,readSecurity:list.ReadSecurity}});
-                }
+                        data:{listId:list.Id, rootFolder:list.RootFolder.ServerRelativeUrl, writeSecurity:list.writeSecurity,readSecurity:list.ReadSecurity, baseType:list.BaseType}});
+                //}
             });
             this.setState({siteIsVaild:true, siteLibraries:listOptions});
         }
@@ -186,7 +188,7 @@ export default class PermissionQA extends React.Component<ISharePointOnlineQuick
               }  
        
        // check file existing
-       var isFileExisting = await RestAPIHelper.IsDocumentExisting(this.props.spHttpClient, this.state.affectedSite, this.state.affectedDocument.replace(this.props.rootUrl, ""));
+       var isFileExisting = await RestAPIHelper.IsDocumentExisting(this.props.spHttpClient, this.state.affectedSite, this.state.affectedDocument.replace(this.props.rootUrl, ""), this.state.affectedLibrary.RootFolder, resNotApprovedItems.itemType);
        var fileExistingMsg = isFileExisting.success? strings.PC_FileExistingMsg:strings.PC_FileNotExistingMsg;
        this.resRef.current.innerHTML += `<span style='${!isFileExisting.success? this.redStyle:this.greenStyle}'>${fileExistingMsg}</span><br/>`;
        if(!isFileExisting.success)
@@ -219,7 +221,7 @@ export default class PermissionQA extends React.Component<ISharePointOnlineQuick
        }
 
        // check permission on the page/document
-       var hasReadPermissionOnDocument =  await RestAPIHelper.HasPermissionOnDocument(this.props.spHttpClient, this.state.affectedSite, this.state.affectedDocument.replace(this.props.rootUrl, ""), this.state.affectedUser, SP.PermissionKind.viewListItems);
+       var hasReadPermissionOnDocument =  await RestAPIHelper.HasPermissionOnItem(this.props.spHttpClient, this.state.affectedSite, this.state.affectedDocument.replace(this.props.rootUrl, ""), this.state.affectedUser, SP.PermissionKind.viewListItems,this.state.affectedLibrary.RootFolder, resNotApprovedItems.itemType);
        var readPermssionOnDocumentMsg = hasReadPermissionOnDocument? strings.PC_UserHasPermssionOnDocument:strings.PC_UserHasNoPermssionOnDocument;
        this.resRef.current.innerHTML += `<span style='${!hasReadPermissionOnDocument? this.redStyle:this.greenStyle}'>${readPermssionOnDocumentMsg}</span><br/>`;
        if(!hasReadPermissionOnDocument)

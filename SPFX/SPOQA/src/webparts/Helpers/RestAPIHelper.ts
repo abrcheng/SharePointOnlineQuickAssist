@@ -1,6 +1,7 @@
 import {SPHttpClient,ISPHttpClientOptions} from '@microsoft/sp-http';
 import SPOQAHelper from './SPOQAHelper';
 import { WebPartContext } from '@microsoft/sp-webpart-base';
+import  { ItemType} from '../Helpers/ModerationStatusHelper';
 
 export default class RestAPIHelper
 {
@@ -687,9 +688,10 @@ export default class RestAPIHelper
     
     // TODO check file existing or not GetFileByServerRelativeUrl 
     // https://chengc.sharepoint.com/sites/SPOQA/_api/web/GetFileByServerRelativeUrl('/sites/SPOQA/SitePages/Home.aspx')
-    public static async IsDocumentExisting(spHttpClient:SPHttpClient, siteAbsoluteUrl:string, fileServerRelativeUrl:string)
+    public static async IsDocumentExisting(spHttpClient:SPHttpClient, siteAbsoluteUrl:string, fileServerRelativeUrl:string, listRootFolder:string,itemType:ItemType)
     {
-      var apiUrl = `${siteAbsoluteUrl}/_api/web/GetFileByServerRelativeUrl('${fileServerRelativeUrl}')`;
+      var apiUrl = `${siteAbsoluteUrl}/_api/web/`;
+      apiUrl+= RestAPIHelper.GetAPIUrl(fileServerRelativeUrl, listRootFolder, itemType);
       var res = await spHttpClient.get(apiUrl, SPHttpClient.configurations.v1);
       if(res.ok)
       {
@@ -704,12 +706,17 @@ export default class RestAPIHelper
       }
     }
 
-    // TODO check user's pmerssion on document 
-    // https://chengc.sharepoint.com/sites/SPOQA/_api/web/GetFileByServerRelativeUrl('/sites/SPOQA/SitePages/Home.aspx')/ListItemAllFields/GetUserEffectivePermissions('i%3A0%23.f%7Cmembership%7Cjohnb%40chengc.onmicrosoft.com')
     public static async HasPermissionOnDocument(spHttpClient:SPHttpClient, siteAbsoluteUrl:string, documentUrl:string, user:string, permission:SP.PermissionKind)
     {
+        return await RestAPIHelper.HasPermissionOnItem(spHttpClient, siteAbsoluteUrl, documentUrl, user, permission, "", ItemType.Document);
+    }
+
+    // TODO check user's pmerssion on document 
+    // https://chengc.sharepoint.com/sites/SPOQA/_api/web/GetFileByServerRelativeUrl('/sites/SPOQA/SitePages/Home.aspx')/ListItemAllFields/GetUserEffectivePermissions('i%3A0%23.f%7Cmembership%7Cjohnb%40chengc.onmicrosoft.com')
+    public static async HasPermissionOnItem(spHttpClient:SPHttpClient, siteAbsoluteUrl:string, documentUrl:string, user:string, permission:SP.PermissionKind, listRootFolder:string,itemType:ItemType)
+    {
       var account =  `i:0#.f|membership|${user}`;
-      var apiUrl = `${siteAbsoluteUrl}/_api/web/GetFileByServerRelativeUrl('${documentUrl}')/ListItemAllFields/GetUserEffectivePermissions('${encodeURIComponent(account)}')`;  
+      var apiUrl = `${siteAbsoluteUrl}/_api/web/${RestAPIHelper.GetAPIUrl(documentUrl, listRootFolder, itemType)}/GetUserEffectivePermissions('${encodeURIComponent(account)}')`;  
       return await RestAPIHelper.HasPermssionOnOject(spHttpClient, apiUrl, permission); 
     }
 
@@ -910,5 +917,27 @@ export default class RestAPIHelper
         
         console.error(`Failed to get data from request ${apiUrl}.`);
         return false;    
-    }    
+    }
+    
+    private static GetAPIUrl(fileServerRelativeUrl:string, listRootFolder:string,itemType:ItemType):string
+    {
+      var apiUrl = "";
+        if(itemType == ItemType.Document)
+        {
+            apiUrl+=`GetFileByServerRelativeUrl('${fileServerRelativeUrl}')/ListItemAllFields`;
+        }
+        else if(itemType == ItemType.ListItem)
+        {
+          // get list Id
+          var urlParas = SPOQAHelper.ParseQueryString((fileServerRelativeUrl.split(".aspx?"))[1]);   
+          var itemId = urlParas["Id"]||urlParas["ID"];
+          apiUrl+=`GetListUsingPath(DecodedUrl='${listRootFolder}')/items(${itemId})`;
+        }
+        else if(itemType == ItemType.Folder)
+        {
+          apiUrl+=`GetFolderByServerRelativeUrl('${fileServerRelativeUrl}')/ListItemAllFields`;        
+        }
+
+      return apiUrl;
+    }
 }

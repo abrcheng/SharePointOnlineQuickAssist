@@ -12,6 +12,7 @@ import SPOQAHelper from '../../../Helpers/SPOQAHelper';
 import { ISharePointOnlineQuickAssistProps } from '../ISharePointOnlineQuickAssistProps';
 import styles from '../SharePointOnlineQuickAssist.module.scss';
 import * as strings from 'SharePointOnlineQuickAssistWebPartStrings';
+import {RemedyHelper} from '../../../Helpers/RemedyHelper';
 export default class SearchSiteQA extends React.Component<ISharePointOnlineQuickAssistProps>
 {
     public state = {
@@ -24,6 +25,9 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
         GroupId:"",
         isChecked:false
     };
+
+    private remedySteps =[]; 
+    private remedyRef = React.createRef<HTMLDivElement>();
 
     public render():React.ReactElement<ISharePointOnlineQuickAssistProps>
     {        
@@ -46,16 +50,23 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
                                     <Label style={{"color":"Red",marginLeft:20}} >{strings.SS_SiteNoExist1} {this.state.affectedSite} {strings.SS_SiteNoExist2}</Label>}
                                 {this.state.isWebThere?
                                 <div>
-                                {this.state.isWebNoIndex?<Label style={{"color":"Red",marginLeft:20}}>{strings.SS_NoCrawlEnabled} {this.state.affectedSite}</Label>:
-                                    <Label style={{"color":"Green",marginLeft:20}}>{strings.SS_SiteSearchable1} {this.state.affectedSite} {strings.SS_SiteSearchable2}</Label>}
-                                {this.state.userPerm?<Label style={{"color":"Green",marginLeft:20}}>{strings.SS_HaveAccess}</Label>:
-                                    <Label style={{"color":"Red",marginLeft:20}}>{strings.SS_NoAccess}</Label>}
+                                {this.state.userPerm?<div><Label style={{"color":"Green",marginLeft:20}}>{strings.SS_HaveAccess}</Label>
+                                    {this.state.isWebNoIndex?<Label style={{"color":"Red",marginLeft:20}}>{strings.SS_NoCrawlEnabled1} {this.state.affectedSite} {strings.SS_NoCrawlEnabled2}</Label>:
+                                    <Label style={{"color":"Green",marginLeft:20}}>{strings.SS_SiteIndexEnabled1} {this.state.affectedSite} {strings.SS_SiteIndexEnabled2}</Label>}
+                                    {this.state.GroupId?
+                                    <div>
+                                    {this.state.isinMembers?<Label style={{"color":"Green",marginLeft:20}}>{strings.SS_InMembers}</Label>:
+                                        <Label style={{"color":"Red",marginLeft:20}}>{strings.SS_NotInMembers}</Label>}
+                                    </div>:null}
+                                  </div>:<Label style={{"color":"Red",marginLeft:20}}>{strings.SS_NoAccess}</Label>}
                                 </div>:null}
-                                {this.state.GroupId?
-                                <div>
-                                {this.state.isinMembers?<Label style={{"color":"Green",marginLeft:20}}>{strings.SS_InMembers}</Label>:
-                                    <Label style={{"color":"Red",marginLeft:20}}>{strings.SS_NotInMembers}</Label>}
-                                </div>:null}
+                            </div>:null
+                        }
+                        {this.state.affectedSite!="" && this.state.isChecked? 
+                            <div>
+                              <div id="FixSuggestionsSection" ref={this.remedyRef}>
+                              </div>
+                              <Label>{strings.SS_Message_WaitAfterFix}</Label>
                             </div>:null
                         }
                       <div id="CommandButtonsSection">
@@ -65,11 +76,12 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
                           onClick={() => {this.ResetSatus(); this.CheckSiteSearchSettings();}} //When click: Reset banner status & check if the site is searchable
                         />
                         {this.state.isChecked && this.state.isWebThere && (this.state.isWebNoIndex || (this.state.GroupId && !this.state.isinMembers))?
-                            <PrimaryButton
-                                text={strings.SS_Label_FixIssues}
-                                style={{ display: 'inline', marginTop: '10px', marginLeft:"10px"}}
-                                onClick={() => {this.FixIssues();}}
-                            />:null}
+                            //<PrimaryButton
+                            //    text={strings.SS_Label_FixIssues}
+                            //    style={{ display: 'inline', marginTop: '10px', marginLeft:"10px"}}
+                            //    onClick={() => {this.FixIssues();}}
+                            ///>
+                            null:null}
                     </div>
                   </div>
                 </div>
@@ -85,7 +97,15 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
       this.state.isinMembers=false;
       this.state.GroupId="";
       this.state.isChecked=false;
+      this.remedyRef.current.innerHTML =""; // Clean the RemedyStepsDiv
       SPOQAHelper.ResetFormStaus();
+      SPOQASpinner.Hide();
+    }
+
+    private ShowRemedySteps()
+    {    
+        this.remedyRef.current.innerHTML = RemedyHelper.GetRemedyHtml(this.remedySteps);
+        this.setState({remedyStepsShowed:true});   
     }
 
     private async GetJsonResults(JsonStr:string)
@@ -119,6 +139,7 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
     public async CheckSiteSearchSettings()
     {
         this.setState({isChecked:false});
+        this.remedySteps =[]; 
         SPOQASpinner.Show(`${strings.SS_Message_Checking}`);
         try
         {
@@ -155,73 +176,99 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
               }
               if(webInfo)
               {
-                //Check if the site is crawled/indexed
-                try
-                {
-                  var noCrawl = await RestAPIHelper.IsWebNoCrawl(this.props.spHttpClient, this.state.affectedSite);
-                  this.setState({isWebNoIndex:noCrawl});
-                }
-                catch(err)
-                {
-                  SPOQAHelper.ShowMessageBar("Error",`${strings.SS_Ex_IsWebNoCrawlError} ${err}`);
-                  return;
-                }
-
                 //Check if the user has permissions
                 try
                 {
                   //Get User Login Id by Email
                   //var userLoginId = this.getUserIDByEmail(this.state.affectedUser, this.state.affectedSite);
 
-                  var userInfoSite = await RestAPIHelper.GetUserFromUserInfoList(this.props.currentUser.email, this.props.spHttpClient, this.state.affectedSite);
+                  //var userInfoSite = await RestAPIHelper.GetUserFromUserInfoList(this.props.currentUser.email, this.props.spHttpClient, this.state.affectedSite);
                   //↑ Get error if user email contains "'"
-                  if(userInfoSite != null)
-                  {
-                    var permRes = await RestAPIHelper.GetUserPermissions(this.props.currentUser.email, this.props.spHttpClient, this.state.affectedSite);
+                  //if(userInfoSite != null)
+                  //{
+                    var permRes = await RestAPIHelper.GetUserReadPermissions(this.props.currentUser.email, this.props.spHttpClient, this.state.affectedSite);
                     console.log(permRes);
                     this.state.userPerm = permRes;
-
-                    //Check if the site is a group site
-                    var groupid = await RestAPIHelper.GetSiteGroupId(this.props.spHttpClient, this.props.ctx, this.state.affectedSite);
-                    console.log(groupid);
-                    
-                    if(groupid == "00000000-0000-0000-0000-000000000000")
+                    if(!permRes)
                     {
-                      this.state.GroupId = "";
+                      this.remedySteps.push({
+                        message:`${strings.SS_Message_CheckPermissions} ${this.state.affectedSite}`});
                     }
                     else
                     {
-                      this.state.GroupId = groupid;
-                    }
-                    
-                    if(this.state.GroupId)
-                    {
-                      //Get the group members
-                      var memberInfo = await GraphAPIHelper.GetGroupMembers(groupid, this.props.msGraphClient);
-                      console.log(memberInfo);
-                      if(memberInfo.length > 0)
+                      //Check if the site is crawled/indexed
+                      try
                       {
-                        for(var i=0;i<memberInfo.length;i++)
+                        var hasParentWeb = true;
+                        let currentWebUrl = this.state.affectedSite;
+                        while(hasParentWeb)
                         {
-                          console.log(memberInfo[i]);
-                          if(memberInfo[i]['mail'] == this.props.currentUser.email) //Check if current user is in members
-                          {
-                            this.state.isinMembers = true;
-                            break;
-                          }
-                        }
+                            var noCrawl = await RestAPIHelper.IsWebNoCrawl(this.props.spHttpClient, currentWebUrl);
+                            this.setState({isWebNoIndex:noCrawl});  
+                            if(noCrawl)
+                            {
+                              this.remedySteps.push({
+                                message:`${strings.SS_Message_SearchAndOffline} ${currentWebUrl}`,
+                                url:`${currentWebUrl}/_layouts/15/srchvis.aspx`
+                              });
+                            }
+                            
+                            currentWebUrl = await RestAPIHelper.GetParentWebUrl(this.props.spHttpClient, currentWebUrl);
+                            hasParentWeb = currentWebUrl && currentWebUrl!="";
+                        }     
+                      }
+                      catch(err)
+                      {
+                        SPOQAHelper.ShowMessageBar("Error",`${strings.SS_Ex_IsWebNoCrawlError} ${err}`);
+                        return;
+                      }
+
+                      //Check if the site is a group site
+                      var groupid = await RestAPIHelper.GetSiteGroupId(this.props.spHttpClient, this.props.ctx, this.state.affectedSite);
+                      console.log(groupid);
+                      
+                      if(groupid == "00000000-0000-0000-0000-000000000000")
+                      {
+                        this.state.GroupId = "";
                       }
                       else
                       {
-                        this.state.isinMembers = false;
-                      }                      
-                    }
+                        this.state.GroupId = groupid;
+                      }
+                      
+                      if(this.state.GroupId)
+                      {
+                        //Get the group members
+                        var memberInfo = await GraphAPIHelper.GetGroupMembers(groupid, this.props.msGraphClient);
+                        console.log(memberInfo);
+                        if(memberInfo.length > 0)
+                        {
+                          for(var i=0;i<memberInfo.length;i++)
+                          {
+                            console.log(memberInfo[i]);
+                            if(memberInfo[i]['mail'] == this.props.currentUser.email) //Check if current user is in members
+                            {
+                              this.state.isinMembers = true;
+                              break;
+                            }
+                          }
+                        }
+                        else
+                        {
+                          this.state.isinMembers = false;
+                          this.remedySteps.push({
+                            message:`${strings.SS_Message_AddInMembers}`});
+                        }                      
+                      }
 
-                  }
-                  else
-                  {
-                    this.state.userPerm = false;
-                  }
+                    }
+                  //}
+                  //else
+                  //{
+                  //  this.state.userPerm = false;
+                  //  this.remedySteps.push({
+                  //    message:`${strings.SS_Message_CheckPermissions} ${this.state.affectedSite}`});
+                  //}
                 }
                 catch(err)
                 {
@@ -253,8 +300,9 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
 
         SPOQASpinner.Hide();
         this.setState({isChecked:true});
+        this.ShowRemedySteps();
     }
-
+    /*
     public async FixIssues()
     {
         SPOQAHelper.ResetFormStaus();
@@ -294,5 +342,5 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
 
         SPOQASpinner.Hide();
 
-    }
+    }*/
 }

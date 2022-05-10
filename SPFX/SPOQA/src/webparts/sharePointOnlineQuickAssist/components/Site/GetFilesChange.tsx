@@ -231,6 +231,7 @@ export default class GetFilesChange extends React.Component<ISharePointOnlineQui
                 }while (deltaLink.length == 0);
             }
             
+            // Get Deleted Files
             /*
             @odata.editLink: "SP.ChangeItem33a91460-981a-42b0-8a1d-861fd05778cf"
             @odata.id: "https://lingsuns.sharepoint.com/sites/29738881/_api/SP.ChangeItem33a91460-981a-42b0-8a1d-861fd05778cf"
@@ -252,6 +253,7 @@ export default class GetFilesChange extends React.Component<ISharePointOnlineQui
             WebId: "359810b0-b65b-480b-b33f-a9c4dd200f4b"
             */
 
+            /*
             var files2 = await RestAPIHelper.GetSiteChanges(this.props.spHttpClient,siteID,this.state.querySite,this.state.queryStartDate);
             console.log(files2);
 
@@ -282,7 +284,7 @@ export default class GetFilesChange extends React.Component<ISharePointOnlineQui
                 {
                     this.modifiedFiles.push(bFile);
                 }
-            }
+            }…*/
 
             this.setState({queried:true,
             message:`${strings.FC_Message_QueryDone}  ${this.modifiedFiles.length}`,
@@ -316,6 +318,8 @@ export default class GetFilesChange extends React.Component<ISharePointOnlineQui
         }
         return matched;
     }
+
+    /*
     private IsMatchFilter2(item:any):boolean
     {
         let matched:boolean = true;
@@ -331,7 +335,7 @@ export default class GetFilesChange extends React.Component<ISharePointOnlineQui
             matched = matched&&(queryEndDate >= new Date(item.ModifiedDate));
         }
         return matched;
-    }
+    }*/
     
     private DoExport():void
     {

@@ -15,10 +15,10 @@
               "scope": "User.Read.All"  
           }, {  
               "resource": "Microsoft Graph",  
-              "scope": "Group.ReadWrite.All"
+              "scope": "Group.Read.All"
           }, {  
               "resource": "Microsoft Graph",  
-              "scope": "GroupMember.ReadWrite.All"
+              "scope": "GroupMember.Read.All"
           },
           {  
             "resource": "Microsoft Graph",  

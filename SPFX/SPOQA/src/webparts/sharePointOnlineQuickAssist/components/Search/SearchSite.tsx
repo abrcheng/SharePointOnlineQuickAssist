@@ -19,7 +19,7 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
         affectedSite:this.props.webAbsoluteUrl,
         //affectedUser:this.props.currentUser.email,
         isWebThere:false,
-        isWebNoIndex:false,
+        isWebNoIndex:true,
         userPerm:false,
         isinMembers:false,
         GroupId:"",
@@ -92,7 +92,7 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
     private async ResetSatus()
     {
       this.state.isWebThere=false;
-      this.state.isWebNoIndex=false;
+      this.state.isWebNoIndex=true;
       this.state.userPerm=false;
       this.state.isinMembers=false;
       this.state.GroupId="";
@@ -204,9 +204,9 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
                         while(hasParentWeb)
                         {
                             var noCrawl = await RestAPIHelper.IsWebNoCrawl(this.props.spHttpClient, currentWebUrl);
-                            this.setState({isWebNoIndex:noCrawl});  
                             if(noCrawl)
                             {
+                              this.setState({isWebNoIndex:noCrawl});  
                               this.remedySteps.push({
                                 message:`${strings.SS_Message_SearchAndOffline} ${currentWebUrl}`,
                                 url:`${currentWebUrl}/_layouts/15/srchvis.aspx`

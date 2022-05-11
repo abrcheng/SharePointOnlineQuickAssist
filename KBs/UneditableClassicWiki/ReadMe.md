@@ -6,7 +6,7 @@ When the user enter edit mode on a classic wiki page, the ribbon menu may gray o
 
 **[Cause]**
 
-Classic wiki page holds its layout data in an OOTB field as HTML. If the field contains invalid value or the layout table in the HTML does not match the declaration, it could lead to this issue.
+Classic wiki page holds its layout data in an OOTB field "WikiField" as HTML. If the field contains invalid value or the layout table in the HTML does not match the declaration, it could lead to unexpected behaviors.
 
 **[Solution]**
 

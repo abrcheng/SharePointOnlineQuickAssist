@@ -31,6 +31,7 @@ define([], function() {
       "FailedLoadSiteList":"サイトからリストをロードできませんでした。サイト URL が正しいか、ログインユーザーが必要の権限を持っているかを確認してください。エラー詳細：",
       "PleaseSelectList":"対象ライブラリーを指定してください！",
       "Checking":"診断中",
+      "DiagnoseResult":"診断結果:",
       "PC_PermissionUrl":"'s permission issue for URL",
       "PC_DocumentsWithoutCheckin":"当該ライブラリー内にチェックインバージョンが存在しないドキュメントがあります。",
       "PC_NoDocumentsWithoutCheckin":"当該ライブラリー内にチェックインバージョンが存在しないドキュメントがありません。",
@@ -220,6 +221,23 @@ define([], function() {
       UPT_FixUserProfileTitle:"ユーザープロファイルでの役職を修正中...",
       UPT_FailedUserProfileTitle:"ユーザープロファイルでの役職の修正が失敗しました。",
       UPT_SuccessUserInfoListTitle:"ユーザー情報リストでの役職の修正が完了しました。結果を確認してください。",
-      UPT_FailedUserInfoListTitle:"ユーザー情報リストでの役職の修正が失敗しました。"
+      UPT_FailedUserInfoListTitle:"ユーザー情報リストでの役職の修正が失敗しました。",
+      UW_AffectedWikiPage:"影響を受けている Wiki ページ：",
+      UW_WikiLayout_OneColumn:"1 段組み",
+      UW_WikiLayout_OneColumnWithSideBarOrTwoColumn:"サイドバー付き 1 段組みまたは 2 段組み",
+      UW_WikiLayout_TwoColumnWithHeader:"ヘッダー付き 2 段組み",
+      UW_WikiLayout_TwoColumnWithHeaderAndFooter:"ヘッダーとフッター​​付き 2 段組み",
+      UW_WikiLayout_ThreeColumn:"3 段組み",
+      UW_WikiLayout_ThreeColumnWithHeader:"ヘッダー付き 3 段組み",
+      UW_WikiLayout_ThreeColumnWithHeaderAndFooter:"ヘッダーとフッター​​付き 3 段組み",
+      UW_WikiLayout_InvalidLayout:"無効なレイアウト",
+      UW_CheckingWikiLayout:"{0}のレイアウトを確認中...",
+      UW_DeclaredLayout:"当該ページのレイアウトは {0} で宣言されています。",
+      UW_DetectedLayout:"ページコンテンツの HTML から検出したレイアウトは {0} です。",
+      UW_LayoutMatch:"ページコンテンツのレイアウトが宣言されているレイアウトに一致しています。",
+      UW_LayoutNotMatch:"ページコンテンツのレイアウトが宣言されているレイアウトに一致していません。",
+      UW_IssueDetected:"当該ページのレイアウトデータから問題が検出されました。<a href=\"{0}\">こちらのページ</a> を参照してレイアウトデータを見直してください。",
+      UW_NoIssueDetected:"異常な箇所を検出しませんでした。",
+      UW_Ex_FailedGetPageInfo:"ページ情報の取得が失敗しました。ページの URL が正しいか、当該ページへのアクセス権限があるか確認してください。エラー詳細：{0}"
     }
   });

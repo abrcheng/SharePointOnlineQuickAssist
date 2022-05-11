@@ -12,6 +12,9 @@ import { ISharePointOnlineQuickAssistProps } from '../ISharePointOnlineQuickAssi
 import SPOQAHelper from '../../../Helpers/SPOQAHelper';
 import SPOQASpinner from '../../../Helpers/SPOQASpinner';
 import styles from '../SharePointOnlineQuickAssist.module.scss';
+import { Text } from '@microsoft/sp-core-library';
+import * as strings from 'SharePointOnlineQuickAssistWebPartStrings';
+
 export default class RepairWikiLayoutQA extends React.Component<ISharePointOnlineQuickAssistProps>
 {
     public state = {
@@ -36,7 +39,7 @@ export default class RepairWikiLayoutQA extends React.Component<ISharePointOnlin
                 <div className={ styles.column }>
                     <div id="QuestionsSection">
                         <TextField
-                                label="Affected Wiki page:"
+                                label={strings.UW_AffectedWikiPage}
                                 multiline={false}
                                 onChange={(e)=>{let text:any = e.target; this.setState({affectedWiki:text.value});}}
                                 value={this.state.affectedWiki}
@@ -45,14 +48,14 @@ export default class RepairWikiLayoutQA extends React.Component<ISharePointOnlin
                         </div>
                     <div id="CommandButtonsSection">
                         <PrimaryButton
-                            text="Check Issues"
+                            text= {strings.CheckIssues}
                             style={{ display: 'inline', marginTop: '10px' }}
                             onClick={() => {this.resRef.current.innerHTML=""; this.CheckWikiPage();}}
                             />
                     </div>
                      
                         <div id="DiagResultSection">
-                        {this.state.siteIsVaild&&this.state.affectedWiki!="" && this.state.isChecked?<Label>Diagnose result:</Label>:null}
+                        {this.state.siteIsVaild&&this.state.affectedWiki!="" && this.state.isChecked?<Label>{strings.DiagnoseResult}</Label>:null}
                             <div style={{marginLeft:20}} id="DiagResultDiv" ref={this.resRef}></div>
                         </div>
                     
@@ -65,7 +68,7 @@ export default class RepairWikiLayoutQA extends React.Component<ISharePointOnlin
     {       
         try
         {
-            SPOQASpinner.Show(`Checking the page layout of ${this.state.affectedWiki}......`);
+            SPOQASpinner.Show(Text.format(strings.UW_CheckingWikiLayout,this.state.affectedWiki));
             this.resRef.current.innerHTML = "";
             var item:Document = await RestAPIHelper.GetPageByUrl(this.props.spHttpClient, this.state.affectedWiki);
             var match = item.body.innerHTML.match(/var _spPageContextInfo=({.*});/);
@@ -82,35 +85,35 @@ export default class RepairWikiLayoutQA extends React.Component<ISharePointOnlin
             var isInvalidDeclaredLayout = false;
             switch (layoutsData.replace(/\s/gm,'')){
                 case "false,false,1":{
-                    declaredLayout = "One column.";
+                    declaredLayout = strings.UW_WikiLayout_OneColumn;
                     break;
                 }
                 case "false,false,2":{
-                    declaredLayout = "One column with sitebar or Two column.";
+                    declaredLayout = strings.UW_WikiLayout_OneColumnWithSideBarOrTwoColumn;
                     break;
                 }
                 case "true,false,2":{
-                    declaredLayout = "Two column with header.";
+                    declaredLayout = strings.UW_WikiLayout_TwoColumnWithHeader;
                     break;
                 }
                 case "true,true,2":{
-                    declaredLayout = "Two column with header and footer.";
+                    declaredLayout = strings.UW_WikiLayout_TwoColumnWithHeaderAndFooter;
                     break;
                 }
                 case "false,false,3":{
-                    declaredLayout = "Three column.";
+                    declaredLayout = strings.UW_WikiLayout_ThreeColumn;
                     break;
                 }
                 case "true,false,3":{
-                    declaredLayout = "Three column with header.";
+                    declaredLayout = strings.UW_WikiLayout_ThreeColumnWithHeader;
                     break;
                 }
                 case "true,true,3":{
-                    declaredLayout = "Three column with header and footer.";
+                    declaredLayout = strings.UW_WikiLayout_ThreeColumnWithHeaderAndFooter;
                     break;
                 }
                 default:{
-                    declaredLayout = "Invalid layout.";
+                    declaredLayout = strings.UW_WikiLayout_InvalidLayout;
                     isInvalidDeclaredLayout = true;
                     break;
                 }
@@ -125,40 +128,43 @@ export default class RepairWikiLayoutQA extends React.Component<ISharePointOnlin
                 case 1:{
                     col = wikiField.querySelectorAll("#layoutsTable>tbody>tr>td").length;
                     if (col==1){
-                        detectedLayout = "One column.";
+                        detectedLayout = strings.UW_WikiLayout_OneColumn;
                     } else if (col==2){
-                        detectedLayout = "One column with sitebar or Two column.";
+                        detectedLayout = strings.UW_WikiLayout_OneColumnWithSideBarOrTwoColumn;
                     } else if (col==3){
-                        detectedLayout = "Three column.";
+                        detectedLayout = strings.UW_WikiLayout_ThreeColumn;
                     } else {
-                        detectedLayout = "Invalid layout.";
+                        detectedLayout = strings.UW_WikiLayout_InvalidLayout;
+                        isInvalidDetectedLayout = true;
                     }
                     break;
                 }
                 case 2:{
                     col = wikiField.querySelectorAll("#layoutsTable>tbody>tr:nth-child(2)>td").length;
                     if (col==2){
-                        detectedLayout = "Two column with header.";
+                        detectedLayout = strings.UW_WikiLayout_TwoColumnWithHeader;
                     } else if (col==3){
-                        detectedLayout = "Three column with header.";
+                        detectedLayout = strings.UW_WikiLayout_ThreeColumnWithHeader;
                     } else {
-                        detectedLayout = "Invalid layout.";
+                        detectedLayout = strings.UW_WikiLayout_InvalidLayout;
+                        isInvalidDetectedLayout = true;
                     }
                     break;
                 }
                 case 3:{
                     col = wikiField.querySelectorAll("#layoutsTable>tbody>tr:nth-child(2)>td").length;
                     if (col==2){
-                        detectedLayout = "Two column with header and footer.";
+                        detectedLayout = strings.UW_WikiLayout_TwoColumnWithHeaderAndFooter;
                     } else if (col==3){
-                        detectedLayout = "Three column with header and footer.";
+                        detectedLayout = strings.UW_WikiLayout_ThreeColumnWithHeaderAndFooter;
                     } else {
-                        detectedLayout = "Invalid layout.";
+                        detectedLayout = strings.UW_WikiLayout_InvalidLayout;
+                        isInvalidDetectedLayout = true;
                     }
                     break;
                 }
                 default:{
-                    detectedLayout = "Invalid layout.";
+                    detectedLayout = strings.UW_WikiLayout_InvalidLayout;
                     isInvalidDetectedLayout = true;
                     break;
                 }
@@ -166,13 +172,13 @@ export default class RepairWikiLayoutQA extends React.Component<ISharePointOnlin
             this.setState({isInvalidDetectedLayout:isInvalidDetectedLayout});
             this.setState({isChecked:true});
 
-            this.resRef.current.innerHTML += `<div style=color:${isInvalidDeclaredLayout? "Red":"Green"}>The page layout has been declared as: ${declaredLayout}</div>`;
-            this.resRef.current.innerHTML += `<div style=color:${isInvalidDetectedLayout? "Red":"Green"}>The real layout detected from saved HTML elements is: ${detectedLayout}</div>`;
-            this.resRef.current.innerHTML += `<div style=color:${declaredLayout!=detectedLayout? "Red":"Green"}>Page layout ${declaredLayout!=detectedLayout? "is not":"is"} matching the declaration</div>`;
+            this.resRef.current.innerHTML += `<div style=color:${isInvalidDeclaredLayout? "Red":"Green"}>${Text.format(strings.UW_DeclaredLayout,declaredLayout)}</div>`;
+            this.resRef.current.innerHTML += `<div style=color:${isInvalidDetectedLayout? "Red":"Green"}>${Text.format(strings.UW_DetectedLayout,detectedLayout)}</div>`;
+            this.resRef.current.innerHTML += `<div style=color:${declaredLayout!=detectedLayout? "Red":"Green"}>${declaredLayout!=detectedLayout? strings.UW_LayoutNotMatch:strings.UW_LayoutMatch}</div>`;
             if (isInvalidDeclaredLayout || isInvalidDetectedLayout || declaredLayout!=detectedLayout){
-                this.resRef.current.innerHTML += `<div style=color:Red>The diag found the page has layout issue which could cause the ribbon menu being grayed-out and the page uneditable. Please check <a href="${this.remedyStepWikiURL}">this page</a> to fix the issue.</div>`;
+                this.resRef.current.innerHTML += `<div style=color:Red>${Text.format(strings.UW_IssueDetected,this.remedyStepWikiURL)}</div>`;
             } else {
-                this.resRef.current.innerHTML += `<div style=color:Green>The diag didn't find any issue.</div>`;
+                this.resRef.current.innerHTML += `<div style=color:Green>${strings.UW_NoIssueDetected}</div>`;
             }
 
             SPOQASpinner.Hide();
@@ -181,7 +187,7 @@ export default class RepairWikiLayoutQA extends React.Component<ISharePointOnlin
         catch(err)
         {
             SPOQASpinner.Hide();
-            SPOQAHelper.ShowMessageBar("Error", `Failed to get page info, please make sure the page URL is correct and you have the permssion. Detail: ${err}`);
+            SPOQAHelper.ShowMessageBar("Error", Text.format(strings.UW_Ex_FailedGetPageInfo,err));
         }        
     }    
 }

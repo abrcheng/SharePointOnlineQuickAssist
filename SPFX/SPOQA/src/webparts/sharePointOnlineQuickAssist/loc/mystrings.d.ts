@@ -33,6 +33,7 @@ declare interface ISharePointOnlineQuickAssistWebPartStrings {
   CanBeFixedIn:string;
   ThisPage:string;
   AffectedSite:string;
+  DiagnoseResult:string;
 
   // strings for permssion check module 
   PC_PermissionUrl:string;
@@ -246,6 +247,25 @@ declare interface ISharePointOnlineQuickAssistWebPartStrings {
   FC_Ex_GetFilesChangeError:string;
   FC_Message_QueryDone:string;
   FC_Ex_GetSiteError:string;
+
+  //Strings for Uneditable Wiki Page
+  UW_AffectedWikiPage:string;
+  UW_WikiLayout_OneColumn:string;
+  UW_WikiLayout_OneColumnWithSideBarOrTwoColumn:string;
+  UW_WikiLayout_TwoColumnWithHeader:string;
+  UW_WikiLayout_TwoColumnWithHeaderAndFooter:string;
+  UW_WikiLayout_ThreeColumn:string;
+  UW_WikiLayout_ThreeColumnWithHeader:string;
+  UW_WikiLayout_ThreeColumnWithHeaderAndFooter:string;
+  UW_WikiLayout_InvalidLayout:string;
+  UW_CheckingWikiLayout:string;
+  UW_DeclaredLayout:string;
+  UW_DetectedLayout:string;
+  UW_LayoutMatch:string;
+  UW_LayoutNotMatch:string;
+  UW_IssueDetected:string;
+  UW_NoIssueDetected:string;
+  UW_Ex_FailedGetPageInfo:string;
 }
 
 declare module 'SharePointOnlineQuickAssistWebPartStrings' {

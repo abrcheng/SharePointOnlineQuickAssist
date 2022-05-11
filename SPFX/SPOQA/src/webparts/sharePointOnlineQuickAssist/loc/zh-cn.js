@@ -31,6 +31,7 @@ define([], function() {
       "FailedLoadSiteList":"Failed to load lists from the site, please make sure the site URL is correct and you have the permssion, detail error is",
       "PleaseSelectList":"Please select the library!",
       "Checking":"Checking",
+      "DiagnoseResult":"Diagnose Result:",
       "PC_PermissionUrl":"'s permission issue for URL",
       "PC_DocumentsWithoutCheckin":"There are documents without check-in version in the library.",
       "PC_NoDocumentsWithoutCheckin":"There isn't any documents without check-in version in the library.",
@@ -220,6 +221,23 @@ define([], function() {
       UPT_FixUserProfileTitle:"Fixing JobTitle user profile ...",
       UPT_FailedUserProfileTitle :"Fix JobTitle in the user profile failed.",
       UPT_SuccessUserInfoListTitle:"Fix JobTitle in the user info list completed, please recheck for verfiying it.",
-      UPT_FailedUserInfoListTitle:"Fix JobTitle in the user info list failed."
+      UPT_FailedUserInfoListTitle:"Fix JobTitle in the user info list failed.",
+      UW_AffectedWikiPage:"Affected Wiki page:",
+      UW_WikiLayout_OneColumn:"One column",
+      UW_WikiLayout_OneColumnWithSideBarOrTwoColumn:"One column with sidebar or Two column",
+      UW_WikiLayout_TwoColumnWithHeader:"Two column with header",
+      UW_WikiLayout_TwoColumnWithHeaderAndFooter:"Two column with header and footer",
+      UW_WikiLayout_ThreeColumn:"Three column",
+      UW_WikiLayout_ThreeColumnWithHeader:"Three column with header",
+      UW_WikiLayout_ThreeColumnWithHeaderAndFooter:"Three column with header and footer",
+      UW_WikiLayout_InvalidLayout:"Invalid layout",
+      UW_CheckingWikiLayout:"Checking the page layout of {0}......",
+      UW_DeclaredLayout:"The page layout has been declared as: {0}",
+      UW_DetectedLayout:"The page layout detected from saved HTML elements is: {0}",
+      UW_LayoutMatch:"Page layout matches the declaration",
+      UW_LayoutNotMatch:"Page layout does not match the declaration",
+      UW_IssueDetected:"The page has layout issue which could cause the ribbon menu being grayed-out and the page uneditable. Please check <a href=\"{0}\">this page</a> to fix the issue.",
+      UW_NoIssueDetected:"Didn't find any issue.",
+      UW_Ex_FailedGetPageInfo:"Failed to get page info, please make sure the page URL is correct and you have the permssion. Detail: {0}"
     }
   });

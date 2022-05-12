@@ -4,7 +4,7 @@
 	"Department","GivenName","Surname","DisplayName","telephoneNumber","JobTitle".
 
 And if you need to sync WorkMail and Manager, then need to add the addtional parameters (-SyncWorkMail $true -SyncManager $true)
-**It neeed to be run by SharePoiint Online tenant admin.**
+**It neeed to be run by SharePoint Online tenant admin.**
 
 
 1. Start PowerShell as administrator and install the SharePoint PNP and Azure AD PowerShell Module
@@ -13,7 +13,7 @@ And if you need to sync WorkMail and Manager, then need to add the addtional par
 	
 	b. Uninstall-Module -Name "SharePointPnPPowerShellOnline"
 	
-	c. Install-Module -Name "SharePointPnPPowerShellOnline"
+	c. Install-Module -Name "PnP.PowerShell"
 	
 	d. If the computer doesn't allow to run PowerShell script, allow it by running Set-ExecutionPolicy according to https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.security/set-executionpolicy?view=powershell-7.2
 

@@ -10,6 +10,8 @@ param(
 $ADProperties = @("Department","Department","GivenName","Surname","DisplayName","telephoneNumber","JobTitle")
 $SPOProperies = @("Department","SPS-Department","FirstName","LastName","PreferredName","WorkPhone","SPS-JobTitle")
 
+$ADProperties = [System.Collections.ArrayList]$ADProperties
+$SPOProperies = [System.Collections.ArrayList]$SPOProperies
 # AzureEnvironmentName for Connect-AzureAD: AzureCloud,AzureChinaCloud,AzureUSGovernment,AzureGermanyCloud
 $EnvironmentForAAD = "AzureCloud"
 
@@ -24,14 +26,14 @@ $AllUsers = $null
 
 if($SyncWorkMail) # proxyAddresses => WorkEmail	
 {
-    $ADProperties.Add("Mail")
-    $SPOProperies.Add("WorkEmail")
+    $ADProperties.Add("Mail") | Out-Null
+    $SPOProperies.Add("WorkEmail") | Out-Null
 }
 
 if($SyncManager)
 {
-    $ADProperties.Add("Manager")
-    $SPOProperies.Add("Manager")
+    $ADProperties.Add("Manager") | Out-Null
+    $SPOProperies.Add("Manager") | Out-Null
     $AllUsers = Get-AzureADUser -All:$True -Filter "UserType eq 'Member'" | select *,@{n="Manager";e={(Get-AzureADUser -ObjectId (Get-AzureADUserManager -ObjectId $_.ObjectId).ObjectId).UserPrincipalName}}
 }
 else
@@ -55,7 +57,7 @@ $UpdateCount =0
               continue
          }
 
-         for($index=0; $index -lt $SPOProperies.Length; $index++)
+         for($index=0; $index -lt $SPOProperies.Count; $index++)
          {
              $SPOPropertyName = $SPOProperies[$index]
              $AADPropertyName = $ADProperties[$index]
@@ -73,8 +75,13 @@ $UpdateCount =0
                 $SPOPropertyValue = ""
              }
 
-             if($SPOPropertyValue -ne $AADPropertyValue)
+             if($SPOPropertyName -eq "Manager" -and $AADPropertyValue -ne "")
              {
+                 $AADPropertyValue = "i:0#.f|membership|$AADPropertyValue"
+             }
+
+             if($SPOPropertyValue -ne $AADPropertyValue)
+             {                
                 Write-Host "Detected mismatch: $SPOPropertyName in SPO is $SPOPropertyValue, $AADPropertyName in AAD is $AADPropertyValue, will update"
                 Set-PnPUserProfileProperty -Account $UserAccount -PropertyName $SPOPropertyName -Value $AADPropertyValue
                 $updated = $true

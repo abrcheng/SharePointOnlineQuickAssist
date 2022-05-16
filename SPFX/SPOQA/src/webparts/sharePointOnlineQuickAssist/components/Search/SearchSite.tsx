@@ -1,7 +1,6 @@
 import * as React from 'react';
 import {  
-    PrimaryButton,
-    Text,
+    PrimaryButton,    
     TextField,
     Label
   } from 'office-ui-fabric-react/lib/index';
@@ -13,6 +12,8 @@ import { ISharePointOnlineQuickAssistProps } from '../ISharePointOnlineQuickAssi
 import styles from '../SharePointOnlineQuickAssist.module.scss';
 import * as strings from 'SharePointOnlineQuickAssistWebPartStrings';
 import {RemedyHelper} from '../../../Helpers/RemedyHelper';
+import {Text} from '@microsoft/sp-core-library';
+
 export default class SearchSiteQA extends React.Component<ISharePointOnlineQuickAssistProps>
 {
     public state = {
@@ -46,13 +47,13 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
                         {this.state.affectedSite!="" && this.state.isChecked? 
                             <div id="SearchSiteResultSection">
                                 <Label>{strings.SS_DiagnoseResultLabel}</Label>
-                                {this.state.isWebThere?<Label style={{"color":"Green",marginLeft:20}}>{strings.SS_FoundSite} {this.state.affectedSite}</Label>:
-                                    <Label style={{"color":"Red",marginLeft:20}} >{strings.SS_SiteNoExist1} {this.state.affectedSite} {strings.SS_SiteNoExist2}</Label>}
+                                {this.state.isWebThere?<Label style={{"color":"Green",marginLeft:20}}>{Text.format(strings.SS_FoundSite, this.state.affectedSite)}</Label>:
+                                    <Label style={{"color":"Red",marginLeft:20}} >{Text.format(strings.SS_SiteNoExist1,this.state.affectedSite)}</Label>}
                                 {this.state.isWebThere?
                                 <div>
                                 {this.state.userPerm?<div><Label style={{"color":"Green",marginLeft:20}}>{strings.SS_HaveAccess}</Label>
-                                    {this.state.isWebNoIndex?<Label style={{"color":"Red",marginLeft:20}}>{strings.SS_NoCrawlEnabled1} {this.state.affectedSite} {strings.SS_NoCrawlEnabled2}</Label>:
-                                    <Label style={{"color":"Green",marginLeft:20}}>{strings.SS_SiteIndexEnabled1} {this.state.affectedSite} {strings.SS_SiteIndexEnabled2}</Label>}
+                                    {this.state.isWebNoIndex?<Label style={{"color":"Red",marginLeft:20}}>{Text.format(strings.SS_NoCrawlEnabled1,this.state.affectedSite)}</Label>:
+                                    <Label style={{"color":"Green",marginLeft:20}}>{Text.format(strings.SS_SiteIndexEnabled1, this.state.affectedSite)}</Label>}
                                     {this.state.GroupId?
                                     <div>
                                     {this.state.isinMembers?<Label style={{"color":"Green",marginLeft:20}}>{strings.SS_InMembers}</Label>:

@@ -160,7 +160,7 @@ export default class PermissionQA extends React.Component<ISharePointOnlineQuick
         this.remedySteps = []; // Clean RemedySteps
         this.resRef.current.innerHTML = ""; // Clean the OneDriveSyncDiagnoseResultDiv
         this.remedyRef.current.innerHTML =""; // Clean the RemedyStepsDiv
-        SPOQASpinner.Show(`${strings.Checking} ${this.state.affectedUser}${strings.PC_PermissionUrl} ${this.state.affectedDocument}......`); 
+        SPOQASpinner.Show(`${strings.Checking} ......`); 
         
        // check file without check-in version 
        var hasFileWithOutCheckVersion = await RestAPIHelper.HasFileWithOutCheckInVersion(this.props.spHttpClient, this.state.affectedSite, this.state.affectedLibrary.Id);

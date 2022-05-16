@@ -2,6 +2,7 @@ import {SPHttpClient,ISPHttpClientOptions} from '@microsoft/sp-http';
 import SPOQAHelper from './SPOQAHelper';
 import RestAPIHelper from './RestAPIHelper';
 import * as strings from 'SharePointOnlineQuickAssistWebPartStrings';
+import {Text} from '@microsoft/sp-core-library';
 
 // https://docs.microsoft.com/en-us/dotnet/api/microsoft.sharepoint.spmoderationstatustype?view=sharepoint-server
 export enum SPModerationStatusType {
@@ -101,7 +102,7 @@ export class ModerationStatusHelper
             var isItemExisting = await RestAPIHelper.IsObjectExisting(spHttpClient, apiUrl);
             if(!isItemExisting)
             {
-                throw new Error(`${strings.RI_FailedToLoadItem} ${apiUrl}`);
+                throw new Error(Text.format(strings.RI_FailedToLoadItem, apiUrl));
             }
             itemType = ItemType.ListItem;
           }

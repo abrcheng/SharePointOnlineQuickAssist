@@ -14,6 +14,7 @@ import RestoreItemsQAGrid from "./RestoreItemsQAGrid";
 import styles from '../SharePointOnlineQuickAssist.module.scss';
 import { ISharePointOnlineQuickAssistProps } from '../ISharePointOnlineQuickAssistProps';
 import { IRestoreItem,IRestoreItems } from "./IRestoreItem";
+import { Text } from '@microsoft/sp-core-library';
 import * as strings from 'SharePointOnlineQuickAssistWebPartStrings';
 export default class RestoreItemsQA extends React.Component<ISharePointOnlineQuickAssistProps>
 {
@@ -221,8 +222,9 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
               lastDeletedDate = lastDeletedDate.substring(0, lastDeletedDate.length -1);
            }
 
-           pageInfo = URI_Encoding.encodeURIComponent(`'id=${URI_Encoding.encodeURIComponent(lastId)}&title=${URI_Encoding.encodeURIComponent(lastTitle)}&searchValue=${URI_Encoding.encodeURIComponent(lastDeletedDate)}'`);  
-           SPOQASpinner.Show(`${strings.RI_Queried} ${this.queryCount} ${strings.RI_Items}, ${strings.RI_Filtered} ${this.recycleBinItems.length} ${strings.RI_Items} ......`);  
+           pageInfo = URI_Encoding.encodeURIComponent(`'id=${URI_Encoding.encodeURIComponent(lastId)}&title=${URI_Encoding.encodeURIComponent(lastTitle)}&searchValue=${URI_Encoding.encodeURIComponent(lastDeletedDate)}'`); 
+           
+           SPOQASpinner.Show(Text.format(strings.RI_QueryProgress, this.queryCount, this.recycleBinItems.length));  
            if(currentCount <500)    
            {
               if(itemState ==1)
@@ -238,9 +240,9 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
          }
         
          this.querySeconds = ((new Date()).getTime()- queryStartTime.getTime())/1000;
-         this.recycleBinItems.sort((a,b) =>a.Path > b.Path ?1:-1);
+         this.recycleBinItems.sort((a,b) =>a.Path > b.Path ?1:-1);         
          this.setState({currentItems:this.recycleBinItems,
-              message:`${strings.RI_Queried} ${this.queryCount} ${strings.RI_Items}, ${strings.RI_Filtered} ${this.recycleBinItems.length} ${strings.RI_Items} ${strings.RI_Items} ${this.querySeconds} ${strings.RI_Seconds}.`,
+              message: Text.format(strings.RI_QueryResult, this.queryCount, this.recycleBinItems.length, this.querySeconds),
               queried:true,
               messageType:MessageBarType.success
           });        
@@ -302,38 +304,39 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
       {
         ids.push(this.recycleBinItems[index].Id);
       }
+     
       this.setState({     
-        spinnerMessage:`${strings.RI_RestoreItemFrom} ${startIndex + 1} ${strings.RI_To} ${endIndex}, ${strings.RI_PleaseWait} ...`
+        spinnerMessage: Text.format(strings.RI_QueryProgress, startIndex + 1, endIndex)
         });  
 
       let restoreRes = await RestAPIHelper.RestoreByIds(this.props.spHttpClient, this.state.affectedSite, ids);
       if(restoreRes.success)
-      {
+      {         
           if(batchIndex + 1 == batchNo) // last bacth completed
           {
             var restoreSeconds = ((new Date()).getTime()- restoreStartTime.getTime())/1000;
             this.setState({
-              message:`${strings.RI_Restored} ${this.recycleBinItems.length} ${strings.RI_Items} ${strings.RI_In} ${restoreSeconds} ${strings.RI_Seconds}.`,         
+              message: Text.format(strings.RI_RestoreResult, this.recycleBinItems.length, restoreSeconds),         
               messageType:MessageBarType.success,
               spinnerMessage:""
               }); 
           }
           else
           {
-            this.setState({
+            /*this.setState({
               message:`${strings.RI_RestoreItemFrom} ${startIndex + 1} ${strings.RI_To} ${endIndex}.`,         
               messageType:MessageBarType.success,
               spinnerMessage:""
-              });  
+              });*/  
           }
       }
       else
       {
-        // restoreRes.error.message
+        // restoreRes.error.message        
         const { errorDetail} = this.state;  
         errorDetail.push(restoreRes.error.message);
         this.setState({
-          message:`${strings.RI_RestoreItemFrom} ${startIndex} ${strings.RI_To} ${endIndex} ${strings.RI_WithErrorMessage}: ${restoreRes.error.message}.`,         
+          message:Text.format(strings.RI_RestoreResultWithError,startIndex, endIndex, restoreRes.error.message),         
           messageType:MessageBarType.error,
           spinnerMessage:"",
           errorDetail:errorDetail

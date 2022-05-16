@@ -7,8 +7,8 @@ param(
   [bool]$SyncWorkMail=$false
 )
 
-$ADProperties = @("Department","Department","GivenName","Surname","DisplayName","telephoneNumber","JobTitle")
-$SPOProperies = @("Department","SPS-Department","FirstName","LastName","PreferredName","WorkPhone","SPS-JobTitle")
+$ADProperties = @("Department","Department","GivenName","Surname","DisplayName","telephoneNumber","JobTitle","Mobile")
+$SPOProperies = @("Department","SPS-Department","FirstName","LastName","PreferredName","WorkPhone","SPS-JobTitle","CellPhone")
 
 $ADProperties = [System.Collections.ArrayList]$ADProperties
 $SPOProperies = [System.Collections.ArrayList]$SPOProperies

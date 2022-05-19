@@ -306,7 +306,7 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
       }
      
       this.setState({     
-        spinnerMessage: Text.format(strings.RI_QueryProgress, startIndex + 1, endIndex)
+        spinnerMessage: Text.format(strings.RI_RestoreProgress, startIndex + 1, endIndex)
         });  
 
       let restoreRes = await RestAPIHelper.RestoreByIds(this.props.spHttpClient, this.state.affectedSite, ids);

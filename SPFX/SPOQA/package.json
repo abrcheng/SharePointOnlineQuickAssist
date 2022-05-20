@@ -1,6 +1,6 @@
 {
   "name": "spoqa",
-  "version": "1.22.0412",
+  "version": "1.22.0520",
   "private": true,
   "main": "lib/index.js",
   "scripts": {

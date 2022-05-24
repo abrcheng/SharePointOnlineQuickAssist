@@ -1,3 +1,8 @@
+
+
+https://user-images.githubusercontent.com/89838160/169972855-a7605e68-c6b1-4235-af61-a4226bee5b45.mp4
+
+
 # SharePointOnlineQuickAssist-Tutorial Materials
 
 SharePoint Online Quick Assist is a SPFX webpart that appears inside a SharePoint page in the browser. Site administrators could use the tool to diagnose some common issues and fix them.

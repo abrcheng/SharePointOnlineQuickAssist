@@ -30,7 +30,9 @@ And if you need to sync WorkMail and Manager, then need to add the addtional par
 		.\SyncUserPropertiesFromAADToSPOProfile.ps1 -AdminSiteURL https://contonso-admin.sharepoint.com  
 
 
-**If don't want to sync, just want to bulk update some user profile proerty (e.g. set OfficeGraphEnabled to true for all users), try below command **
+** If don't want to sync, just want to bulk update some user profile proerty (e.g. set OfficeGraphEnabled to true for all users), try below command **
+
+
 .\SyncUserPropertiesFromAADToSPOProfile.ps1 -AdminSiteURL https://chengc-admin.sharepoint.com -PropertyName "OfficeGraphEnabled" -PropertyValue $true
 ![image](https://user-images.githubusercontent.com/21354416/170006748-8db3a84c-3e8b-4859-bdf8-f9edc3850f7b.png)
 ![image](https://user-images.githubusercontent.com/21354416/170006873-407ceabf-fd58-489a-acd7-83063ef1a3b1.png)

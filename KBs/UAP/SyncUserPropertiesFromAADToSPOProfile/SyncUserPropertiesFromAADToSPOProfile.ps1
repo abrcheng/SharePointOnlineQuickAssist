@@ -1,10 +1,12 @@
-﻿# This script is used for syncing user properties from ADD to SharePoint Online user profile 
+# This script is used for syncing user properties from ADD to SharePoint Online user profile 
 param(
   [Parameter(mandatory=$true)]
   [string]$AdminSiteURL = "https://chengc-admin.sharepoint.com", # SPO admin site URL
   [bool]$IsChinaCloud = $false, # IsChinaCloud indicates the AzureEnvironment
   [bool]$SyncManager= $false, # will not sync manage by default
-  [bool]$SyncWorkMail=$false
+  [bool]$SyncWorkMail=$false,
+  [string]$PropertyName="",
+  [object]$PropertyValue=$null
 )
 
 $ADProperties = @("Department","Department","GivenName","Surname","DisplayName","telephoneNumber","JobTitle","Mobile")
@@ -57,36 +59,45 @@ $UpdateCount =0
               continue
          }
 
-         for($index=0; $index -lt $SPOProperies.Count; $index++)
-         {
-             $SPOPropertyName = $SPOProperies[$index]
-             $AADPropertyName = $ADProperties[$index]
+         if([System.String]::IsNullOrEmpty($PropertyName)) # If PropertyName is null, then perform sync, otherwise only set the property with PropertyName 
+         {  
+             for($index=0; $index -lt $SPOProperies.Count; $index++)
+             {
+                 $SPOPropertyName = $SPOProperies[$index]
+                 $AADPropertyName = $ADProperties[$index]
          
-             $SPOPropertyValue = $UserProfile.UserProfileProperties[$SPOPropertyName]
-             $AADPropertyValue = $User.$AADPropertyName
+                 $SPOPropertyValue = $UserProfile.UserProfileProperties[$SPOPropertyName]
+                 $AADPropertyValue = $User.$AADPropertyName
              
-             if([System.String]::IsNullOrEmpty($AADPropertyValue))
-             {
-                $AADPropertyValue = ""
-             }
+                 if([System.String]::IsNullOrEmpty($AADPropertyValue))
+                 {
+                    $AADPropertyValue = ""
+                 }
 
-             if([System.String]::IsNullOrEmpty($SPOPropertyValue))
-             {
-                $SPOPropertyValue = ""
-             }
+                 if([System.String]::IsNullOrEmpty($SPOPropertyValue))
+                 {
+                    $SPOPropertyValue = ""
+                 }
 
-             if($SPOPropertyName -eq "Manager" -and $AADPropertyValue -ne "")
-             {
-                 $AADPropertyValue = "i:0#.f|membership|$AADPropertyValue"
-             }
+                 if($SPOPropertyName -eq "Manager" -and $AADPropertyValue -ne "")
+                 {
+                     $AADPropertyValue = "i:0#.f|membership|$AADPropertyValue"
+                 }
 
-             if($SPOPropertyValue -ne $AADPropertyValue)
-             {                
-                Write-Host "Detected mismatch: $SPOPropertyName in SPO is $SPOPropertyValue, $AADPropertyName in AAD is $AADPropertyValue, will update"
-                Set-PnPUserProfileProperty -Account $UserAccount -PropertyName $SPOPropertyName -Value $AADPropertyValue
+                 if($SPOPropertyValue -ne $AADPropertyValue)
+                 {                
+                    Write-Host "Detected mismatch: $SPOPropertyName in SPO is $SPOPropertyValue, $AADPropertyName in AAD is $AADPropertyValue, will update"
+                    Set-PnPUserProfileProperty -Account $UserAccount -PropertyName $SPOPropertyName -Value $AADPropertyValue
+                    $updated = $true
+                 }
+               }
+            }
+            else # set property mode 
+            {
+                Set-PnPUserProfileProperty -Account $UserAccount -PropertyName $PropertyName -Value $PropertyValue
                 $updated = $true
-             }
-         }
+            }        
+       
 
          if($updated)
          {

@@ -102,6 +102,15 @@ declare interface ISharePointOnlineQuickAssistWebPartStrings {
   SD_DectectedNocrawlSite:string;
   SD_NocrawlEnabledSite:string;
   SD_NocrawlNotEnabledSite:string;
+  SD_CrawlTimeStamp:string;
+  SD_CrawlPath:string;
+  SD_CrawlErrorCode:string;
+  SD_CrawlIsDeleted:string;
+  SD_CrawlDeleteReason:string;
+  SD_CrawlExclusionReason:string;
+  SD_CrawlErrorDesc:string;
+  SD_CrawlDeletePending:string;
+  SD_CrawlLackReadLogPermssion:string;
 
   // Strings for OneDrive Lock Icon issue
   OL_CheckingIssueForLibrary:string;

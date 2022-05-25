@@ -95,6 +95,10 @@ export default class SharePointOnlineQuickAssist extends React.Component<IShareP
       return SPComponentLoader.loadScript('/_layouts/15/SP.js', {
         globalExportsName: 'SP'
       });
+    }).then((): Promise<{}> => {
+      return SPComponentLoader.loadScript('/_layouts/15/SP.Search.js', {
+        globalExportsName: 'SP'
+      });
     });
   }
 

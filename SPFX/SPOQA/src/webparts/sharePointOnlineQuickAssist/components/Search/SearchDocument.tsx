@@ -16,7 +16,9 @@ import  { ItemType, ModerationStatusHelper} from '../../../Helpers/ModerationSta
 import {RemedyHelper} from '../../../Helpers/RemedyHelper';
 import * as strings from 'SharePointOnlineQuickAssistWebPartStrings';
 import FormsHelper from '../../../Helpers/FormsHelper';
-
+import SearchHelper from '../../../Helpers/SearchHelper';
+import CrawlLogGrid from "./CrawlLogGrid";
+import { Text } from '@microsoft/sp-core-library';
 export default class SearchDocumentQA extends React.Component<ISharePointOnlineQuickAssistProps>
 {
     public state = {
@@ -32,7 +34,8 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
         isMissingDisplayForm:false,
         isChecked:false,
         needRemedy:false,       
-        remedyStepsShowed:false
+        remedyStepsShowed:false,
+        crawlLogs:[]
       };
     private listTitle:string="";
     private resRef= React.createRef<HTMLDivElement>(); 
@@ -74,7 +77,8 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
                                                     BaseType:option.data.baseType}, 
                                                 isChecked:false,
                                                 isLibrary:option.data.baseType==1,
-                                                affectedDocument:""});  
+                                                affectedDocument:""});
+                                         this.CleanPreviousResult();  
                                         }} 
                                     />   
                                 {this.state.affectedLibrary.Title!=""? 
@@ -95,8 +99,11 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
                                 </div>: null}
                             </div>
                             <div id="SearchDocumentCheckResultSection">
-                                {this.state.isChecked && this.state.siteIsVaild && this.state.affectedLibrary.Title!=""?<Label>Diagnose result:</Label>:null}
+                                {this.state.isChecked && this.state.siteIsVaild && this.state.affectedLibrary.Title!=""?
+                                    <Label>Diagnose result:</Label>                                   
+                                    :null}
                                 <div style={{marginLeft:20}} id="SearchDocumentCheckResultDiv" ref={this.resRef}></div>
+                                {this.state.crawlLogs.length >0? <CrawlLogGrid items={this.state.crawlLogs}/>:null}
                             </div>                           
                         <div id="CommandButtonsSection">
                             <PrimaryButton
@@ -144,6 +151,7 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
     
     public async CheckSearchDocument()
     {
+       
         if(this.state.affectedLibrary.Title == "" ||this.state.affectedLibrary.Title =="-1")
         {
             SPOQAHelper.ShowMessageBar("Error", strings.PleaseSelectList);
@@ -160,6 +168,25 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
         this.CleanPreviousResult(); 
         let searched:boolean = false;
         SPOQASpinner.Show(`${strings.Checking} ......`);
+
+        // Get crawl logs
+        var crawlLogs = await SearchHelper.GetCrawlLogByRest(this.props.spHttpClient,this.state.affectedSite,this.state.affectedDocument);
+        if(crawlLogs._ObjectType_ == "SP.SimpleDataTable")
+        {
+            crawlLogs.Rows.forEach(e=>{
+                e.TimeStamp = new Date(parseInt(e.TimeStampUtc.substring(6))).toISOString();
+                e.IsDeleted = e.IsDeleted.toString();
+            });
+            this.setState({crawlLogs:crawlLogs.Rows}); 
+        }
+        else if(crawlLogs.length>0 && crawlLogs[0].ErrorInfo)
+        {
+            // need crawl log permssion https://abrcheng-admin.sharepoint.cn/_layouts/15/searchadmin/crawllogreadpermission.aspx
+            var crawlLogPermssionUrl = this.props.rootUrl.replace(".sharepoint","-admin.sharepoint") + "/_layouts/15/searchadmin/crawllogreadpermission.aspx";
+            var needCrawlLogReadPermssionMsg = `<span style="${this.redStyle}">${Text.format(strings.SD_CrawlLackReadLogPermssion, crawlLogPermssionUrl)}.</span><br/>`;
+            this.resRef.current.innerHTML += needCrawlLogReadPermssionMsg;            
+        }
+       
         this.listTitle = this.state.affectedLibrary.Title;
         try
         {
@@ -400,7 +427,7 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
         this.resRef.current.innerHTML ="";
         this.remedyRef.current.innerHTML =""; 
         this.remedySteps =[];
-        this.setState({isChecked:false, needRemedy:false});
+        this.setState({isChecked:false, needRemedy:false, crawlLogs:[]});
     }
 
 }

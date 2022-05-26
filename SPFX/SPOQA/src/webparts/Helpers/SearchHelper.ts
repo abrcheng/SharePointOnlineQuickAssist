@@ -6,8 +6,8 @@ export default class SearchHelper
     {
         let apiUrl = webAbsoluteUrl + "/_vti_bin/client.svc/ProcessQuery"; 
         let endDate =  new Date();
-        let startDate = new Date();
-        startDate.setDate(endDate.getDate() -30);
+        //let startDate = new Date();
+        //startDate.setDate(endDate.getDate() -30);
         let userData =`        
                     <Request AddExpandoFieldTypeSuffix="true" SchemaVersion="15.0.0.0" LibraryVersion="16.0.0.0" ApplicationName=".NET Library" xmlns="http://schemas.microsoft.com/sharepoint/clientquery/2009">
                     <Actions>
@@ -28,7 +28,7 @@ export default class SearchHelper
                                 <Parameter Type="Int32">-1</Parameter>
                                 <Parameter Type="Int32">-1</Parameter>
                                 <Parameter Type="Int32">-1</Parameter>
-                                <Parameter Type="DateTime">${startDate.toISOString()}</Parameter>
+                                <Parameter Type="DateTime">0001-01-01T00:00:00.0000000</Parameter>
                                 <Parameter Type="DateTime">${endDate.toISOString()}</Parameter>
                             </Parameters>
                         </Method>

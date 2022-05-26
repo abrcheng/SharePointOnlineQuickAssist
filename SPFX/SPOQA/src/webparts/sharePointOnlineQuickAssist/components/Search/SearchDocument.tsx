@@ -54,10 +54,13 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
                             <TextField
                                     label={strings.AffectedSiteLoadList}
                                     multiline={false}
-                                    onChange={(e)=>{let text:any = e.target; this.setState({affectedSite:text.value,siteIsVaild:false}); this.resRef.current.innerHTML ="";}}
+                                    onChange={(e)=>{let text:any = e.target; this.setState({affectedSite:text.value,siteIsVaild:false, affectedDocument:""}); this.CleanPreviousResult();}}
                                     value={this.state.affectedSite}
                                     required={true}
-                                    onKeyDown={(e)=>{if(e.keyCode ===13){this.LoadLists();}}}                          
+                                    onKeyDown={(e)=>{if(e.keyCode ===13){
+                                        this.LoadLists();
+                                        this.CleanPreviousResult();
+                                    }}}                          
                             /> 
                             {this.state.siteIsVaild? 
                                 <div>
@@ -224,7 +227,7 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
             {
                 var resIsListNoCrawl = await RestAPIHelper.IsListNoCrawl(this.props.spHttpClient, this.state.affectedSite, this.listTitle);
                 this.setState({isListNoIndex:resIsListNoCrawl});
-                var listNoCrawlMsg =  `<span style="${resIsListNoCrawl? this.redStyle:this.greenStyle}" >${resIsListNoCrawl?strings.SD_TheNocrawlEnabledList:strings.SD_TheNocrawlNotEnabledList} ${this.state.affectedLibrary.Title}.</span><br/>`;
+                var listNoCrawlMsg = `<span style="${resIsListNoCrawl? this.redStyle:this.greenStyle}" >${resIsListNoCrawl?strings.SD_TheNocrawlEnabledList:strings.SD_TheNocrawlNotEnabledList} ${this.state.affectedLibrary.Title}.</span><br/>`;
                 this.resRef.current.innerHTML += listNoCrawlMsg;
                 if(resIsListNoCrawl)
                 {
@@ -392,7 +395,7 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
 
     public async CheckWebNoCrawl() // check the current web and all parent web
     {
-        this.resRef.current.innerHTML ="";
+        // this.resRef.current.innerHTML ="";
         this.websNeedFixNoCrawl = [];
         let properties:string[] = ["NoCrawl"];
         let resList:any[] = [];

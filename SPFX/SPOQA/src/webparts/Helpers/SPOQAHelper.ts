@@ -137,7 +137,7 @@ export default class SPOQAHelper
         
         
         //Initialize file format you want csv or xls
-        var uri = 'data:text/csv;charset=utf-8,' + escape(CSV);
+        var uri = 'data:text/csv;charset=utf-8,%EF%BB%BF' + encodeURIComponent(CSV);
         
         // Now the little tricky part.
         // you can use either>> window.open(uri);

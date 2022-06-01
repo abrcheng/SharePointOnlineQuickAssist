@@ -1,5 +1,5 @@
 import { ICrawlLog,ICrawlLogs } from "./ICrawlLog";
-import { DetailsList, DetailsListLayoutMode, ColumnActionsMode, SelectionMode, IColumn,IDetailsHeaderProps } from 'office-ui-fabric-react/lib/DetailsList';
+import { DetailsList, DetailsListLayoutMode, SelectionMode, IColumn } from 'office-ui-fabric-react/lib/DetailsList';
 import * as React from 'react';
 import * as strings from 'SharePointOnlineQuickAssistWebPartStrings';
 export default class CrawlLogGrid extends React.Component<ICrawlLogs>
@@ -15,7 +15,7 @@ export default class CrawlLogGrid extends React.Component<ICrawlLogs>
             isCollapsible: true,
             data: 'string',          
             onRender: (item: ICrawlLog) => {
-            return <span>{item.TimeStamp}</span>;
+            return <div style={{whiteSpace: 'pre-wrap', overflowWrap: 'break-word'}}>{item.TimeStamp}</div>;
             },
             isPadded: true,                 
         },    

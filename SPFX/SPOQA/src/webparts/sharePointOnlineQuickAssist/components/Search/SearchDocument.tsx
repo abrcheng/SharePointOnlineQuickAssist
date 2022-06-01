@@ -6,6 +6,9 @@ import {
     ComboBox,
     IComboBox,
     IComboBoxOption,
+    Panel,
+    PanelType,
+    Link
   } from 'office-ui-fabric-react/lib/index';
 import RestAPIHelper from '../../../Helpers/RestAPIHelper';
 import { ISharePointOnlineQuickAssistProps } from '../ISharePointOnlineQuickAssistProps';
@@ -18,7 +21,9 @@ import * as strings from 'SharePointOnlineQuickAssistWebPartStrings';
 import FormsHelper from '../../../Helpers/FormsHelper';
 import SearchHelper from '../../../Helpers/SearchHelper';
 import CrawlLogGrid from "./CrawlLogGrid";
-import { Text } from '@microsoft/sp-core-library';
+import ManagedPropertyGrid from "./ManagedPropertyGrid";
+import CrawledPropertyGrid from "./CrawledPropertyGrid";
+import {Text } from '@microsoft/sp-core-library';
 export default class SearchDocumentQA extends React.Component<ISharePointOnlineQuickAssistProps>
 {
     public state = {
@@ -35,7 +40,11 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
         isChecked:false,
         needRemedy:false,       
         remedyStepsShowed:false,
-        crawlLogs:[]
+        crawlLogs:[],
+        mpPanelOpen:false,
+        managedProperties:[],
+        cpPanelOpen:false,
+        crawledProperties:[]
       };
     private listTitle:string="";
     private resRef= React.createRef<HTMLDivElement>(); 
@@ -106,7 +115,9 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
                                     <Label>Diagnose result:</Label>                                   
                                     :null}
                                 <div style={{marginLeft:20}} id="SearchDocumentCheckResultDiv" ref={this.resRef}></div>
-                                {this.state.crawlLogs.length >0? <CrawlLogGrid items={this.state.crawlLogs}/>:null}
+                                {this.state.crawlLogs.length >0? <CrawlLogGrid items={this.state.crawlLogs}/>:null}                               
+                                {this.state.managedProperties.length >0? <Link onClick={e=>{this.setState({mpPanelOpen:true});}}  style={{ display: 'block'}}>{strings.SD_ShowManagedProperties}</Link>:null}                               
+                                {this.state.crawledProperties.length >0? <Link onClick={e=>{this.setState({cpPanelOpen:true});}} style={{ display: 'block'}}>{strings.SD_ShowCrawlProperties}</Link>:null}
                             </div>                           
                         <div id="CommandButtonsSection">
                             <PrimaryButton
@@ -125,7 +136,27 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
                                 
                         </div>
                     </div>
-                </div>  
+                </div> 
+                <Panel
+                    headerText={strings.SD_ManagedProperties}
+                    isOpen={this.state.mpPanelOpen}
+                    onDismiss={e=>{this.setState({mpPanelOpen:false});}}                   
+                    closeButtonAriaLabel="Close"
+                    customWidth='500px'
+                    type={PanelType.custom}
+                >
+                    <ManagedPropertyGrid items={this.state.managedProperties}></ManagedPropertyGrid>
+                </Panel> 
+                <Panel
+                    headerText={strings.SD_CrawlProperties}
+                    isOpen={this.state.cpPanelOpen}
+                    onDismiss={e=>{this.setState({cpPanelOpen:false});}}                   
+                    closeButtonAriaLabel="Close"
+                    customWidth='500px'
+                    type={PanelType.custom}
+                >
+                    <CrawledPropertyGrid items={this.state.crawledProperties}></CrawledPropertyGrid>
+                </Panel> 
             </div>
         );
     }
@@ -196,10 +227,47 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
            var searchDocRes = await RestAPIHelper.SearchDocumentByFullPath(this.props.spHttpClient, this.state.affectedSite, this.state.affectedDocument);
            console.log(searchDocRes);
            if(searchDocRes.RowCount >0)
-           {
-                // SPOQAHelper.ShowMessageBar("Success", `Searched out ${searchDocRes.RowCount} items, looks like the affected document can be searched.`); 
-                SPOQAHelper.ShowMessageBar("Success", strings.SD_DocumentCanBeSearched);   
-                searched = true;             
+           {    
+                // If the document can be searched, then get the ManagedProperties and CrawledProperties for the first row
+                var docId = "";
+                var docIds = searchDocRes.Table.Rows[0].Cells.filter(e=>e.Key=="DocId");
+                if(docIds.length >0)
+                {
+                    docId = docIds[0].Value;
+                }
+                
+                if(docId)
+                {
+                   var resCP:any = await SearchHelper.GetCrawledProperties(this.props.spHttpClient, this.state.affectedSite, docId);
+                   var resMP:any = await SearchHelper.GetManagedProperties(this.props.spHttpClient, this.state.affectedSite, docId);
+                   searched = true;  
+                   SPOQAHelper.ShowMessageBar("Success", strings.SD_DocumentCanBeSearched);  
+                   var mps = [];
+                   if(resMP.PrimaryQueryResult.RelevantResults.RowCount >0)
+                   {
+                        resMP.PrimaryQueryResult.RelevantResults.Table.Rows[0].Cells.forEach(e=>{mps.push({Name:e.Key,Value:e.Value});});
+                   }                  
+                  
+                   // res.PrimaryQueryResult.RefinementResults.Refiners[0].Entries[0].RefinementName
+                  var cps = [];
+                  if(resCP.PrimaryQueryResult.RefinementResults.Refiners.length >0 && resCP.PrimaryQueryResult.RefinementResults.Refiners[0].Entries.length >0)
+                  {
+                    resCP.PrimaryQueryResult.RefinementResults.Refiners[0].Entries.forEach(e=>{cps.push({Name:e.RefinementName});});                    
+                  }
+                  
+                  this.setState({managedProperties:mps, crawledProperties:cps});
+
+                  SearchHelper.CallOtherDiagnosticsAPIS(this.props.spHttpClient, this.state.affectedSite, docId);
+                }
+                else
+                {
+                    // DocID is null will causd unexpected issue 
+                    var docIDMissedMsg = `<span style="${this.redStyle}">${Text.format(strings.SD_DocIdIsNull, searchDocRes.RowCount)}</span><br/>`;
+                    this.resRef.current.innerHTML += docIDMissedMsg;
+                    this.remedySteps.push({
+                        message:strings.SD_DocIdIsNullRemedy,
+                        url:""});
+                }
            }           
         }
         catch(err)
@@ -426,11 +494,11 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
     }
 
     private CleanPreviousResult() {
-        this.websNeedFixNoCrawl=[];
+        this.websNeedFixNoCrawl=[];    
         this.resRef.current.innerHTML ="";
         this.remedyRef.current.innerHTML =""; 
         this.remedySteps =[];
-        this.setState({isChecked:false, needRemedy:false, crawlLogs:[]});
+        this.setState({isChecked:false, needRemedy:false, crawlLogs:[], managedProperties:[],crawledProperties:[]});
     }
 
 }

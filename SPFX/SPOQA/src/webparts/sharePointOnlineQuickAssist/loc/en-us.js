@@ -161,6 +161,7 @@ define([], function() {
      SS_Message_WaitAfterFix:"After fixing all detected issues, please reindex the site and wait for 20~30 minutes then verify it. ",
      SS_Message_CheckPermissions:"Please check your permissions to the site",
      SS_Message_AddInMembers:"This is a group site. Please add yourself as a member of the group. Refer: https://docs.microsoft.com/en-us/sharepoint/troubleshoot/search/search-results-dont-appear-for-group-owners",
+     SS_CrawlLackReadLogPermssion:"Lack permssion to read crawl log, please grant permssion in this page {0}",
      MF_Label_AffectedSite:"Affected Site(press enter for loading libraries/lists):",
      MF_Label_SelectList:"Please select the affected library/list",
      MF_Label_DiagnoseResult:"Diagnose result,",

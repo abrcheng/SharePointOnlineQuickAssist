@@ -174,6 +174,7 @@ declare interface ISharePointOnlineQuickAssistWebPartStrings {
   SS_Message_WaitAfterFix:string;
   SS_Message_CheckPermissions:string;
   SS_Message_AddInMembers:string;
+  SS_CrawlLackReadLogPermssion:string;
 
   // Strings for UserInfo
   UI_Label_AffectedSite:string;

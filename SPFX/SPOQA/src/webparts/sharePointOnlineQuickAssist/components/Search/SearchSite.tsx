@@ -2,7 +2,10 @@ import * as React from 'react';
 import {  
     PrimaryButton,    
     TextField,
-    Label
+    Label,
+    Panel,
+    PanelType,
+    Link
   } from 'office-ui-fabric-react/lib/index';
 import GraphAPIHelper from '../../../Helpers/GraphAPIHelper';  
 import RestAPIHelper from '../../../Helpers/RestAPIHelper';
@@ -12,7 +15,12 @@ import { ISharePointOnlineQuickAssistProps } from '../ISharePointOnlineQuickAssi
 import styles from '../SharePointOnlineQuickAssist.module.scss';
 import * as strings from 'SharePointOnlineQuickAssistWebPartStrings';
 import {RemedyHelper} from '../../../Helpers/RemedyHelper';
+import FormsHelper from '../../../Helpers/FormsHelper';
+import SearchHelper from '../../../Helpers/SearchHelper';
 import {Text} from '@microsoft/sp-core-library';
+import CrawlLogGrid from "./CrawlLogGrid";
+import ManagedPropertyGrid from "./ManagedPropertyGrid";
+import CrawledPropertyGrid from "./CrawledPropertyGrid";
 
 export default class SearchSiteQA extends React.Component<ISharePointOnlineQuickAssistProps>
 {
@@ -24,7 +32,13 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
         userPerm:false,
         isinMembers:false,
         GroupId:"",
-        isChecked:false
+        isChecked:false,
+        crawlLogs:[],
+        crawlLogerror:"",
+        mpPanelOpen:false,
+        managedProperties:[],
+        cpPanelOpen:false,
+        crawledProperties:[]
     };
 
     private remedySteps =[]; 
@@ -70,6 +84,9 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
                               <Label>{strings.SS_Message_WaitAfterFix}</Label>
                             </div>:null
                         }
+                        {this.state.crawlLogs.length >0? <CrawlLogGrid items={this.state.crawlLogs}/>:(this.state.crawlLogerror.length >0?<Label style={{"color":"Red"}}>{this.state.crawlLogerror}</Label>:null)}
+                        {this.state.managedProperties.length >0? <Link onClick={e=>{this.setState({mpPanelOpen:true});}}  style={{ display: 'block'}}>{strings.SD_ShowManagedProperties}</Link>:null}                               
+                        {this.state.crawledProperties.length >0? <Link onClick={e=>{this.setState({cpPanelOpen:true});}} style={{ display: 'block'}}>{strings.SD_ShowCrawlProperties}</Link>:null}
                       <div id="CommandButtonsSection">
                         <PrimaryButton
                           text={strings.SS_Label_CheckIssues}
@@ -86,18 +103,33 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
                     </div>
                   </div>
                 </div>
+                <Panel
+                    headerText={strings.SD_ManagedProperties}
+                    isOpen={this.state.mpPanelOpen}
+                    onDismiss={e=>{this.setState({mpPanelOpen:false});}}                   
+                    closeButtonAriaLabel="Close"
+                    customWidth='500px'
+                    type={PanelType.custom}
+                >
+                    <ManagedPropertyGrid items={this.state.managedProperties}></ManagedPropertyGrid>
+                </Panel> 
+                <Panel
+                    headerText={strings.SD_CrawlProperties}
+                    isOpen={this.state.cpPanelOpen}
+                    onDismiss={e=>{this.setState({cpPanelOpen:false});}}                   
+                    closeButtonAriaLabel="Close"
+                    customWidth='500px'
+                    type={PanelType.custom}
+                >
+                    <CrawledPropertyGrid items={this.state.crawledProperties}></CrawledPropertyGrid>
+                </Panel> 
             </div>
         );
     }
     
     private async ResetSatus()
     {
-      this.state.isWebThere=false;
-      this.state.isWebNoIndex=true;
-      this.state.userPerm=false;
-      this.state.isinMembers=false;
-      this.state.GroupId="";
-      this.state.isChecked=false;
+      this.setState({isWebThere:false, isWebNoIndex:false, userPerm:false, isinMembers:false, GroupId:"", isChecked:false, crawlLogs:[], crawlLogerror:"", managedProperties:[],crawledProperties:[]});
       this.remedyRef.current.innerHTML =""; // Clean the RemedyStepsDiv
       SPOQAHelper.ResetFormStaus();
       SPOQASpinner.Hide();
@@ -141,7 +173,25 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
     {
         this.setState({isChecked:false});
         this.remedySteps =[]; 
-        SPOQASpinner.Show(`${strings.SS_Message_Checking}`);
+        SPOQASpinner.Show(`${strings.SS_Message_Checking}`);        
+        
+        // Get crawl logs
+        var crawlLogs = await SearchHelper.GetCrawlLogByRest(this.props.spHttpClient,this.state.affectedSite,this.state.affectedSite);
+        if(crawlLogs._ObjectType_ == "SP.SimpleDataTable")
+        {
+            crawlLogs.Rows.forEach(e=>{
+                e.TimeStamp = new Date(parseInt(e.TimeStampUtc.substring(6))).toISOString();
+                e.IsDeleted = e.IsDeleted.toString();
+            });
+            this.setState({crawlLogs:crawlLogs.Rows}); 
+        }
+        else if(crawlLogs.length>0 && crawlLogs[0].ErrorInfo)
+        {
+            // need crawl log permssion https://abrcheng-admin.sharepoint.cn/_layouts/15/searchadmin/crawllogreadpermission.aspx
+            var crawlLogPermssionUrl = this.props.rootUrl.replace(".sharepoint","-admin.sharepoint") + "/_layouts/15/searchadmin/crawllogreadpermission.aspx";
+            this.state.crawlLogerror = Text.format(strings.SS_CrawlLackReadLogPermssion, crawlLogPermssionUrl);
+        }
+       
         try
         {
           let url:URL = new URL(this.state.affectedSite);
@@ -288,8 +338,49 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
           {
             console.log(`${strings.SS_Message_SiteSearchable}`);
             SPOQAHelper.ShowMessageBar("Success", `${strings.SS_Message_SiteSearchable}`); 
-            SPOQASpinner.Hide();
+            console.log(siteSearch.PrimaryQueryResult.RelevantResults);
             this.setState({isChecked:false});
+            
+            // If the site can be searched, then get the ManagedProperties and CrawledProperties for the first row
+            var docId = "";
+            var docIds = siteSearch.PrimaryQueryResult.RelevantResults.Table.Rows[0].Cells.filter(e=>e.Key=="DocId");
+            if(docIds.length >0)
+            {
+                docId = docIds[0].Value;
+            }
+            if(docId)
+            {
+               var resCP:any = await SearchHelper.GetCrawledProperties(this.props.spHttpClient, this.state.affectedSite, docId);
+               var resMP:any = await SearchHelper.GetManagedProperties(this.props.spHttpClient, this.state.affectedSite, docId);
+               SPOQAHelper.ShowMessageBar("Success", strings.SD_DocumentCanBeSearched);  
+               var mps = [];
+               if(resMP.PrimaryQueryResult.RelevantResults.RowCount >0)
+               {
+                    resMP.PrimaryQueryResult.RelevantResults.Table.Rows[0].Cells.forEach(e=>{mps.push({Name:e.Key,Value:e.Value});});
+               }                  
+              
+               // res.PrimaryQueryResult.RefinementResults.Refiners[0].Entries[0].RefinementName
+              var cps = [];
+              if(resCP.PrimaryQueryResult.RefinementResults.Refiners.length >0 && resCP.PrimaryQueryResult.RefinementResults.Refiners[0].Entries.length >0)
+              {
+                resCP.PrimaryQueryResult.RefinementResults.Refiners[0].Entries.forEach(e=>{cps.push({Name:e.RefinementName});});                    
+              }
+              
+              this.setState({managedProperties:mps, crawledProperties:cps});
+
+              SearchHelper.CallOtherDiagnosticsAPIS(this.props.spHttpClient, this.state.affectedSite, docId);
+            }
+            else
+            {
+                // DocID is null will causd unexpected issue 
+                var docIDMissedMsg = `<span style="color:red">${Text.format(strings.SD_DocIdIsNull, siteSearch.RowCount)}</span><br/>`;
+                //this.resRef.current.innerHTML += docIDMissedMsg;
+                this.remedySteps.push({
+                    message:docIDMissedMsg,
+                    url:""});
+            }
+            
+            SPOQASpinner.Hide();
             return;
           }
         }

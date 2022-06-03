@@ -162,6 +162,8 @@ define([], function() {
       SS_Message_CheckPermissions:"サイトへの権限を確認してください。",
       SS_Message_AddInMembers:"当該サイトはグループサイトです。自分をグループメンバーに追加してください。参考資料： https://docs.microsoft.com/en-us/sharepoint/troubleshoot/search/search-results-dont-appear-for-group-owners",
       SS_CrawlLackReadLogPermssion:"Lack permssion to read crawl log, please grant permssion in this page {0}",
+      SS_Label_CrawlLogs:"Show Crawl Logs",
+      SS_Message_NoCrawlLog:"Crawl Log is not avaialable",
       MF_Label_AffectedSite:"影響を受けているサイト(Enter キーを押してライブラリーとリストをロードしてください):",
       MF_Label_SelectList:"影響を受けているリスト/ライブラリーを指定してください:",
       MF_Label_DiagnoseResult:"診断結果",

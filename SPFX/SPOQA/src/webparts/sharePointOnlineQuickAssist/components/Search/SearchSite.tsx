@@ -35,6 +35,7 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
         isChecked:false,
         crawlLogs:[],
         crawlLogerror:"",
+        crawlLogChecked:false,
         mpPanelOpen:false,
         managedProperties:[],
         cpPanelOpen:false,
@@ -84,7 +85,6 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
                               <Label>{strings.SS_Message_WaitAfterFix}</Label>
                             </div>:null
                         }
-                        {this.state.crawlLogs.length >0? <CrawlLogGrid items={this.state.crawlLogs}/>:(this.state.crawlLogerror.length >0?<Label style={{"color":"Red"}}>{this.state.crawlLogerror}</Label>:null)}
                         {this.state.managedProperties.length >0? <Link onClick={e=>{this.setState({mpPanelOpen:true});}}  style={{ display: 'block'}}>{strings.SD_ShowManagedProperties}</Link>:null}                               
                         {this.state.crawledProperties.length >0? <Link onClick={e=>{this.setState({cpPanelOpen:true});}} style={{ display: 'block'}}>{strings.SD_ShowCrawlProperties}</Link>:null}
                       <div id="CommandButtonsSection">
@@ -93,13 +93,11 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
                           style={{ display: 'inline', marginTop: '10px' }}
                           onClick={() => {this.ResetSatus(); this.CheckSiteSearchSettings();}} //When click: Reset banner status & check if the site is searchable
                         />
-                        {this.state.isChecked && this.state.isWebThere && (this.state.isWebNoIndex || (this.state.GroupId && !this.state.isinMembers))?
-                            //<PrimaryButton
-                            //    text={strings.SS_Label_FixIssues}
-                            //    style={{ display: 'inline', marginTop: '10px', marginLeft:"10px"}}
-                            //    onClick={() => {this.FixIssues();}}
-                            ///>
-                            null:null}
+                        <PrimaryButton
+                          text={strings.SS_Label_CrawlLogs}
+                          style={{ display: 'inline', marginTop: '10px', marginLeft:"10px"}}
+                          onClick={() => {this.GetCrawlLogs();}} //When click: Show Crawl Logs
+                        />
                     </div>
                   </div>
                 </div>
@@ -123,13 +121,19 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
                 >
                     <CrawledPropertyGrid items={this.state.crawledProperties}></CrawledPropertyGrid>
                 </Panel> 
+                 {this.state.crawlLogChecked?
+                 <div className={ styles.row }>
+                    <div className={ styles.column }>
+                      {this.state.crawlLogs.length >0? <CrawlLogGrid items={this.state.crawlLogs}/>:(this.state.crawlLogerror.length >0?<Label style={{"color":"Red"}}>{this.state.crawlLogerror}</Label>:<Label style={{"color":"Red"}}>{strings.SS_Message_NoCrawlLog}</Label>)}
+                    </div>
+                 </div>:null}
             </div>
         );
     }
     
     private async ResetSatus()
     {
-      this.setState({isWebThere:false, isWebNoIndex:false, userPerm:false, isinMembers:false, GroupId:"", isChecked:false, crawlLogs:[], crawlLogerror:"", managedProperties:[],crawledProperties:[]});
+      this.setState({isWebThere:false, isWebNoIndex:false, userPerm:false, isinMembers:false, GroupId:"", isChecked:false, managedProperties:[],crawledProperties:[]});
       this.remedyRef.current.innerHTML =""; // Clean the RemedyStepsDiv
       SPOQAHelper.ResetFormStaus();
       SPOQASpinner.Hide();
@@ -167,14 +171,9 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
         return userData.value[0].Id;
     }
 
-    
-
-    public async CheckSiteSearchSettings()
+    public async GetCrawlLogs()
     {
-        this.setState({isChecked:false});
-        this.remedySteps =[]; 
-        SPOQASpinner.Show(`${strings.SS_Message_Checking}`);        
-        
+        this.setState({crawlLogs:[], crawlLogerror:""});
         // Get crawl logs
         var crawlLogs = await SearchHelper.GetCrawlLogByRest(this.props.spHttpClient,this.state.affectedSite,this.state.affectedSite);
         if(crawlLogs._ObjectType_ == "SP.SimpleDataTable")
@@ -191,7 +190,15 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
             var crawlLogPermssionUrl = this.props.rootUrl.replace(".sharepoint","-admin.sharepoint") + "/_layouts/15/searchadmin/crawllogreadpermission.aspx";
             this.state.crawlLogerror = Text.format(strings.SS_CrawlLackReadLogPermssion, crawlLogPermssionUrl);
         }
-       
+        this.setState({crawlLogChecked:true});
+    }
+
+    public async CheckSiteSearchSettings()
+    {
+        this.setState({isChecked:false});
+        this.remedySteps =[]; 
+        SPOQASpinner.Show(`${strings.SS_Message_Checking}`);        
+        
         try
         {
           let url:URL = new URL(this.state.affectedSite);
@@ -352,7 +359,6 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
             {
                var resCP:any = await SearchHelper.GetCrawledProperties(this.props.spHttpClient, this.state.affectedSite, docId);
                var resMP:any = await SearchHelper.GetManagedProperties(this.props.spHttpClient, this.state.affectedSite, docId);
-               SPOQAHelper.ShowMessageBar("Success", strings.SD_DocumentCanBeSearched);  
                var mps = [];
                if(resMP.PrimaryQueryResult.RelevantResults.RowCount >0)
                {

@@ -652,16 +652,17 @@ export default class RestAPIHelper
 
        var res = await spHttpClient.get(apiUrl, SPHttpClient.configurations.v1);
        if(res.ok)
-       {
-          var resJson = await res.json();
-          console.log(`Getrecyclebinitems done for API url ${apiUrl}`);          
-          return resJson;
+       {         
+          console.log(`Getrecyclebinitems done for API url ${apiUrl}`);                    
        }
        else
        {
         var message = `Failed Getrecyclebinitems for API url ${apiUrl}`;
         console.log(message);       
        }
+
+       var resJson = await res.json();
+       return await resJson;
     }
 
     public static async RestoreByIds(spHttpClient:SPHttpClient, siteAbsoluteUrl:string, ids:string[])

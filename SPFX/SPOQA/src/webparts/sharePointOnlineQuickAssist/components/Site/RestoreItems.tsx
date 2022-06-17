@@ -165,6 +165,12 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
          while(currentCount ==500 || currentCount==-1 || itemState <3)
          {
            var recycleItems = await RestAPIHelper.Getrecyclebinitems(this.props.spHttpClient, this.state.affectedSite,pageInfo,500,false, itemState, 3);
+           if(recycleItems.error)
+           {
+             SPOQAHelper.ShowMessageBar("Error",Text.format(strings.RI_GetrecyclebinitemsError, this.state.affectedSite, recycleItems.error.message));
+             SPOQASpinner.Hide();
+             return;
+           }
 
            // recycleItems.value.length, if the length is less than 500, that's mean the current query is the last page
            /* Data structure of recycleItems.value[0]
@@ -259,12 +265,12 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
     let matched:boolean = true;
     if(this.state.deleteByUser && this.state.deleteByUser.trim().length >0) // check deleteByUser
     {
-      matched = matched&&(this.state.deleteByUser.toLowerCase() == item.DeletedByEmail.toLowerCase());
+      matched = matched&&(this.state.deleteByUser.trim().toLowerCase() == item.DeletedByEmail.toLowerCase());
     }
 
     if(this.state.pathFilter && this.state.pathFilter.trim().length > 0)
     {
-      matched = matched&&(item.Path.toLowerCase().indexOf(this.state.pathFilter.toLowerCase()) >= 0);
+      matched = matched&&(item.Path.toLowerCase().indexOf(this.state.pathFilter.trim().toLowerCase()) >= 0);
     }
 
     if(this.state.deleteStartDate)

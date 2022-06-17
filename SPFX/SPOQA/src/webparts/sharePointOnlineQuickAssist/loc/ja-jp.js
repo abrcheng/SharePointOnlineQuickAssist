@@ -79,6 +79,7 @@ define([], function() {
       RI_RestoreProgress:"{0} 件目から {1} 件目のアイテムを復元中、お待ちください...",
       RI_RestoreResult:"{0} 件復元しました。消費時間： {1} 秒。",
       RI_RestoreResultWithError:"{0} 件目から {1} 件目のアイテムの復元中にエラーが発生しました。エラーメッセージ：{2}",
+      RI_GetrecyclebinitemsError:"Please make sure current user is the site collection administrator of the site {0}, detail error message is {1}.",
       "SD_DocumentPathCanNotBeNull":"影響を受けているドキュメントのフルパスを指定してください！",
       "SD_DocumentCanBeSearched":"当該ドキュメントは検索可能の状態になっています。",
       "SD_SearchByFullPathException":"ドキュメントをフルパスで検索するのを試みる時に例外が発生しました。エラーメッセージ：",

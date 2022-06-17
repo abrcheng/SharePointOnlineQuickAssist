@@ -83,6 +83,7 @@ declare interface ISharePointOnlineQuickAssistWebPartStrings {
   RI_RestoreProgress:string;
   RI_RestoreResult:string;
   RI_RestoreResultWithError:string;
+  RI_GetrecyclebinitemsError:string;
 
   // Strings for Search document
   SD_DocumentPathCanNotBeNull:string;

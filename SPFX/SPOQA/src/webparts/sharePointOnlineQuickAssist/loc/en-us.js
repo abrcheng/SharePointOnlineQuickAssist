@@ -79,6 +79,7 @@ define([], function() {
      RI_RestoreProgress:"Restoring item from {0} to {1}, please wait ......",
      RI_RestoreResult:"Restored {0} items in {1} seconds.",
      RI_RestoreResultWithError:"Restoring item from {0} to {1} with error message:{2}",
+     RI_GetrecyclebinitemsError:"Please make sure current user is the site collection administrator of the site {0}, detail error message is {1}.",
      "SD_DocumentPathCanNotBeNull":"Please provide the affected document full URL!",
      "SD_DocumentCanBeSearched":"The document can be searched.",
      "SD_SearchByFullPathException":"Get exception when trying to SearchDocumentByFullPath with error message",

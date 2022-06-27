@@ -3,7 +3,8 @@ export interface IRestoreItem {
     DeletedByName:string;
     DeletedDate:Date;
     Path:string;
-    Id:string;            
+    Id:string;   
+    Existing:boolean; 
   }
 
   export interface IRestoreItems

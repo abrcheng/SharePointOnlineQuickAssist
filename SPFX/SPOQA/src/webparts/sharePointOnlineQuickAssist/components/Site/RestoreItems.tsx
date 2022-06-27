@@ -5,7 +5,9 @@ import {
     MessageBar,
     MessageBarType,
     DatePicker,
-    Spinner
+    Spinner,
+    Toggle,
+    Sticky
   } from 'office-ui-fabric-react/lib/index';
 import RestAPIHelper from '../../../Helpers/RestAPIHelper';
 import SPOQASpinner from '../../../Helpers/SPOQASpinner';
@@ -16,6 +18,7 @@ import { ISharePointOnlineQuickAssistProps } from '../ISharePointOnlineQuickAssi
 import { IRestoreItem,IRestoreItems } from "./IRestoreItem";
 import { Text } from '@microsoft/sp-core-library';
 import * as strings from 'SharePointOnlineQuickAssistWebPartStrings';
+
 export default class RestoreItemsQA extends React.Component<ISharePointOnlineQuickAssistProps>
 {
   private recycleBinItems:IRestoreItem[];
@@ -29,11 +32,12 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
     pathFilter:"",    
     affectedSite:this.props.webAbsoluteUrl,
     queried:false,
-    currentItems:null,
+    currentItems:[],
     message:"",
     messageType:MessageBarType.success,
     spinnerMessage:"",
-    errorDetail:[]
+    errorDetail:[],
+    detectAndSkipExistingDocument:false
   };
   
   // https://chengc.sharepoint.com/sites/abc/_api/site/getrecyclebinitems?rowLimit='100'&isAscending=false&itemState=1&orderby=3
@@ -53,13 +57,23 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
             <div className={ styles.column }>
             <div id="RestoreItemsQA_FilterSection" className={styles.msgrid}>
               <div className={styles.msrow} id="affectedSite_row">
-                <TextField
-                      label={strings.AffectedSite}
-                      multiline={false}
-                      onChange={(e)=>{let text:any = e.target; this.setState({affectedSite:text.value});}}
-                      value={this.state.affectedSite}
-                      required={true}                        
-                /> 
+                <div className={styles.mscol8}>
+                  <TextField
+                        label={strings.AffectedSite}
+                        multiline={false}
+                        onChange={(e)=>{let text:any = e.target; this.setState({affectedSite:text.value});}}
+                        value={this.state.affectedSite}
+                        required={true}                        
+                  /> 
+                </div>
+                <div className={styles.mscol4}>
+                  <Toggle 
+                  label={strings.RI_DetectAndSkipExistingDocument}
+                  onChange={(e, checked)=>{ this.setState({detectAndSkipExistingDocument:checked});}}
+                  onText="On"
+                  offText="Off"
+                  checked={this.state.detectAndSkipExistingDocument}/>                                        
+                </div>
               </div>
               <div className={styles.msrow} id="deleteByUser_row">
               <div className={styles.mscol6}>
@@ -149,7 +163,7 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
   private async QueryRecycleBinItems()
   {
      // Verify the site is valid 
-     this.setState({errorDetail:[]});
+     this.setState({errorDetail:[],currentItems:[]});
      var isSiteValid = await RestAPIHelper.GetWeb(this.props.spHttpClient, this.state.affectedSite);
      if(isSiteValid)
      {   
@@ -212,7 +226,10 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
                   delete currentItem['DirNamePath'];
                   delete currentItem['@odata.editLink'];
                   delete currentItem['@odata.id'];
-                  delete currentItem['@odata.type'];         
+                  delete currentItem['@odata.type'];
+                  // If the "Detect and skip existing items" is off, then Existing will always set to false by default
+                  //  If the "Detect and skip existing items" is on, the Existing will be filled latter in the function DetectExistingItems
+                  currentItem["Existing"] = false;     
                   this.recycleBinItems.push(currentItem);
                 }
               }
@@ -246,12 +263,38 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
          }
         
          this.querySeconds = ((new Date()).getTime()- queryStartTime.getTime())/1000;
-         this.recycleBinItems.sort((a,b) =>a.Path > b.Path ?1:-1);         
-         this.setState({currentItems:this.recycleBinItems,
-              message: Text.format(strings.RI_QueryResult, this.queryCount, this.recycleBinItems.length, this.querySeconds),
-              queried:true,
-              messageType:MessageBarType.success
-          });        
+         this.recycleBinItems.sort((a,b) =>a.Path > b.Path ?1:-1);   
+         this.setState({
+              message: Text.format(strings.RI_QueryResult, this.queryCount, this.recycleBinItems.length, this.querySeconds),              
+              messageType:MessageBarType.success,
+              queried:true
+          });  
+          
+         if(this.state.detectAndSkipExistingDocument) // Detect existing items
+         {
+            var dtected = await this.DetectExistingItems(this.state.affectedSite);
+            if(dtected)
+            {
+              var existingItemCount = 0;
+            this.recycleBinItems.forEach(item=>{
+                if(item.Existing)
+                {
+                  existingItemCount++;
+                }
+            });
+
+            this.setState({currentItems:this.recycleBinItems,
+                  message: `${Text.format(strings.RI_QueryResult, this.queryCount, this.recycleBinItems.length, this.querySeconds)} ${Text.format(strings.RI_DetectExistingResult, existingItemCount)}`,
+                  queried:true,
+                  messageType:MessageBarType.success
+              }); 
+            }
+         }
+         else
+         {
+          this.setState({currentItems:this.recycleBinItems});
+         }
+
          SPOQASpinner.Hide();
      }
      else
@@ -296,19 +339,20 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
     //     "f2621b7b-7732-4423-95d0-60321e80fa65"]
     // ,"bRenameExistingItems":true}
     
-    // Restore 100 items in one batch 
+    // Restore 10 items in one batch
+    var  recycleBinItemsNeedRestore = this.recycleBinItems.filter(e=>!e.Existing);
     var batchSize = 10;
-    let batchNo:number = Math.ceil(this.recycleBinItems.length /batchSize);
+    let batchNo:number = Math.ceil(recycleBinItemsNeedRestore.length /batchSize);
     var restoreStartTime = new Date();
     this.setState({errorDetail:[]});
     for(var batchIndex=0; batchIndex <batchNo;batchIndex++)
     {
       let ids:string[]=[];
       let startIndex:number= batchIndex * batchSize;
-      let endIndex:number = (batchIndex+1) * batchSize < this.recycleBinItems.length? (batchIndex+1) * batchSize : this.recycleBinItems.length;
+      let endIndex:number = (batchIndex+1) * batchSize < recycleBinItemsNeedRestore.length? (batchIndex+1) * batchSize : recycleBinItemsNeedRestore.length;
       for(var index=startIndex; index < endIndex; index++)
       {
-        ids.push(this.recycleBinItems[index].Id);
+        ids.push(recycleBinItemsNeedRestore[index].Id);
       }
      
       this.setState({     
@@ -322,7 +366,7 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
           {
             var restoreSeconds = ((new Date()).getTime()- restoreStartTime.getTime())/1000;
             this.setState({
-              message: Text.format(strings.RI_RestoreResult, this.recycleBinItems.length, restoreSeconds),         
+              message: Text.format(strings.RI_RestoreResult, recycleBinItemsNeedRestore.length, restoreSeconds, this.recycleBinItems.length -  recycleBinItemsNeedRestore.length),         
               messageType:MessageBarType.success,
               spinnerMessage:""
               }); 
@@ -355,5 +399,70 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
   {
       // Export filtered recycle bin items
       SPOQAHelper.JSONToCSVConvertor(this.recycleBinItems, true, "RecycleBinItems");
+  }
+
+  private async DetectExistingItems(webUrl:string) {
+    // https://chengc.sharepoint.com/sites/SPOQA/_api/web/webs?$select=Url
+    SPOQASpinner.Show(Text.format(strings.RI_DetectExistingItemsInPath, webUrl));
+    var lists:any = await RestAPIHelper.GetLists(this.props.spHttpClient, webUrl); 
+    for(var listIndex=0; listIndex < lists.length;listIndex++)
+    {
+      var list = lists[listIndex];
+         // rootFolder:list.RootFolder.ServerRelativeUrl 
+      if(list.RootFolder.ServerRelativeUrl.indexOf("/") == 0)
+      {
+        list.RootFolder.ServerRelativeUrl = list.RootFolder.ServerRelativeUrl.substring(1,list.RootFolder.ServerRelativeUrl.length);
+      }
+      
+      var hasItemMatchList = this.recycleBinItems.some(e=>e.Path.toLowerCase().indexOf(list.RootFolder.ServerRelativeUrl.toLowerCase()) ===0);                         
+      if(hasItemMatchList)
+      {
+        // Matched some items in current list by list.RootFolder.ServerRelativeUrl , detect existing items in the current list
+        await this.DetectExistingItemsInList(webUrl,list);
+      }
+    }
+   
+    // Get sub sites and call DetectExistingItems for each sub site
+    var subWebs = await RestAPIHelper.GetSubWebs(this.props.spHttpClient, webUrl);
+  
+    if(subWebs && subWebs.value && subWebs.value.length >0)
+    {
+      for(var webIndex=0; webIndex < subWebs.value.length; webIndex++)
+      {
+        var url = subWebs.value[webIndex].ServerRelativeUrl.substring(1,subWebs.value[webIndex].ServerRelativeUrl.length);
+        var hasItemMatchWeb = this.recycleBinItems.some(e=>e.Path.toLowerCase().indexOf(url.toLowerCase()) ===0);   
+        if(hasItemMatchWeb)
+        {
+          await this.DetectExistingItems(subWebs.value[webIndex].Url);
+        }
+      }     
+    }
+
+    return await subWebs;
+  }
+  
+  private async DetectExistingItemsInList(webUrl:string, list:any) { 
+    SPOQASpinner.Show(Text.format(strings.RI_DetectExistingItemsInPath, list.RootFolder.ServerRelativeUrl));
+    let allItemsList:any[] = await RestAPIHelper.GetItemsInList(this.props.spHttpClient, webUrl, list.Id);
+    console.log(`Get ${allItemsList.length} items from list ${list.RootFolder.ServerRelativeUrl}`);
+    allItemsList.push({FileRef:list.RootFolder.ServerRelativeUrl});
+    var matchCount = 0;
+    allItemsList.forEach(item=>{
+      if(item.FileRef.indexOf("/")===0)
+      {
+        item.FileRef = item.FileRef.substring(1, item.FileRef.length);
+      }
+
+      for(var index=0; index<this.recycleBinItems.length; index++)
+      {
+        if(item.FileRef.toLowerCase()=== this.recycleBinItems[index].Path.toLowerCase())
+        {
+          this.recycleBinItems[index].Existing = true;
+          matchCount++;
+        }
+      }
+    });
+    
+    console.log(`Get ${matchCount} items matched in the list ${list.RootFolder.ServerRelativeUrl}`);
   }
 }

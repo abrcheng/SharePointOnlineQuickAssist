@@ -84,6 +84,10 @@ declare interface ISharePointOnlineQuickAssistWebPartStrings {
   RI_RestoreResult:string;
   RI_RestoreResultWithError:string;
   RI_GetrecyclebinitemsError:string;
+  RI_DetectAndSkipExistingDocument:string;
+  RI_DetectExistingItemsInPath:string;
+  RI_DetectExistingResult:string;
+  RI_Existing:string;
 
   // Strings for Search document
   SD_DocumentPathCanNotBeNull:string;

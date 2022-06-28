@@ -2,6 +2,7 @@ import {SPHttpClient,ISPHttpClientOptions} from '@microsoft/sp-http';
 import SPOQAHelper from './SPOQAHelper';
 import { WebPartContext } from '@microsoft/sp-webpart-base';
 import  { ItemType} from '../Helpers/ModerationStatusHelper';
+import { elementContains } from 'office-ui-fabric-react';
 
 export default class RestAPIHelper
 {
@@ -925,6 +926,69 @@ export default class RestAPIHelper
         
         console.error(`Failed to get data from request ${apiUrl}.`);
         return false;    
+    }
+
+    public static async GetSubWebs(spHttpClient:SPHttpClient, siteAbsoluteUrl:string)
+    {
+        var apiUrl = `${siteAbsoluteUrl}/_api/web/webs?$select=Url,ServerRelativeUrl`;
+        var subWebsRes = await spHttpClient.get(apiUrl, SPHttpClient.configurations.v1);
+        if(subWebsRes.ok)
+        {
+          var resJson = await subWebsRes.json();
+          if(resJson.error)
+          {
+              console.error(`${resJson.error.message} ${apiUrl}.`);
+              return null;
+          }
+
+          return resJson;
+        }
+        else
+        {
+          var message = `Failed get sub sites for API ${apiUrl}`;
+          console.log(message);
+          Promise.reject(message);
+          return null;
+        }
+    }
+
+    public static async GetItemsInList(spHttpClient:SPHttpClient, siteAbsoluteUrl:string, listID:string)
+    {
+      // https://chengc.sharepoint.com/sites/SPOQA/_api/Web/Lists(guid'6f709b86-7146-4b86-bcb3-2874bc3ec956')/items?$select=FileRef
+      var apiUrl = `${siteAbsoluteUrl}/_api/Web/Lists(guid'${listID}')/items?$select=FileRef&$top=5000`;
+      var allItemsInList:any[]=[];
+      while(apiUrl && apiUrl!="")
+      {
+        var itemsRes = await spHttpClient.get(apiUrl, SPHttpClient.configurations.v1);
+        if(itemsRes.ok)
+        {
+          var resJson = await itemsRes.json();
+          if(resJson.error)
+          {
+              console.error(`${resJson.error.message} ${apiUrl}.`);
+              return allItemsInList;
+          }
+
+          allItemsInList = allItemsInList.concat(resJson.value);
+          if(resJson["@odata.nextLink"])
+          {
+              apiUrl = resJson["@odata.nextLink"];
+          }
+          else
+          {
+            apiUrl=""; // end the loop
+          }
+        }
+        else
+        {
+          var message = `Failed get items for API ${apiUrl}`;
+          console.log(message);
+          Promise.reject(message);
+          return allItemsInList;
+        }
+      }
+
+      return allItemsInList;
     }
     
     private static GetAPIUrl(fileServerRelativeUrl:string, listRootFolder:string,itemType:ItemType):string

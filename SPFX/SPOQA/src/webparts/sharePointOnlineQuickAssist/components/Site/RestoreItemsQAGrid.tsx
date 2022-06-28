@@ -102,7 +102,22 @@ export default class RestoreItemsQAGrid extends React.Component<IRestoreItems>
                 onColumnClick: (ev, column) => {
                   this.onColumnContextMenu(column, ev);},
               columnActionsMode: ColumnActionsMode.hasDropdown,                      
-            }          
+            },
+            {
+              key: 'Existing',
+              name: strings.RI_Existing,
+              fieldName: 'Existing',
+              minWidth: 100,
+              maxWidth: 120,
+              isResizable: true,
+              isCollapsible: true,
+              data: 'string',          
+              onRender: (item: IRestoreItem) => {
+              return <span>{item.Existing.toString()}</span>;
+              },
+              isPadded: true,
+              onColumnClick: this.onColumnClick,                      
+          }           
       ];
      
     public state = {

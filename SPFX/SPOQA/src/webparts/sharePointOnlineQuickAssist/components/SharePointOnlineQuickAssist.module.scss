@@ -43,6 +43,22 @@
     padding-left: 0px; 
   }
 
+  .mscol8
+  {
+    @include ms-Grid-col;
+    @include ms-sm8;
+    @include ms-md8;   
+    padding-left: 0px; 
+  }
+
+  .mscol4
+  {
+    @include ms-Grid-col;
+    @include ms-sm4;
+    @include ms-md4;   
+    padding-left: 0px; 
+  }
+
   .title {
     @include ms-font-xl;
     @include ms-fontColor-black;

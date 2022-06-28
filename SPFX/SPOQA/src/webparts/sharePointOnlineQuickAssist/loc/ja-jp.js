@@ -77,7 +77,7 @@ define([], function() {
       RI_QueryResult:"取得件数： {0} 件、フィルター適用後： {1} 件、消費時間： {2} 秒。",
       RI_QueryProgress:"取得件数： {0} 件、フィルター適用後： {1} 件...",
       RI_RestoreProgress:"{0} 件目から {1} 件目のアイテムを復元中、お待ちください...",
-      RI_RestoreResult:"{0} 件復元しました。消費時間： {1} 秒。のためにスキップ {2}。",
+      RI_RestoreResult:"{0} 件復元しました。消費時間： {1} 秒。{2} 件は既に存在しているためスキップしました。",
       RI_RestoreResultWithError:"{0} 件目から {1} 件目のアイテムの復元中にエラーが発生しました。エラーメッセージ：{2}",
       RI_GetrecyclebinitemsError:"ユーザーが {0} のサイトコレクション管理者であることを確認してください, エラー詳細： {1}",
       RI_DetectAndSkipExistingDocument:"既存アイテムを検出・スキップします",

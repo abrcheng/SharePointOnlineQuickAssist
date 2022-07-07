@@ -173,7 +173,7 @@ As a user of the Site, you agree not to:
 23. use the Site in a manner inconsistent with any applicable laws or
      regulations.
 
-**USER GENERATED CONTRIBUTIONS**
+# USER GENERATED CONTRIBUTIONS
 
 The Site may invite you to chat, contribute to, or participate in blogs,
 message boards, online forums, and other functionality, and may provide

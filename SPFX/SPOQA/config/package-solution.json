@@ -1,7 +1,7 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
   "solution": {
-    "name": "spoqa-client-side-solution",
+    "name": "SharePoint Online Quick Assist",
     "id": "029e4fc2-a440-4f5f-a358-b34a0eca54b5",
     "version": "1.22.06.27",
     "includeClientSideAssets": true,
@@ -30,11 +30,11 @@
           }],
     "isDomainIsolated": false,
     "developer": {
-      "name": "",
-      "websiteUrl": "",
-      "privacyUrl": "",
-      "termsOfUseUrl": "",
-      "mpnId": ""
+      "name": "Microsoft Corporation",
+      "websiteUrl": "https://github.com/abrcheng/SharePointOnlineQuickAssist",
+      "privacyUrl": "https://github.com/abrcheng/SharePointOnlineQuickAssist/tree/main/Documents/Privacy",
+      "termsOfUseUrl": "https://github.com/abrcheng/SharePointOnlineQuickAssist/blob/main/Terms%20of%20Use",
+      "mpnId": "5206095"
     }
   },
   "paths": {

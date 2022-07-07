@@ -33,7 +33,7 @@ We do not have any commercial/non-profit advertisements on our site or apps.
 
 
 
-**5.Third Party Disclosure?
+**5. Third Party Disclosure?**
 
 We do not disclose or offer your confidential information to any third parties or services.
 

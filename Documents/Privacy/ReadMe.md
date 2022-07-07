@@ -27,7 +27,7 @@ We do not collect and share your personal data with Advertisement providers or a
 
 **4. How do we protect visitor information?**
 
-Our apps are scanned on a regular basis for security holes and known vulnerabilities in order to make your visit to our site as safe as possible. We use regular Malware Scanning. If you suspect unauthorized access to your data, please contact us.
+Our apps are scanned on a regular basis for security holes and known vulnerabilities in order to make your visit to our app as safe as possible. We use regular Malware Scanning. If you suspect unauthorized access to your data, please contact us.
 
 We do not have any commercial/non-profit advertisements on our site or apps.
 

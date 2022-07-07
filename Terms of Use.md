@@ -7,7 +7,7 @@ These Terms of Use constitute a legally binding agreement made between
 you, whether personally or on behalf of an entity ("you") and
 **SharePointOnlineQuickAssist** ("we," "us" or "our"), concerning your
 access to and use of the
-<https://github.com/abrcheng/SharePointOnlineQuickAssist website as
+https://github.com/abrcheng/SharePointOnlineQuickAssist website as
 well as any other media form, media channel, application related,
 linked, or otherwise connected thereto (collectively, the "Site").
 
@@ -20,7 +20,7 @@ agree to be bound by all of these Terms of Use. If you do not agree with
 all of these Terms of Use, then you are expressly prohibited from using
 the Site and you must discontinue use immediately.
 
-**[SPOQA]{.smallcaps}** Terms of Use or documents that may be posted on
+**SPOQA** Terms of Use or documents that may be posted on
 the Site from time to time are hereby expressly incorporated herein by
 reference. We reserve the right, in our sole discretion, to make changes
 or modifications to these Terms of Use at any time and for any reason.

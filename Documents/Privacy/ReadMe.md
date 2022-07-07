@@ -9,13 +9,13 @@ By accepting this “Privacy Policy”, you provide consent to the collection an
  
 **1. Personal Data We Collect**
 
-We don not collect any Personal Data in the SPOQA(SharePoint Online Quick Assist tool).
+We do not collect any Personal Data in the SPOQA(SharePoint Online Quick Assist tool).
 
  
 
 **2. How We Use Personal Data**
 
-We don not collect and use any Personal Data in the SPOQA(SharePoint Online Quick Assist tool).
+We do not collect and use any Personal Data in the SPOQA(SharePoint Online Quick Assist tool).
 
 
 

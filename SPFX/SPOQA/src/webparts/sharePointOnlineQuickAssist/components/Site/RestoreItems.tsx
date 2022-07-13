@@ -7,6 +7,7 @@ import {
     DatePicker,
     Spinner,
     Toggle,
+    Label,
     Sticky
   } from 'office-ui-fabric-react/lib/index';
 import RestAPIHelper from '../../../Helpers/RestAPIHelper';
@@ -91,10 +92,12 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
                               className='ms-Grid-col ms-u-sm6 block'
                               multiline={false}
                               onChange={(e)=>{let text:any = e.target; this.setState({pathFilter:text.value});}}
-                              value={this.state.pathFilter}                          
-                    />     
-                </div>
+                              value={this.state.pathFilter}       
+                                                 
+                    />    
+                </div>    
               </div>
+              
               <div className={styles.msrow} id="deleteStartDate_row">
                     <div className={styles.mscol6}>
                       <DatePicker

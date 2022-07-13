@@ -15,7 +15,7 @@ import * as strings from 'SharePointOnlineQuickAssistWebPartStrings';
 export default class UserInfoQA extends React.Component<ISharePointOnlineQuickAssistProps>
 {
   public state = {
-    email: "",
+    email: this.props.currentUser.loginName,
     isGroup:false,
     isNeedFix:false,
     isChecked:false,
@@ -50,7 +50,8 @@ export default class UserInfoQA extends React.Component<ISharePointOnlineQuickAs
                       onChange={(e)=>{let text:any = e.target; this.setState({email:text.value});}}
                       value={this.state.email}
                       required={true}                                                
-                />                  
+                />   
+                <Label>e.g. John@contoso.com </Label>                  
                 <div id="UserInfoSyncDiagnoseResult">
                       {this.state.isChecked?<Label>{strings.SS_DiagnoseResultLabel}</Label>:null}
                       <div style={{marginLeft:20}} id="UserInfoSyncDiagnoseResultDiv" ref={this.resRef}>

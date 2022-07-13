@@ -45,6 +45,7 @@ export default class RepairWikiLayoutQA extends React.Component<ISharePointOnlin
                                 value={this.state.affectedWiki}
                                 required={true}                        
                         />                         
+                        <Label>e.g. https://contoso.sharepoint.com/sites/Intranet/SitePages/Wiki.aspx </Label>   
                         </div>
                     <div id="CommandButtonsSection">
                         <PrimaryButton

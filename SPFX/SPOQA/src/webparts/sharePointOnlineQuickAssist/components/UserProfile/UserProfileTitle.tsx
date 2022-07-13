@@ -14,7 +14,7 @@ import * as strings from 'SharePointOnlineQuickAssistWebPartStrings';
 export default class UserProfileTitleQA extends React.Component<ISharePointOnlineQuickAssistProps>
 {
     public state = {
-        affectedUser: "",
+        affectedUser: this.props.currentUser.loginName,
         aadJobTitle:"",
         uapJobtitle:"",
         siteJobTitle:"",
@@ -40,8 +40,10 @@ export default class UserProfileTitleQA extends React.Component<ISharePointOnlin
                               multiline={false}
                               onChange={(e)=>{let text:any = e.target; this.setState({affectedUser:text.value});}}
                               value={this.state.affectedUser}
-                              required={true}                                                
-                        />                  
+                              required={true}         
+                                                           
+                        />   
+                        <Label>e.g. John@contoso.com </Label>                         
                         {this.state.aadJobTitle != ""? <Label>{strings.UPT_AADTitle} <span style={{"color":"Green"}}>{this.state.aadJobTitle}</span></Label> : null}
                         {this.state.aadJobTitle != "" && this.state.userId && this.state.userId !=-1? <Label>{strings.UPT_UserProfileTitle} <span style={this.state.uapJobtitle != this.state.aadJobTitle? {"color":"Red"}:{"color":"Green"}}>{this.state.uapJobtitle}</span></Label>: null}
                         {this.state.aadJobTitle != "" && this.state.userId && this.state.userId !=-1?<Label>{strings.UPT_UserInfoListTitle} <span style={this.state.siteJobTitle != this.state.aadJobTitle? {"color":"Red"}:{"color":"Green"}}>{this.state.siteJobTitle}</span></Label>: null}

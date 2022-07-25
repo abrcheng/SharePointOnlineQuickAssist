@@ -420,7 +420,7 @@ Site.
 
 We care about data privacy and security. Please review our Privacy
 Policy
-\https://github.com/abrcheng/SharePointOnlineQuickAssist/blob/main/Documents/Privacy/ReadMe.md\].
+https://github.com/abrcheng/SharePointOnlineQuickAssist/blob/main/Documents/Privacy/ReadMe.md.
 By using the Site, you agree to be bound by our Privacy Policy, which is
 incorporated into these Terms of Use.
 

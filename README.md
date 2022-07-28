@@ -79,7 +79,7 @@ This feature helps user to diagnose permssion issues (get access denied or 404 w
 
 	  [More details](https://github.com/abrcheng/SharePointOnlineQuickAssist/releases/tag/1.22.04.12)
 
-**Please click the link [Depolyment Approaches](https://github.com/abrcheng/SharePointOnlineQuickAssist/blob/main/Documents/Installation/ReadMe.md) for checking depolyment steps**
+**Please click the link [Deployment Approaches](https://github.com/abrcheng/SharePointOnlineQuickAssist/blob/main/Documents/Installation/ReadMe.md) for checking deployment steps**
 
 ## If you want to contribute/customzied this tool, you may try below steps,
 	

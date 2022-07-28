@@ -35,18 +35,18 @@
 ## Deploy the tool tenant level app catalog 
 * Upload SPOQA.sppkg from https://github.com/abrcheng/SharePointOnlineQuickAssist/blob/main/Packages/spoqa.sppkg to your tenant App Catalog
 	* E.g.: https://&lt;tenant&gt;.sharepoint.com/sites/AppCatalog/AppCatalog
-<IMG src=..\..\assets\UploadSolution.JPG>
+<IMG src=..\assets\UploadSolution.JPG>
 
 * Deploy the app when you see the prompt as follow
-<IMG src=..\..\assets\Deploy.JPG>	
+<IMG src=..\assets\Deploy.JPG>	
 	
 	  
 * Approve API access requests in SharePoint admin center  
         * https://&lt;tenant&gt;-admin.sharepoint.com/_layouts/15/online/AdminHome.aspx#/webApiPermissionManagement 
-<IMG src=..\..\assets\ApproveAPI.JPG>	
+<IMG src=..\assets\ApproveAPI.JPG>	
 	
 * Add the web part to a site collection, and test it on a page    
-<IMG src=..\..\assets\WebPart.JPG>	
+<IMG src=..\assets\WebPart.JPG>	
 	
 ## Deploy the tool site collection level app catalog 
 Download and install SharePoint Online Management Shell.

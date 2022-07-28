@@ -78,39 +78,8 @@ This feature helps user to diagnose permssion issues (get access denied or 404 w
 	  ![image](https://user-images.githubusercontent.com/102142347/162903702-ed3ed028-6701-49b9-ab32-a88c14cb3480.png)
 
 	  [More details](https://github.com/abrcheng/SharePointOnlineQuickAssist/releases/tag/1.22.04.12)
-	  
-## Deploy the tool tenant level app catalog 
-* Upload SPOQA.sppkg from https://github.com/abrcheng/SharePointOnlineQuickAssist/blob/main/Packages/spoqa.sppkg to your tenant App Catalog
-	* E.g.: https://&lt;tenant&gt;.sharepoint.com/sites/AppCatalog/AppCatalog
-<IMG src=.\assets\UploadSolution.JPG>
 
-* Deploy the app when you see the prompt as follow
-<IMG src=.\assets\Deploy.JPG>	
-	
-	  
-* Approve API access requests in SharePoint admin center  
-        * https://&lt;tenant&gt;-admin.sharepoint.com/_layouts/15/online/AdminHome.aspx#/webApiPermissionManagement 
-<IMG src=.\assets\ApproveAPI.JPG>	
-	
-* Add the web part to a site collection, and test it on a page    
-<IMG src=.\assets\WebPart.JPG>	
-	
-## Deploy the tool site collection level app catalog 
-Download and install SharePoint Online Management Shell.
-* Open it and run the following: (You need Global admin or SharePoint admin rights. )
-* Connect-SPOService https://contoso-admin.sharepoint.com
-* Set-SPOSite -Identity https://contoso.sharepoint.com/sites/ASite -DenyAddAndCustomizePages 0
-* Add-SPOSiteCollectionAppCatalog -Site https://contoso.sharepoint.com/sites/ASite
-* Download the tool https://github.com/abrcheng/SharePointOnlineQuickAssist/blob/main/Packages/spoqa.sppkg. 
-* Access https://contoso.sharepoint.com/sites/ASite/AppCatalog.
-* Click “Upload” and upload “spoqa.sppkg”. 
-* Click “Deploy” and click “Trust” button.
-* Approve API access requests in SharePoint admin center,
-        https://<tenant>-admin.sharepoint.com/_layouts/15/online/AdminHome.aspx#/webApiPermissionManagement
-* Back to the site https://contoso.sharepoint.com/sites/ASite, click “Add an app”. 
-* Add “spoqa-client-side-solution”.
-* Add a new page in the site and add the web part “SharePoint Online Quick Assist”. “Publish” the page. 
-
+**Please click the link [Depolyment Approaches](https://github.com/abrcheng/SharePointOnlineQuickAssist/blob/main/Documents/Installation/ReadMe.md) for checking depolyment steps**
 
 ## If you want to contribute/customzied this tool, you may try below steps,
 	

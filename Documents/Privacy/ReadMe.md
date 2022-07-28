@@ -1,4 +1,4 @@
-**Privacy Policy for the SPOQA(SharePoint Online Quick Assist tool)**
+# Privacy Policy for the SPOQA(SharePoint Online Quick Assist tool)
 
 This privacy policy’s been written to serve those who are concerned with how their ‘Personally identifiable information’ (PII) is being used. Please read our privacy policy to get a clear understanding of how we , use, collect, protect or otherwise handle your Personally Identifiable Information in accordance with our website and all other products.
 

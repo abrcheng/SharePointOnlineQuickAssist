@@ -1,12 +1,10 @@
 # Deployment Approaches  
-## Deploy the tool from SharePoint Store 
-1. Open the tenant app manage page https://**contoso**-admin.sharepoint.com/_layouts/15/tenantAppCatalog.aspx and click "SharePoint Store"
+## Deploy the tool from SharePoint Store (need SPO tenant admin to install it)
+1. Open the tenant app manage page https://appsource.microsoft.com/en-us/product/office/WA200004431?tab=Reviews and click "Get it now" button (need sign by SPO tenant admin)
 
-![image](https://user-images.githubusercontent.com/21354416/181446459-80487868-73a1-44dc-8732-aab11b36a1c9.png)
+![image](https://user-images.githubusercontent.com/21354416/182510298-a343896c-8ed6-4cd4-b380-61e3c9d05afd.png)
 
-2. Search the "SharePoint Online Quick Assist"
-
-![image](https://user-images.githubusercontent.com/21354416/181446926-71f61529-3b33-4c0b-8a58-a3d8328520c5.png)
+2. Click "Get it now" button in the confirmation dialog
 
 3. Click the searched "SharePoint Online Quick Assist" and click "Add to app catalog" button
 
@@ -31,6 +29,11 @@
 8. Add the "SharePoint Online Quick Assist" web part into page
 
 ![image](https://user-images.githubusercontent.com/21354416/181447638-5ab748de-865b-4b7f-a260-f775f7daa0b3.png)
+
+9. Welcome to write a review in the reviews page https://appsource.microsoft.com/en-us/product/office/WA200004431?tab=Reviews,
+
+![image](https://user-images.githubusercontent.com/21354416/182510583-6b669ef9-d9be-4bb5-b0f9-67349cadd3d4.png)
+
 
 ## Deploy the tool tenant level app catalog 
 * Upload SPOQA.sppkg from https://github.com/abrcheng/SharePointOnlineQuickAssist/blob/main/Packages/spoqa.sppkg to your tenant App Catalog

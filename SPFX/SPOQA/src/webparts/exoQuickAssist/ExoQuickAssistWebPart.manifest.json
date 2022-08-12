@@ -1,0 +1,27 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx/client-side-web-part-manifest.schema.json",
+  "id": "6e9d3cc3-8c9d-4d11-893a-50179561b893",
+  "alias": "ExoQuickAssistWebPart",
+  "componentType": "WebPart",
+
+  // The "*" signifies that the version should be taken from the package.json
+  "version": "*",
+  "manifestVersion": 2,
+
+  // If true, the component can only be installed on sites where Custom Script is allowed.
+  // Components that allow authors to embed arbitrary script code should set this to true.
+  // https://support.office.com/en-us/article/Turn-scripting-capabilities-on-or-off-1f2c515f-5d7e-448a-9fd7-835da935584f
+  "requiresCustomScript": false,
+  "supportedHosts": ["SharePointWebPart"],
+
+  "preconfiguredEntries": [{
+    "groupId": "5c03119e-3074-46fd-976b-c60198311f70", // Other
+    "group": { "default": "Other" },
+    "title": { "default": "EXOQuickAssist" },
+    "description": { "default": "This tool can provide quick assist on Exchange Online issues, empower customer to resolve SharePoint Online issues quickly by themselves." },
+    "officeFabricIconFontName": "Page",
+    "properties": {
+      "description": "EXOQuickAssist"
+    }
+  }]
+}

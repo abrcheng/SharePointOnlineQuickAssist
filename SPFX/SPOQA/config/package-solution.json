@@ -3,31 +3,34 @@
   "solution": {
     "name": "SharePoint Online Quick Assist",
     "id": "029e4fc2-a440-4f5f-a358-b34a0eca54b5",
-    "version": "1.22.06.27",
+    "version": "1.22.07.13",
     "includeClientSideAssets": true,
     "webApiPermissionRequests": [
-          {  
-            "resource": "Microsoft Graph",  
-            "scope": "User.ReadBasic.All"  
-          }, 
-          {  
-              "resource": "Microsoft Graph",  
-              "scope": "User.Read.All"  
-          }, {  
-              "resource": "Microsoft Graph",  
-              "scope": "Group.Read.All"
-          }, {  
-              "resource": "Microsoft Graph",  
-              "scope": "GroupMember.Read.All"
-          },
-          {  
-            "resource": "Microsoft Graph",  
-            "scope": "Sites.Read.All"  
-          }, 
-          {  
-              "resource": "Microsoft Graph",  
-              "scope": "Files.Read.All"  
-          }],
+      {
+        "resource": "Microsoft Graph",
+        "scope": "User.ReadBasic.All"
+      },
+      {
+        "resource": "Microsoft Graph",
+        "scope": "User.Read.All"
+      },
+      {
+        "resource": "Microsoft Graph",
+        "scope": "Group.Read.All"
+      },
+      {
+        "resource": "Microsoft Graph",
+        "scope": "GroupMember.Read.All"
+      },
+      {
+        "resource": "Microsoft Graph",
+        "scope": "Sites.Read.All"
+      },
+      {
+        "resource": "Microsoft Graph",
+        "scope": "Files.Read.All"
+      }
+    ],
     "isDomainIsolated": false,
     "developer": {
       "name": "Microsoft Corporation",

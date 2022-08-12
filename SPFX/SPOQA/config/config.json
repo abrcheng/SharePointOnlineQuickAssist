@@ -9,11 +9,29 @@
           "manifest": "./src/webparts/sharePointOnlineQuickAssist/SharePointOnlineQuickAssistWebPart.manifest.json"
         }
       ]
+    },
+    "teams-quick-assist-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/teamsQuickAssist/TeamsQuickAssistWebPart.js",
+          "manifest": "./src/webparts/teamsQuickAssist/TeamsQuickAssistWebPart.manifest.json"
+        }
+      ]
+    },
+    "exo-quick-assist-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/exoQuickAssist/ExoQuickAssistWebPart.js",
+          "manifest": "./src/webparts/exoQuickAssist/ExoQuickAssistWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {},
   "localizedResources": {
     "SharePointOnlineQuickAssistWebPartStrings": "lib/webparts/sharePointOnlineQuickAssist/loc/{locale}.js",
-    "ControlStrings": "node_modules/@pnp/spfx-controls-react/lib/loc/{locale}.js"
+    "ControlStrings": "node_modules/@pnp/spfx-controls-react/lib/loc/{locale}.js",
+    "TeamsQuickAssistWebPartStrings": "lib/webparts/teamsQuickAssist/loc/{locale}.js",
+    "ExoQuickAssistWebPartStrings": "lib/webparts/exoQuickAssist/loc/{locale}.js"
   }
 }

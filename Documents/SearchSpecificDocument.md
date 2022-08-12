@@ -5,15 +5,29 @@ This feature helps user fix the issue when a specific document does not appear i
 
 ## Example
 
-Enter the affected site url and select the affected list/library. Then enter the full URL/path of the affected document. Click 'Check Search Document'.
+* Enter the affected site url and select the affected list/library. Then enter the full URL/path of the affected document. Click 'Check Search Document'.
 
 <img src=../SPFX/SPOQA/asset/NoCrawl.JPG>
 
 
-In this example, it detected that the library's nocrawl was enabled. Just click 'Fix issues' and it will be fixed automatically.
+* In this example, it detected that the library's nocrawl was enabled. Just click 'Fix issues' and it will be fixed automatically.
 
 <img src=../SPFX/SPOQA/asset/FixedNoCrawl.JPG>
 
+
+* And the crawl log can be checked by below ,
+ 
+![image](https://user-images.githubusercontent.com/21354416/171319876-02339ed1-8015-4a8f-9043-da93c89d99da.png)
+
+* If the document can be searched, will show all managed properties,
+![image](https://user-images.githubusercontent.com/21354416/171320028-d9aab9f0-1f68-4841-b9e9-d4108ce75f46.png)
+
+ * If the document can be searched, will show all crawled properties as well
+
+* These properties can be filtered and exported,
+![image](https://user-images.githubusercontent.com/21354416/171320213-d81bd049-485a-4eb2-a6e5-583eb15c29b4.png)
+![image](https://user-images.githubusercontent.com/21354416/171320278-a718070a-7d26-441d-8e8c-e6dcc6044bcf.png)
+![image](https://user-images.githubusercontent.com/21354416/171320453-162bd9ef-1912-4b2e-9e45-630f8014ea49.png)
 
 ## More Information
 
@@ -23,3 +37,6 @@ The feature diagnoses and fixes the issue as follows:
 * The affected library/list's Nocrawl is enabled
 * The DispForm.aspx of the affected library/list is missing
 * The affected document is having no major version
+* Crawl log of the document (need to grant permssion according to https://docs.microsoft.com/en-us/sharepoint/set-crawl-log-permissions)
+* All managed properties of the document if the doucment can be searched
+* All crawled properties of the document if the doucment can be searched

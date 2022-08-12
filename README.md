@@ -12,11 +12,17 @@ This tool is provided by the copyright holders and contributors “as is” and 
 ## Please note, if you want to use the auto fix function on the affected site then the custom script for the site should be enabled https://docs.microsoft.com/en-us/sharepoint/allow-or-prevent-custom-script#to-allow-custom-script-on-other-sharepoint-sites
 
 ## Available features
+* **Restore Items**
+This feature helps user to filter/restore/export items from SharePoint Online recycle bin,
+![image](https://user-images.githubusercontent.com/21354416/155688589-199fc965-1333-4073-82b6-677444497a36.png)
+
+[More details](https://github.com/abrcheng/SharePointOnlineQuickAssist/blob/main/Documents/RestoreItems.md)
+
 * **Check Permssion issue**
 This feature helps user to diagnose permssion issues (get access denied or 404 when accessing shared links even the linked document does existing),
 ![image](https://user-images.githubusercontent.com/21354416/160541128-832029ee-cfda-4f4a-913f-9512c43aaf67.png)
 
-[More details](https://github.com/abrcheng/SharePointOnlineQuickAssist/releases/tag/1.22.03.28)
+[More details](https://github.com/abrcheng/SharePointOnlineQuickAssist/blob/main/Documents/CheckPermissionIssue.md)
 
 * **Search Issue For A Specific Document**
 
@@ -25,7 +31,7 @@ This feature helps user to diagnose permssion issues (get access denied or 404 w
 
   <IMG src=.\assets\NoCrawl.JPG>
 
-   [More details](https://github.com/abrcheng/SharePointOnlineQuickAssist/blob/main/SPFX/SPOQA/SearchSpecificDocument.md)
+   [More details](https://github.com/abrcheng/SharePointOnlineQuickAssist/blob/main/Documents/SearchSpecificDocument.md)
 
 
 * **Search Issue For A Specific Site**

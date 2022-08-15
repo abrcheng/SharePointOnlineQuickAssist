@@ -5,15 +5,14 @@ This feature helps user fix the issue when a specific document does not appear i
 
 ## Example
 
-* Enter the affected site url and select the affected list/library. Then enter the full URL/path of the affected document. Click 'Check Search Document'.
+* Enter the affected site url and select the affected list/library. Then enter the full URL/path of the affected document. Click 'Check Issues' button.
+![image](https://user-images.githubusercontent.com/21354416/184611775-f1e9e4f7-d02e-44f2-a384-5cd495da783d.png)
 
-<img src=../SPFX/SPOQA/asset/NoCrawl.JPG>
+* In this example, it detected that the library's nocrawl was enabled. Just click 'Show Remedy Steps' and it will show remedy steps,
+![image](https://user-images.githubusercontent.com/21354416/184611984-bc0285ba-e794-4e53-8ef5-1b50a9ae2880.png)
 
-
-* In this example, it detected that the library's nocrawl was enabled. Just click 'Fix issues' and it will be fixed automatically.
-
-<img src=../SPFX/SPOQA/asset/FixedNoCrawl.JPG>
-
+* Open the link in the remedy step in new tab and fix the settings (e.g. in this demo, need to trun off the no crawl in list advanced settings ) accordingly,
+![image](https://user-images.githubusercontent.com/21354416/184612372-d2109f4f-1379-4b12-82fc-912e77a9b0d7.png)
 
 * And the crawl log can be checked by below ,
  

@@ -15,7 +15,8 @@ The OneDrive lock icon issue can be caused by a lot of settings, sometimes the s
 ![image](https://user-images.githubusercontent.com/21354416/184607690-06191f4b-4fcc-402b-abc5-3f3ed8e25ab2.png)
 ![image](https://user-images.githubusercontent.com/21354416/184607787-1fbc96e8-6a5c-4e6a-a2e0-1fc02fb04259.png)
 
-## More Information (this feature will check below settings)
+## More Information
+This feature will check below settings,
 * Offline Client Availability for the library has been set to true.
 * Require Check Out for the library has been set to false.
 * Draft Item Security of this library has been set to Any user who can read items.

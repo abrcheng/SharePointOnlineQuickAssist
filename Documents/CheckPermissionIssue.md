@@ -1,17 +1,20 @@
 # Permission issue
 ## Summary
 In daily work we see a lot of customers reported permission issue, so we summary some common scenarios which may cause the performance issue and added the permission check function.
-
-![image](https://user-images.githubusercontent.com/21354416/161952654-8706562b-0b6d-4eb7-a1ef-a9bce034af64.png)
+![image](https://user-images.githubusercontent.com/21354416/184810706-55938c64-fd2f-4328-85c1-3eee517cb75f.png)
 
 ## Example
-a. Specify the user and object which need to be checked, click "check issue" button 
+a. Specify the user and objects (affected site, library, [full document URL](https://github.com/abrcheng/SharePointOnlineQuickAssist/tree/main/Documents/How%20to%20collect%20display%20url%20for%20files%20and%20list%20items)) which need to be checked,
+![image](https://user-images.githubusercontent.com/21354416/184810516-572b0192-5615-49eb-a0f6-f1e8e7df77b9.png)
+
+b. Click "Check Issues" button and wait for checking complete
 ![image](https://user-images.githubusercontent.com/21354416/160529848-f00bb12f-932a-4bd8-8fe2-dbefc6739467.png)
 
-b. Click "show remedy" button,
-![image](https://user-images.githubusercontent.com/21354416/160530111-097ad641-db02-4817-bc11-1aaf80ebbc82.png)
+c. Click "Show Remedy Steps" button,
+![image](https://user-images.githubusercontent.com/21354416/184810982-1e3f8619-52e8-4958-b6b7-5c7600b29b48.png)
 
-c.  Open the remedy link,
+
+d.  Open the remedy link in a new tab,
 ![image](https://user-images.githubusercontent.com/21354416/160530199-18ec4d8d-d132-4263-b8b2-dd50b6960d92.png)
 
 ## More Information

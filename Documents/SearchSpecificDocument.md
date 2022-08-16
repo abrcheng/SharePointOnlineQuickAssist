@@ -5,7 +5,7 @@ This feature helps user fix the issue when a specific document does not appear i
 
 ## Example
 
-* Enter the affected site url and select the affected list/library. Then enter the full URL/path of the affected document. Click 'Check Issues' button.
+* Enter the affected site url and select the affected list/library. Then enter the full URL/path (for how to get full url please chck this [link](https://github.com/abrcheng/SharePointOnlineQuickAssist/tree/main/Documents/How%20to%20collect%20display%20url%20for%20files%20and%20list%20items)）of the affected document. Click 'Check Issues' button.
 ![image](https://user-images.githubusercontent.com/21354416/184611775-f1e9e4f7-d02e-44f2-a384-5cd495da783d.png)
 
 * In this example, it detected that the library's nocrawl was enabled. Just click 'Show Remedy Steps' and it will show remedy steps,

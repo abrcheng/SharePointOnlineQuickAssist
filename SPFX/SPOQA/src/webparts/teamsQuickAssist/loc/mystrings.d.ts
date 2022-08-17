@@ -1,7 +1,8 @@
 declare interface ITeamsQuickAssistWebPartStrings {
-  PropertyPaneDescription: string;
-  BasicGroupName: string;
-  DescriptionFieldLabel: string;
+  Admin: string;
+  Test: string;  
+  WebPartTitle:string;
+  SelectIssueTip:string;
 }
 
 declare module 'TeamsQuickAssistWebPartStrings' {

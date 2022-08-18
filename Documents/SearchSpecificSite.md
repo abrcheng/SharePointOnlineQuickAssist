@@ -15,7 +15,7 @@ This feature helps user fix the issue when a specific document does not appear i
 ![image](https://user-images.githubusercontent.com/79626459/185382866-e932a93c-1b62-45ee-b9a8-5663269e1994.png)
 
 * These properties can be filtered and exported. 
-![image](https://user-images.githubusercontent.com/79626459/185383097-d9cef95f-fa7f-40a6-9a02-627f880d0542.png)
+* ![image](https://user-images.githubusercontent.com/79626459/185383097-d9cef95f-fa7f-40a6-9a02-627f880d0542.png)
 
 * Example 2: the site cannot be searched. It detected that 'Search and Offline Availability' is set to 'No'. And the user is not in the 'Members' group. It's suggested to follow the remedy steps in new tab and fix the issue. 
 ![image](https://user-images.githubusercontent.com/79626459/185377239-370380a8-5254-4395-bb76-1f22a77fc11d.png)

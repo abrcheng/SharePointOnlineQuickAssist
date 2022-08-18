@@ -20,4 +20,5 @@ This feature helps get all or filtered file changes for a given site
 
 The feature is based on 'delta query'. Reference: https://docs.microsoft.com/en-us/graph/delta-query-overview
 
-It doesn't work for 21V tenants becasue 'delta query' is not supported there. 
+* It doesn't work for 21V tenants becasue 'delta query' is not supported there. 
+* It only queries changes for new and update. It doesn't return deleted files. 

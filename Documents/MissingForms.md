@@ -1,35 +1,24 @@
-# Search issue for a specific document
+# Missing New/Edit/Display Forms for A Library/List
 
 ## Summary
-This feature helps user fix the issue when a specific document does not appear in the search results
+This feature helps user restore new/edit/display forms if they are missing in the library/list
+
+## Symptom
+User cannot open 'Version history' for a file, and it shows an error as below. This generally happens if the document library is migrated from on-prem to online. 
+![image](https://user-images.githubusercontent.com/79626459/185387125-1282f982-b7c8-4fd2-948f-6e896b403f75.png)
 
 ## Example
 
-* Enter the affected site url. Click 'Check Issues' button.
-![image](https://user-images.githubusercontent.com/79626459/185375892-fe9ec6cc-a8d5-4d7b-a335-bf79d9643fdc.png)
+* Enter the affected site url. Select the library/list to check. Click 'Check Issues' button.
+![image](https://user-images.githubusercontent.com/79626459/185387601-f140bb81-cc86-4f72-9bcc-133e49b045d4.png)
 
-* Example 1: the site is searchable
-![image](https://user-images.githubusercontent.com/79626459/185376703-5fa27117-f267-441d-aa2b-82b05e88e8dc.png)
+* It shows in red if any form is missing. Click 'Fix Issues' to recreate the form. 
+![image](https://user-images.githubusercontent.com/79626459/185387814-fd927508-6aaa-461e-ba5f-091697983fb3.png)
 
-* If the site can be searched, will show the managed properties and crawled properties. 
-![image](https://user-images.githubusercontent.com/79626459/185382866-e932a93c-1b62-45ee-b9a8-5663269e1994.png)
-
-* These properties can be filtered and exported. 
-* ![image](https://user-images.githubusercontent.com/79626459/185383097-d9cef95f-fa7f-40a6-9a02-627f880d0542.png)
-
-* Example 2: the site cannot be searched. It detected that 'Search and Offline Availability' is set to 'No'. And the user is not in the 'Members' group. It's suggested to follow the remedy steps in new tab and fix the issue. 
-![image](https://user-images.githubusercontent.com/79626459/185377239-370380a8-5254-4395-bb76-1f22a77fc11d.png)
-
-* The crawl logs can be checked by clicking 'Show Crawl Logs'. 
-![image](https://user-images.githubusercontent.com/79626459/185380691-5eb48fd0-d7b6-428b-a3b1-018aeb6b0f66.png)
+* Check issues again, and the form is now restored. In the library, the version history can also be displayed. 
+![image](https://user-images.githubusercontent.com/79626459/185388212-eb19456e-d34b-4a94-beb3-d91f79eaf9e9.png)
+![image](https://user-images.githubusercontent.com/79626459/185388402-ac9e8d21-a5b0-42df-809d-1d12bc7f6209.png)
 
 ## More Information
 
-The feature diagnoses and fixes the issue as follows:
-
-* The site's and its sub/parent sites Nocrawl are enabled
-* The user has permissions to the site
-* If the site is a group site, check if the user is in the 'Members' group
-* Crawl log of the site (need to grant permssion according to https://docs.microsoft.com/en-us/sharepoint/set-crawl-log-permissions)
-* All managed properties of the site if it can be searched
-* All crawled properties of the site if it can be searched
+The feature requires 'custom script' to be allowed. Reference: https://docs.microsoft.com/en-us/sharepoint/allow-or-prevent-custom-script#to-allow-custom-script-on-other-sharepoint-sites

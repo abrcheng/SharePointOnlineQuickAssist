@@ -40,7 +40,7 @@ This feature helps user to diagnose permssion issues (get access denied or 404 w
 
   <IMG src=.\assets\SiteNoCrawl.JPG>
 	  
-   [More details](https://github.com/abrcheng/SharePointOnlineQuickAssist/blob/main/SPFX/SPOQA/SearchSite.md)
+   [More details](https://github.com/abrcheng/SharePointOnlineQuickAssist/blob/main/Documents/SearchSpecificSite.md)
 	  
 
 * **Job Title Sync Issue**
@@ -50,12 +50,13 @@ This feature helps user to diagnose permssion issues (get access denied or 404 w
   
   <IMG src=.\assets\JobTitle.JPG>
   
-   [More details](https://github.com/abrcheng/SharePointOnlineQuickAssist/blob/main/SPFX/SPOQA/JobTitleSyncIssue.md)
+   [More details](https://github.com/abrcheng/SharePointOnlineQuickAssist/blob/main/Documents/JobTitleSyncIssue.md)
     
 *  **Photo Sync Issue**
    This feature helps user compare their profile photo from AAD to SPO user profile.
     
   <IMG src=.\assets\CheckUserProfilePhoto.JPG>
+    [More details](https://github.com/abrcheng/SharePointOnlineQuickAssist/blob/main/Documents/UserPhotoSync.md)
     
 * **User Info list sync issue**,
 	User/Group mail haven’t been synced to user info list caused the mail can’t be send to User/Group in user alert, workflow 
@@ -64,26 +65,23 @@ This feature helps user to diagnose permssion issues (get access denied or 404 w
 	User’ job title haven’t been synced to user info list cause mismatch issue 
 ![image](https://user-images.githubusercontent.com/21354416/144986960-e4befdd6-b9d6-40a0-bb54-fc90ca8d0d70.png)
 ![image](https://user-images.githubusercontent.com/21354416/144987002-085d0652-f243-4c29-84b6-94452d3afdee.png)
-
+[More details](https://github.com/abrcheng/SharePointOnlineQuickAssist/blob/main/Documents/UserInfoSyncIssue.md)
 *  **OneDrive library sync issue**,
 	 OneDrive sync button can't be found.
 	 Library synced as read only 
 	 ![image](https://user-images.githubusercontent.com/21354416/144987185-d18e2e24-5b35-4436-ba3f-002dd95819c7.png)
          ![image](https://user-images.githubusercontent.com/21354416/144987204-83e0eb28-9f10-4ec4-858a-cc31c78d0d32.png)
-	  
+[More details](https://github.com/abrcheng/SharePointOnlineQuickAssist/blob/main/Documents/OneDriveLockIcon.md)
+
 *  **Missing New/Display/Edit forms issue**
 	  ![image](https://user-images.githubusercontent.com/21354416/147523270-bef520ae-e487-4414-a449-6348b31efe82.png)
-[More details](https://github.com/abrcheng/SharePointOnlineQuickAssist/releases/tag/1.21.12.28)
-	  
-*  **Filter and restore items from recycle bin**
-	  ![image](https://user-images.githubusercontent.com/21354416/158009915-15dfdc94-f472-49e0-9b5b-a36fdf8e4725.png)	  
-[More details](https://github.com/abrcheng/SharePointOnlineQuickAssist/releases/tag/1.22.02.25)
+[More details](https://github.com/abrcheng/SharePointOnlineQuickAssist/blob/main/Documents/MissingForms.md)
 
 *  **Uneditable wiki page** This feature helps to detect layout issue which could cause a classic wiki page being uneditable.
 	   
 	  ![image](https://user-images.githubusercontent.com/102142347/162903702-ed3ed028-6701-49b9-ab32-a88c14cb3480.png)
 
-	  [More details](https://github.com/abrcheng/SharePointOnlineQuickAssist/releases/tag/1.22.04.12)
+	  [More details](https://github.com/abrcheng/SharePointOnlineQuickAssist/blob/main/Documents/UneditableClassicWiki.md)
 
 **Please click the link [Deployment Approaches](https://github.com/abrcheng/SharePointOnlineQuickAssist/blob/main/Documents/Installation/ReadMe.md) for checking deployment steps**
 

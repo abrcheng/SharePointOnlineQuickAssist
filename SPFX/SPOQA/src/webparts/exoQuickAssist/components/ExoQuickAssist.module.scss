@@ -2,7 +2,7 @@
 
 .exoQuickAssist {
   .container {
-    max-width: 700px;
+    max-width: 100%;
     margin: 0px auto;
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 25px 50px 0 rgba(0, 0, 0, 0.1);
   }
@@ -10,8 +10,8 @@
   .row {
     @include ms-Grid-row;
     @include ms-fontColor-white;
-    background-color: $ms-color-themeDark;
-    padding: 20px;
+    //background-color: $ms-color-themeDark;
+    padding: 10px;
   }
 
   .column {
@@ -20,21 +20,56 @@
     @include ms-xl8;
     @include ms-xlPush2;
     @include ms-lgPush1;
+  }  
+
+  .msgrid
+  {    
+    @include ms-Grid;
+    padding-top: 0px;
+  }
+
+  .msrow
+  {
+    @include ms-Grid-row;
+  }
+
+  .mscol6
+  {
+    @include ms-Grid-col;
+    @include ms-sm6;
+    @include ms-md6;   
+    padding-left: 0px; 
+  }
+
+  .mscol8
+  {
+    @include ms-Grid-col;
+    @include ms-sm8;
+    @include ms-md8;   
+    padding-left: 0px; 
+  }
+
+  .mscol4
+  {
+    @include ms-Grid-col;
+    @include ms-sm4;
+    @include ms-md4;   
+    padding-left: 0px; 
   }
 
   .title {
     @include ms-font-xl;
-    @include ms-fontColor-white;
+    @include ms-fontColor-black;
   }
 
   .subTitle {
     @include ms-font-l;
-    @include ms-fontColor-white;
+    @include ms-fontColor-black;
   }
 
   .description {
     @include ms-font-l;
-    @include ms-fontColor-white;
+    @include ms-fontColor-black;
   }
 
   .button {
@@ -72,3 +107,9 @@
     }
   }
 }
+
+
+// Overwrite margin for .ms-ComboBox-option
+:global(.ms-ComboBox-option) {  
+  margin-left: 15px;
+}  

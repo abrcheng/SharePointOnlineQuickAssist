@@ -1,7 +1,11 @@
 declare interface IExoQuickAssistWebPartStrings {
-  PropertyPaneDescription: string;
-  BasicGroupName: string;
-  DescriptionFieldLabel: string;
+   WelcomeToEXOQA:string,
+   OrganizationSettings:string,
+   PeopleInsights:string,
+   SelectIssueTip:string,
+   CheckIssue:string,
+   ShowRemedySteps:string,
+   AffectedUser:string   
 }
 
 declare module 'ExoQuickAssistWebPartStrings' {

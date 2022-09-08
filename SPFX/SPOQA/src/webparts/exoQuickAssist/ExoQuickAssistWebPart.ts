@@ -10,18 +10,31 @@ import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 import * as strings from 'ExoQuickAssistWebPartStrings';
 import ExoQuickAssist from './components/ExoQuickAssist';
 import { IExoQuickAssistProps } from './components/IExoQuickAssistProps';
+import { SPComponentLoader } from '@microsoft/sp-loader';
+import * as contextHelper from '../Helpers/ContextHelper';
+import {MSGraphClient, SPHttpClient} from '@microsoft/sp-http';
 
 export interface IExoQuickAssistWebPartProps {
   description: string;
 }
 
 export default class ExoQuickAssistWebPart extends BaseClientSideWebPart<IExoQuickAssistWebPartProps> {
+  
+  private graphClient: MSGraphClient;
+
+  constructor() {
+    super();
+    contextHelper.default.SetInstace(this.context);
+    SPComponentLoader.loadCss('https://static2.sharepointonline.com/files/fabric/office-ui-fabric-core/6.0.0/css/fabric-6.0.0.scoped.css');
+  }
 
   public render(): void {
     const element: React.ReactElement<IExoQuickAssistProps> = React.createElement(
       ExoQuickAssist,
       {
-        description: this.properties.description
+         msGraphClient: this.graphClient,        
+        currentUser:this.context.pageContext.user,
+        ctx:this.context
       }
     );
 

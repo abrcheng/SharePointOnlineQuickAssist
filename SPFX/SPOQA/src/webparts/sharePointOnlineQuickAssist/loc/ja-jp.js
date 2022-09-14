@@ -59,7 +59,7 @@ define([], function() {
       "RI_StartDate":"開始日時：",
       "RI_SelectADate":"日時を指定...",
       "RI_EndDate":"終了日時：",
-      "RI_QueryItems":"アイテムを復元",
+      "RI_QueryItems":"アイテムを取得",
       "RI_Restore":"復元",
       "RI_Export":"エクスポート",
       "RI_Querying":"クエリ実行中",      

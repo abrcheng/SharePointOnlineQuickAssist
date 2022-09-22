@@ -1,4 +1,4 @@
-# Deployment Approaches  
+# Deployment Approaches (only need to choice one of below deploy approache)
 ## Deploy the tool from SharePoint Store (need SPO tenant admin to install it)
 1. Open the tenant app manage page https://appsource.microsoft.com/en-us/product/office/WA200004431?tab=Reviews and click "Get it now" button (need sign in by SPO tenant admin)
 
@@ -35,7 +35,7 @@
 ![image](https://user-images.githubusercontent.com/21354416/182510583-6b669ef9-d9be-4bb5-b0f9-67349cadd3d4.png)
 
 
-## Deploy the tool tenant level app catalog 
+## Deploy the tool tenant level app catalog *from github*
 * Upload SPOQA.sppkg from https://github.com/abrcheng/SharePointOnlineQuickAssist/blob/main/Packages/spoqa.sppkg to your tenant App Catalog
 	* E.g.: https://&lt;tenant&gt;.sharepoint.com/sites/AppCatalog/AppCatalog
 <IMG src=..\..\assets\UploadSolution.JPG>
@@ -51,7 +51,7 @@
 * Add the web part to a site collection, and test it on a page    
 <IMG src=..\..\assets\WebPart.JPG>	
 	
-## Deploy the tool site collection level app catalog 
+## Deploy the tool site collection level app catalog *from github*
 Download and install SharePoint Online Management Shell.
 * Open it and run the following: (You need Global admin or SharePoint admin rights. )
 * Connect-SPOService https://contoso-admin.sharepoint.com

@@ -1,4 +1,4 @@
-# Deployment Approaches (only need to choice one of below deploy approache)
+# Deployment Approaches (only need to choice one of below deploy approaches)
 ## Deploy the tool from SharePoint Store (need SPO tenant admin to install it)
 1. Open the tenant app manage page https://appsource.microsoft.com/en-us/product/office/WA200004431?tab=Reviews and click "Get it now" button (need sign in by SPO tenant admin)
 

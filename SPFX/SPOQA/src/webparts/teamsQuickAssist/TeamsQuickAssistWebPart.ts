@@ -44,6 +44,17 @@ export default class TeamsQuickAssistWebPart extends BaseClientSideWebPart<ITeam
       }
     );
 
+    this.context.msGraphClientFactory
+      .getClient()
+      .then((client: MSGraphClient): void => {
+        // get information about the current user from the Microsoft Graph
+        client
+          .api('/me')
+          .get((error, response: any, rawResponse?: any) => {
+            console.log(`${response} and ${error}`);
+        });
+      });
+
     ReactDom.render(element, this.domElement);
   }
 

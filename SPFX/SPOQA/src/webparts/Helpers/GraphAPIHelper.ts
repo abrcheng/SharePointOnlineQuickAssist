@@ -2,6 +2,23 @@ import {MSGraphClient,SPHttpClient} from '@microsoft/sp-http';
 
 export default class GraphAPIHelper
 {
+
+  public static async GetUserRoles(user: string, msGraphClient:MSGraphClient)
+  {      
+    var res = await msGraphClient.api(`/rolemanagement/directory/transitiveRoleAssignments?$count=true&$filter=principalId+eq+%27${user}%27`).version('beta').header('ConsistencyLevel','Eventual').get();
+    if(res)
+    {               
+      console.log(`GraphAPIHelper.GetUserRoles for user ${user} done.`);
+      return await res;
+    }
+    else
+    {
+      var message = `Failed to get uesr ${user} roles from graph API`;
+      console.log(message);
+      Promise.reject(message);
+    }
+  }
+
     public static async GetUserInfo(user: string, msGraphClient:MSGraphClient)
     {      
       var res = await msGraphClient.api(`/users/${user}`).get();

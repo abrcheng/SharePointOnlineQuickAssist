@@ -22,7 +22,7 @@
 
 ![image](https://user-images.githubusercontent.com/21354416/181447412-1c2ba036-e8fb-4030-ac15-06511b81239d.png)
 
-7. Go to the site and add "SharePoint Online Quick Assist"
+7. Go to the site, site settings, add an app and add "SharePoint Online Quick Assist"
 
 ![image](https://user-images.githubusercontent.com/21354416/181447526-bf2d3ce3-e5f0-46cc-b548-d8833a01b6c3.png)
 

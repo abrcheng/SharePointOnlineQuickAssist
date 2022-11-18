@@ -197,6 +197,7 @@ declare interface ISharePointOnlineQuickAssistWebPartStrings {
   UI_Result7:string;
   UI_Result8:string;
   UI_NonAffectedSite:string;
+  UI_NonAffectedSiteandUser: string;
   UI_NonAffectedUser:string;
   UI_FixEmail:string;
   UI_NonAADUser:string;

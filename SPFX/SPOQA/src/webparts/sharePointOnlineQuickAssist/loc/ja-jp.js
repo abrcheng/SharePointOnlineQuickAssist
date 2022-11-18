@@ -213,6 +213,7 @@ define([], function() {
       UI_Result8:"ユーザー情報リストにある勤務先の電話番号は ",
       UI_NonAffectedSite:"影響を受けているサイトの入力が空白または無効です!",
       UI_NonAffectedUser:"影響を受けているユーザーの入力が空白または無効です!",
+      UI_NonAffectedSiteandUser:"Affected site or user can't be null",
       UI_FixEmail:"メールアドレスを修正中",
       UI_NonAADUser:"AAD で当該メールアドレスのユーザーまたはグループを見つかりませんでした",
       UI_NonUserListUser:"ユーザー情報リストで当該 UPN のユーザーを見つかりませんでした",

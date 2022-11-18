@@ -213,6 +213,7 @@ define([], function() {
      UI_Result8:"WorkPhone in user info list is",
      UI_NonAffectedSite:"Affected site can't be null or invalid!",
      UI_NonAffectedUser:"Affected user can't be null or invalid!",
+     UI_NonAffectedSiteandUser:"Affected site or user can't be null",
      UI_FixEmail:"Fixing user info item with eamil",
      UI_NonAADUser:"In the AAD can't find any group or user with the email address",
      UI_NonUserListUser:"In the user info list can't find any user with the UPN",

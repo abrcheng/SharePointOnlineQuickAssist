@@ -72,6 +72,12 @@ export default class UserProfileTitleQA extends React.Component<ISharePointOnlin
         // reset status 
         this.ResetStatus();
         
+        if(this.state.affectedSite =="" || this.state.affectedUser =="" )
+        {
+          SPOQAHelper.ShowMessageBar("Error", strings.UI_NonAffectedSiteandUser);          
+          return;
+        }
+
         if(this.state.affectedSite =="" || !this.state.affectedSite || !SPOQAHelper.ValidateUrl(this.state.affectedSite))
         {
           SPOQAHelper.ShowMessageBar("Error", strings.UI_NonAffectedSite);          

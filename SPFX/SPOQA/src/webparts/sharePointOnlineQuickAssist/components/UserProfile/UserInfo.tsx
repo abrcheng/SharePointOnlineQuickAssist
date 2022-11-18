@@ -82,6 +82,13 @@ export default class UserInfoQA extends React.Component<ISharePointOnlineQuickAs
       this.ResetStatus();
       var redStyle = "color:red";
       var greenStyle = "color:green";
+
+      if( this.state.affectedSite =="" ||this.state.email =="" )
+      {
+        SPOQAHelper.ShowMessageBar("Error", strings.UI_NonAffectedSiteandUser);          
+        return;
+      }
+
       if(this.state.affectedSite =="" || !this.state.affectedSite || !SPOQAHelper.ValidateUrl(this.state.affectedSite))
       {
         SPOQAHelper.ShowMessageBar("Error", strings.UI_NonAffectedSite);          

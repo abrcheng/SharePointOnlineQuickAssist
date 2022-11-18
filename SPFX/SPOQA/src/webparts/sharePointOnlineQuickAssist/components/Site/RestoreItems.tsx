@@ -165,7 +165,15 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
 
   private async QueryRecycleBinItems()
   {
-     // Verify the site is valid 
+    // Verify the site box is null  
+    if(this.state.affectedSite =="")
+      {
+        SPOQAHelper.ShowMessageBar("Error", strings.UI_NonAffectedSite);          
+        return;
+      }
+    else{
+    
+    // Verify the site is valid 
      this.setState({errorDetail:[],currentItems:[]});
      var isSiteValid = await RestAPIHelper.GetWeb(this.props.spHttpClient, this.state.affectedSite);
      if(isSiteValid)
@@ -304,6 +312,7 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
      {
         SPOQAHelper.ShowMessageBar("Error", `Failed to get the site ${this.state.affectedSite}!`);
      }
+    }
   }
 
   private IsMatchFilter(item:any):boolean

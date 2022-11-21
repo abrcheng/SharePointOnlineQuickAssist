@@ -1,7 +1,7 @@
 import * as React from 'react'; 
 import styles from '../SharePointOnlineQuickAssist.module.scss';
 import {  
-    PrimaryButton,
+    DefaultButton,
     MessageBar,
     MessageBarType,
     DatePicker,
@@ -67,6 +67,8 @@ export default class GetFilesChange extends React.Component<ISharePointOnlineQui
                             <div className={styles.msrow} id="queryDate_row">
                                 <div className={styles.mscol6}>
                                     <DatePicker
+                                        allowTextInput={true}
+                                        isMonthPickerVisible ={false}    
                                         label={strings.FC_Label_StartDate}
                                         placeholder={strings.FC_Message_SelectDate}
                                         ariaLabel="Select a date"
@@ -76,6 +78,8 @@ export default class GetFilesChange extends React.Component<ISharePointOnlineQui
                                 </div>
                                 <div className={styles.mscol6}>
                                     <DatePicker
+                                        allowTextInput={true}
+                                        isMonthPickerVisible ={false}    
                                         label={strings.FC_Label_EndDate}
                                         placeholder={strings.FC_Message_SelectDate}
                                         ariaLabel="Select a date"
@@ -90,12 +94,12 @@ export default class GetFilesChange extends React.Component<ISharePointOnlineQui
                 <div className={ styles.row }>
                     <div className={ styles.column }>
                         <div id="IFiles_CommandButtonsSection">
-                            <PrimaryButton
+                            <DefaultButton
                                 text={strings.FC_Label_GetFiles}
                                 style={{ display: 'inline', marginTop: '10px' }}
                                 onClick={() => {SPOQAHelper.ResetFormStaus();this.QueryFiles();}}
                             />
-                            <PrimaryButton
+                            <DefaultButton
                                 text={strings.FC_Label_Export}
                                 style={{ display: 'inline', marginTop: '10px', marginLeft:"10px"}}
                                 onClick={() => {this.DoExport();}}

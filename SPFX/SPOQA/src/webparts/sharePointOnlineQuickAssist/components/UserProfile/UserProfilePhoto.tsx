@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { PrimaryButton, TextField,Label} from 'office-ui-fabric-react/lib/index';
+import { DefaultButton, TextField,Label} from 'office-ui-fabric-react/lib/index';
 import GraphAPIHelper from '../../../Helpers/GraphAPIHelper';  
 import RestAPIHelper from '../../../Helpers/RestAPIHelper';
 import SPOQASpinner from '../../../Helpers/SPOQASpinner';
@@ -30,11 +30,10 @@ export default class UserProfilePhotoQA extends React.Component<ISharePointOnlin
                                 required={true}                                                
                         />    
                         <Label>e.g. John@contoso.com </Label>                 
-                        {this.state.aadUserPhotoUrl!=""? <Label>{strings.UPP_PhotoAAD}</Label>:null}
-                        <img src={this.state.aadUserPhotoUrl} />   
+                        {this.state.aadUserPhotoUrl!=""? <div><Label>{strings.UPP_PhotoAAD}</Label> <img src={this.state.aadUserPhotoUrl} /> </div>:null}                         
                         {this.state.aadUserPhotoUrl!=""?<Label>{strings.UPP_PhotoUserProfile}</Label>:null}
                         {this.state.uapUserPhotoUrl!=""? <img src={`${this.props.webAbsoluteUrl}/_layouts/15/userphoto.aspx?username=${this.state.affectedUser}`} />:null}
-                        <PrimaryButton
+                        <DefaultButton
                             text={strings.UI_CheckIssueforUser}
                             style={{ display: 'block', marginTop: '10px' }}
                             onClick={() => {this.CheckUserPhoto();}}

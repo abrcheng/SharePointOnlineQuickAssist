@@ -1,6 +1,8 @@
 import * as React from 'react';
 import {  
-    PrimaryButton,    
+    PrimaryButton,
+    DefaultButton, 
+    
     TextField,
     MessageBar,
     MessageBarType,
@@ -101,6 +103,9 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
               <div className={styles.msrow} id="deleteStartDate_row">
                     <div className={styles.mscol6}>
                       <DatePicker
+                         allowTextInput={true}
+                         isMonthPickerVisible ={false}  
+                         showWeekNumbers={true}         
                           label={strings.RI_StartDate}
                           placeholder={strings.RI_SelectADate}
                           ariaLabel={strings.RI_SelectADate} 
@@ -111,12 +116,16 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
                     </div>
                     <div className={styles.mscol6}>
                       <DatePicker
+                          allowTextInput={true}
+                          showWeekNumbers={true}                         
+                          isMonthPickerVisible={false}     
                           label={strings.RI_EndDate}
                           placeholder={strings.RI_SelectADate}
                           ariaLabel={strings.RI_SelectADate} 
                           // onChange={(e)=>{let datePicker:any = e.target; this.setState({deleteEndDate:datePicker.value});}}
                           onSelectDate={(e)=>{ this.setState({deleteEndDate:e});}}
-                          value={this.state.deleteEndDate}                           
+                          value={this.state.deleteEndDate}  
+                                                  
                       />
                     </div>
                 </div> 
@@ -127,19 +136,20 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
             <div className={ styles.row }>
             <div className={ styles.column }>
               <div id="RestoreItemsQA_CommandButtonsSection">
-                  <PrimaryButton
+                  <DefaultButton
                             text={strings.RI_QueryItems}
                             style={{ display: 'inline', marginTop: '10px' }}
+                            
                             onClick={() => {this.QueryRecycleBinItems();}}
                             />
                   {this.state.queried && this.state.currentItems.length >0?
                             <div style={{ display: 'inline'}}>
-                            <PrimaryButton
+                            <DefaultButton
                                 text={strings.RI_Restore}
                                 style={{ display: 'inline', marginTop: '10px', marginLeft:"10px"}}
                                 onClick={() => {this.Restore();}}
                             /> 
-                               <PrimaryButton
+                               <DefaultButton
                                 text= {strings.RI_Export}
                                 style={{ display: 'inline', marginTop: '10px', marginLeft:"10px"}}
                                 onClick={() => {this.DoExport();}}
@@ -165,112 +175,113 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
 
   private async QueryRecycleBinItems()
   {
-    // Verify the site box is null  
+     // Verify the site box is null 
     if(this.state.affectedSite =="")
-      {
-        SPOQAHelper.ShowMessageBar("Error", strings.UI_NonAffectedSite);          
-        return;
-      }
-    else{
+    {
+      SPOQAHelper.ShowMessageBar("Error", strings.UI_NonAffectedSite);          
+      return;
+    }
+  else{
     
-    // Verify the site is valid 
-     this.setState({errorDetail:[],currentItems:[]});
-     var isSiteValid = await RestAPIHelper.GetWeb(this.props.spHttpClient, this.state.affectedSite);
-     if(isSiteValid)
-     {   
-         var pageInfo = "";
-         var currentCount=-1;
-         this.recycleBinItems = []; // clean previous data set
-         this.setState({queried:false});
-         SPOQASpinner.Show(`${strings.RI_Querying} ......`);
-         var itemState = 1;
-         this.queryCount = 0;
-         var queryStartTime = new Date();
+      // Verify the site is valid 
+      this.setState({errorDetail:[],currentItems:[]});
+      var isSiteValid = await RestAPIHelper.GetWeb(this.props.spHttpClient, this.state.affectedSite);
+      if(isSiteValid)
+      {   
+          var pageInfo = "";
+          var currentCount=-1;
+          this.recycleBinItems = []; // clean previous data set
+          this.setState({queried:false});
+          SPOQASpinner.Show(`${strings.RI_Querying} ......`);
+          var itemState = 1;
+          this.queryCount = 0;
+          var queryStartTime = new Date();
 
-         while(currentCount ==500 || currentCount==-1 || itemState <3)
-         {
-           var recycleItems = await RestAPIHelper.Getrecyclebinitems(this.props.spHttpClient, this.state.affectedSite,pageInfo,500,false, itemState, 3);
-           if(recycleItems.error)
-           {
-             SPOQAHelper.ShowMessageBar("Error",Text.format(strings.RI_GetrecyclebinitemsError, this.state.affectedSite, recycleItems.error.message));
-             SPOQASpinner.Hide();
-             return;
-           }
+          while(currentCount ==500 || currentCount==-1 || itemState <3)
+          {
+            var recycleItems = await RestAPIHelper.Getrecyclebinitems(this.props.spHttpClient, this.state.affectedSite,pageInfo,500,false, itemState, 3);
+            if(recycleItems.error)
+            {
+              SPOQAHelper.ShowMessageBar("Error",Text.format(strings.RI_GetrecyclebinitemsError, this.state.affectedSite, recycleItems.error.message));
+              SPOQASpinner.Hide();
+              return;
+            }
 
-           // recycleItems.value.length, if the length is less than 500, that's mean the current query is the last page
-           /* Data structure of recycleItems.value[0]
-            @odata.editLink: "Site/RecycleBin(guid'ca1352a7-2124-4a93-8254-748554761319')"
-            @odata.id: "https://chengc.sharepoint.com/sites/abc/_api/Site/RecycleBin(guid'ca1352a7-2124-4a93-8254-748554761319')"
-            @odata.type: "#SP.RecycleBinItem"
-            AuthorEmail: ""
-            AuthorName: "System Account"
-            DeletedByEmail: "abc@chengc.onmicrosoft.com"
-            DeletedByName: "Abraham  Cheng"
-            DeletedDate: "2022-02-19T10:16:51Z"
-            DeletedDateLocalFormatted: "2/19/2022 2:16 AM"
-            DirName: "sites/abc/ABPMicroService/Acme.BookStore/react-native/node_modules/compression"
-            DirNamePath: {DecodedUrl: 'sites/abc/ABPMicroService/Acme.BookStore/react-native/node_modules/compression'}
-            Id: "ca1352a7-2124-4a93-8254-748554761319"
-            ItemState: 1
-            ItemType: 1
-            LeafName: "LICENSE"
-            LeafNamePath: {DecodedUrl: 'LICENSE'}
-            Size: 1563
-            Title: "LICENSE"
-           */   
-           var lastId = "";
-           var lastTitle ="";
-           var lastDeletedDate = "";
-           currentCount = recycleItems.value.length;
-           for(var i=0; i<recycleItems.value.length; i++)
-           {
-              var currentItem = recycleItems.value[i];
-              if(lastId != currentItem.Id)
-              {
-                this.queryCount ++;
-                currentItem["Path"] = `${currentItem["DirName"]}/${currentItem["LeafName"]}`;
-                delete currentItem['DirName'];
-                delete currentItem['LeafName'];
-                if(this.IsMatchFilter(currentItem))
+            // recycleItems.value.length, if the length is less than 500, that's mean the current query is the last page
+            /* Data structure of recycleItems.value[0]
+              @odata.editLink: "Site/RecycleBin(guid'ca1352a7-2124-4a93-8254-748554761319')"
+              @odata.id: "https://chengc.sharepoint.com/sites/abc/_api/Site/RecycleBin(guid'ca1352a7-2124-4a93-8254-748554761319')"
+              @odata.type: "#SP.RecycleBinItem"
+              AuthorEmail: ""
+              AuthorName: "System Account"
+              DeletedByEmail: "abc@chengc.onmicrosoft.com"
+              DeletedByName: "Abraham  Cheng"
+              DeletedDate: "2022-02-19T10:16:51Z"
+              DeletedDateLocalFormatted: "2/19/2022 2:16 AM"
+              DirName: "sites/abc/ABPMicroService/Acme.BookStore/react-native/node_modules/compression"
+              DirNamePath: {DecodedUrl: 'sites/abc/ABPMicroService/Acme.BookStore/react-native/node_modules/compression'}
+              Id: "ca1352a7-2124-4a93-8254-748554761319"
+              ItemState: 1
+              ItemType: 1
+              LeafName: "LICENSE"
+              LeafNamePath: {DecodedUrl: 'LICENSE'}
+              Size: 1563
+              Title: "LICENSE"
+            */   
+            var lastId = "";
+            var lastTitle ="";
+            var lastDeletedDate = "";
+            currentCount = recycleItems.value.length;
+            for(var i=0; i<recycleItems.value.length; i++)
+            {
+                var currentItem = recycleItems.value[i];
+                if(lastId != currentItem.Id)
                 {
-                  delete currentItem['LeafNamePath'];
-                  delete currentItem['DirNamePath'];
-                  delete currentItem['@odata.editLink'];
-                  delete currentItem['@odata.id'];
-                  delete currentItem['@odata.type'];
-                  // If the "Detect and skip existing items" is off, then Existing will always set to false by default
-                  //  If the "Detect and skip existing items" is on, the Existing will be filled latter in the function DetectExistingItems
-                  currentItem["Existing"] = false;     
-                  this.recycleBinItems.push(currentItem);
+                  this.queryCount ++;
+                  currentItem["Path"] = `${currentItem["DirName"]}/${currentItem["LeafName"]}`;
+                  delete currentItem['DirName'];
+                  delete currentItem['LeafName'];
+                  if(this.IsMatchFilter(currentItem))
+                  {
+                    delete currentItem['LeafNamePath'];
+                    delete currentItem['DirNamePath'];
+                    delete currentItem['@odata.editLink'];
+                    delete currentItem['@odata.id'];
+                    delete currentItem['@odata.type'];
+                    // If the "Detect and skip existing items" is off, then Existing will always set to false by default
+                    //  If the "Detect and skip existing items" is on, the Existing will be filled latter in the function DetectExistingItems
+                    currentItem["Existing"] = false;     
+                    this.recycleBinItems.push(currentItem);
+                  }
                 }
-              }
 
-              lastId = currentItem.Id;
-              lastTitle = currentItem.Title;
-              lastDeletedDate = currentItem.DeletedDate;
-           }
+                lastId = currentItem.Id;
+                lastTitle = currentItem.Title;
+                lastDeletedDate = currentItem.DeletedDate;
+            }
+              
+            console.log(`RestAPIHelper.Getrecyclebinitems with page info ${pageInfo}`);
+            if(lastDeletedDate.indexOf("Z") > 0)
+            {
+                lastDeletedDate = lastDeletedDate.substring(0, lastDeletedDate.length -1);
+            }
+
+            pageInfo = URI_Encoding.encodeURIComponent(`'id=${URI_Encoding.encodeURIComponent(lastId)}&title=${URI_Encoding.encodeURIComponent(lastTitle)}&searchValue=${URI_Encoding.encodeURIComponent(lastDeletedDate)}'`); 
             
-           console.log(`RestAPIHelper.Getrecyclebinitems with page info ${pageInfo}`);
-           if(lastDeletedDate.indexOf("Z") > 0)
-           {
-              lastDeletedDate = lastDeletedDate.substring(0, lastDeletedDate.length -1);
-           }
-
-           pageInfo = URI_Encoding.encodeURIComponent(`'id=${URI_Encoding.encodeURIComponent(lastId)}&title=${URI_Encoding.encodeURIComponent(lastTitle)}&searchValue=${URI_Encoding.encodeURIComponent(lastDeletedDate)}'`); 
-           
-           SPOQASpinner.Show(Text.format(strings.RI_QueryProgress, this.queryCount, this.recycleBinItems.length));  
-           if(currentCount <500)    
-           {
-              if(itemState ==1)
-              {
-                itemState = 2;
-                pageInfo = "";
-              }
-              else
-              {
-                itemState =3;
-              }
-           }           
+            SPOQASpinner.Show(Text.format(strings.RI_QueryProgress, this.queryCount, this.recycleBinItems.length));  
+            if(currentCount <500)    
+            {
+                if(itemState ==1)
+                {
+                  itemState = 2;
+                  pageInfo = "";
+                }
+                else
+                {
+                  itemState =3;
+                }
+            } 
+                     
          }
         
          this.querySeconds = ((new Date()).getTime()- queryStartTime.getTime())/1000;

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {  
-    PrimaryButton,
+    DefaultButton,
     TextField,
     Label,
     ComboBox,
@@ -48,7 +48,7 @@ export default class RepairWikiLayoutQA extends React.Component<ISharePointOnlin
                         <Label>e.g. https://contoso.sharepoint.com/sites/Intranet/SitePages/Wiki.aspx </Label>   
                         </div>
                     <div id="CommandButtonsSection">
-                        <PrimaryButton
+                        <DefaultButton
                             text= {strings.CheckIssues}
                             style={{ display: 'inline', marginTop: '10px' }}
                             onClick={() => {this.resRef.current.innerHTML=""; this.CheckWikiPage();}}

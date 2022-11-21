@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {  
-    PrimaryButton,
+    DefaultButton,
     TextField,
     Label,
     ComboBox,
@@ -101,13 +101,13 @@ export default class PermissionQA extends React.Component<ISharePointOnlineQuick
                                 </div>
                         </div>
                         <div id="CommandButtonsSection">
-                            <PrimaryButton
+                            <DefaultButton
                                 text={strings.CheckIssues}
                                 style={{ display: 'inline', marginTop: '10px' }}
                                 onClick={() => {this.state.siteIsVaild? this.CheckPermissionQAIssues():this.LoadLists();}}
                                 />
                             {this.state.needRemedy && !this.state.remedyStepsShowed && this.state.siteIsVaild?
-                                <PrimaryButton
+                                <DefaultButton
                                     text={strings.ShowRemedySteps}
                                     style={{ display: 'inline', marginTop: '10px', marginLeft:"10px"}}
                                     onClick={() => {this.ShowRemedySteps();}}

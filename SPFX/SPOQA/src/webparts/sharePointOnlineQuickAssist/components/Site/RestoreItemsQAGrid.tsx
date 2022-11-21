@@ -136,7 +136,7 @@ export default class RestoreItemsQAGrid extends React.Component<IRestoreItems>
               items={items}            
               columns={columns}
               selectionMode={SelectionMode.none}            
-              layoutMode={DetailsListLayoutMode.justified}
+              layoutMode={DetailsListLayoutMode.fixedColumns}
               isHeaderVisible={true}                            
             />: strings.RI_NoData}    
              {this.state.contextualMenuProps && <ContextualMenu {...this.state.contextualMenuProps} />}        

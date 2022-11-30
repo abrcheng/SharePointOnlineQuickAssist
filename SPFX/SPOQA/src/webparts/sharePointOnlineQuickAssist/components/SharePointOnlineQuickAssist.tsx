@@ -141,11 +141,9 @@ export default class SharePointOnlineQuickAssist extends React.Component<IShareP
                   <div>                    
                     <ComboBox
                       defaultSelectedKey="-1"
-                      label= {strings.SelectIssueTip}
-                      allowFreeform
-                      autoComplete="on"                      
+                      label= {strings.SelectIssueTip}             
                       options={INITIAL_OPTIONS} 
-                      required={true}                    
+                      required={true}                 
                       onChange ={(ev: React.FormEvent<IComboBox>, option?: IComboBoxOption): void => {
                         this.setState({ selectedKey: option.key});}} 
                     />                  

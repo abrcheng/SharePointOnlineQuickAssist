@@ -194,10 +194,16 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
     }
 
     public async CheckSiteSearchSettings()
-    {
+    {     
+
+      if(this.state.affectedSite == "" || !this.state.affectedSite || !SPOQAHelper.ValidateUrl(this.state.affectedSite))
+      {
+        SPOQAHelper.ShowMessageBar("Error", strings.UI_NonAffectedSite);          
+        return;
+      }
         this.setState({isChecked:false});
         this.remedySteps =[]; 
-        SPOQASpinner.Show(`${strings.SS_Message_Checking}`);        
+        SPOQASpinner.Show(`${strings.SS_Message_Checking}`);    
         
         try
         {

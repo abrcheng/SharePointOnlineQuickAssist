@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {  
-    PrimaryButton,    
+    DefaultButton,    
     TextField,
     Label,
     Panel,
@@ -88,12 +88,12 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
                         {this.state.managedProperties.length >0? <Link onClick={e=>{this.setState({mpPanelOpen:true});}}  style={{ display: 'block'}}>{strings.SD_ShowManagedProperties}</Link>:null}                               
                         {this.state.crawledProperties.length >0? <Link onClick={e=>{this.setState({cpPanelOpen:true});}} style={{ display: 'block'}}>{strings.SD_ShowCrawlProperties}</Link>:null}
                       <div id="CommandButtonsSection">
-                        <PrimaryButton
+                        <DefaultButton
                           text={strings.SS_Label_CheckIssues}
                           style={{ display: 'inline', marginTop: '10px' }}
                           onClick={() => {this.ResetSatus(); this.CheckSiteSearchSettings();}} //When click: Reset banner status & check if the site is searchable
                         />
-                        <PrimaryButton
+                        <DefaultButton
                           text={strings.SS_Label_CrawlLogs}
                           style={{ display: 'inline', marginTop: '10px', marginLeft:"10px"}}
                           onClick={() => {this.GetCrawlLogs();}} //When click: Show Crawl Logs
@@ -194,10 +194,16 @@ export default class SearchSiteQA extends React.Component<ISharePointOnlineQuick
     }
 
     public async CheckSiteSearchSettings()
-    {
+    {     
+
+      if(this.state.affectedSite == "" || !this.state.affectedSite || !SPOQAHelper.ValidateUrl(this.state.affectedSite))
+      {
+        SPOQAHelper.ShowMessageBar("Error", strings.UI_NonAffectedSite);          
+        return;
+      }
         this.setState({isChecked:false});
         this.remedySteps =[]; 
-        SPOQASpinner.Show(`${strings.SS_Message_Checking}`);        
+        SPOQASpinner.Show(`${strings.SS_Message_Checking}`);    
         
         try
         {

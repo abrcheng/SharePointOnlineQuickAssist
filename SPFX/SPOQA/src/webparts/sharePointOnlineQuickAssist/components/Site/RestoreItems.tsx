@@ -331,7 +331,8 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
     let matched:boolean = true;
     if(this.state.deleteByUser && this.state.deleteByUser.trim().length >0) // check deleteByUser
     {
-      matched = matched&&(this.state.deleteByUser.trim().toLowerCase() == item.DeletedByEmail.toLowerCase());
+      matched = matched&&((item.DeletedByEmail.toLowerCase().indexOf(this.state.deleteByUser.trim().toLowerCase()) >= 0)||(item.DeletedByName.toLowerCase().indexOf(this.state.deleteByUser.trim().toLowerCase()) >= 0));
+      //matched = matched&&(item.DeletedByEmail.toLowerCase().indexOf(item.DeletedByEmail.trim().toLowerCase()) >= 0);
     }
 
     if(this.state.pathFilter && this.state.pathFilter.trim().length > 0)

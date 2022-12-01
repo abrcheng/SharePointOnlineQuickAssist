@@ -86,7 +86,7 @@ export default class RestoreItemsQAGrid extends React.Component<IRestoreItems>
             },
             {
                 key: 'DeletedByName',
-                name: strings.RI_DeletedByEmail,
+                name: strings.RI_DeletedByName,
                 fieldName: 'DeletedByName',
                 minWidth: 100,
                 maxWidth: 120,

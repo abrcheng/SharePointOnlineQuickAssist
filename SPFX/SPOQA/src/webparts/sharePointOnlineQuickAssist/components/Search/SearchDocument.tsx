@@ -172,7 +172,13 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
     }
     
     public async LoadLists()
-    {       
+    {      
+        
+        if(this.state.affectedSite == "" || !this.state.affectedSite || !SPOQAHelper.ValidateUrl(this.state.affectedSite))
+        {
+          SPOQAHelper.ShowMessageBar("Error", strings.UI_NonAffectedSite);          
+          return;
+        }
         try
         {
             var lists:any = await RestAPIHelper.GetLists(this.props.spHttpClient, this.state.affectedSite);

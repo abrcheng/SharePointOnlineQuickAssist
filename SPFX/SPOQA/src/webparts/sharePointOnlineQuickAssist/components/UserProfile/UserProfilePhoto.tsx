@@ -46,7 +46,13 @@ export default class UserProfilePhotoQA extends React.Component<ISharePointOnlin
     
     private async CheckUserPhoto()
     {
-        SPOQAHelper.ResetFormStaus();       
+        SPOQAHelper.ResetFormStaus();      
+        
+        if(this.state.affectedUser =="" || !this.state.affectedUser || !SPOQAHelper.ValidateEmail(this.state.affectedUser))
+        {
+          SPOQAHelper.ShowMessageBar("Error", strings.UI_NonAffectedUser);
+          return;
+        }      
         try{
             var userPhoto = await GraphAPIHelper.GetUserPhoto(this.state.affectedUser, this.props.msGraphClient);            
             const blobUrl = window.URL.createObjectURL(userPhoto);

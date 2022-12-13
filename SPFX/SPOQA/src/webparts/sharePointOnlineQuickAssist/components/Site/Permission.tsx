@@ -124,6 +124,23 @@ export default class PermissionQA extends React.Component<ISharePointOnlineQuick
     
     private async LoadLists()
     {       
+        if(this.state.affectedSite =="" || this.state.affectedUser =="" )
+        {
+          SPOQAHelper.ShowMessageBar("Error", strings.UI_NonAffectedSiteandUser);          
+          return;
+        }
+
+        if(this.state.affectedSite =="" || !this.state.affectedSite || !SPOQAHelper.ValidateUrl(this.state.affectedSite))
+        {
+          SPOQAHelper.ShowMessageBar("Error", strings.UI_NonAffectedSite);          
+          return;
+        }
+
+        if(this.state.affectedUser =="" || !this.state.affectedUser || !SPOQAHelper.ValidateEmail(this.state.affectedUser))
+        {
+          SPOQAHelper.ShowMessageBar("Error", strings.UI_NonAffectedUser);
+          return;
+        }      
         try
         {
             var lists:any = await RestAPIHelper.GetLists(this.props.spHttpClient, this.state.affectedSite);

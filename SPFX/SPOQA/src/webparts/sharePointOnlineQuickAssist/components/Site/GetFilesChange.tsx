@@ -119,6 +119,11 @@ export default class GetFilesChange extends React.Component<ISharePointOnlineQui
 
     private async QueryFiles()
     {
+        if(this.state.querySite =="")
+    {
+      SPOQAHelper.ShowMessageBar("Error", strings.UI_NonAffectedSite);          
+      return;
+    }
         this.setState({queried:false});
         //Get Site ID
         var siteID = await RestAPIHelper.GetSiteId(this.props.spHttpClient, this.state.querySite);

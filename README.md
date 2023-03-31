@@ -1,13 +1,3 @@
-
-
-https://user-images.githubusercontent.com/89838160/169972855-a7605e68-c6b1-4235-af61-a4226bee5b45.mp4
-
-# M365 First Aid x Hackathon 2022
-[![M365 First Aid x Hackathon](https://user-images.githubusercontent.com/89838160/186566847-f6585954-413c-4b46-b39a-29087022f1ae.png)](https://www.youtube.com/watch?v=IBx8SICGFJE)
-
-# M365 First Aid Introduction
-[![IMAGE ALT TEXT HERE](https://user-images.githubusercontent.com/89838160/186567066-16e1338c-4236-40b8-b45d-d3be503ff9f9.PNG)](https://www.youtube.com/watch?v=lA31ikfL8JY)
-
 # SharePointOnlineQuickAssist-Tutorial Materials
 
 SharePoint Online Quick Assist is a SPFX webpart that appears inside a SharePoint page in the browser. Site administrators could use the tool to diagnose some common issues and fix them.
@@ -16,6 +6,13 @@ This tool is provided by the copyright holders and contributors “as is” and 
 
 ## Please note, if you want to use the auto fix function on the affected site then the custom script for the site should be enabled https://docs.microsoft.com/en-us/sharepoint/allow-or-prevent-custom-script#to-allow-custom-script-on-other-sharepoint-sites
 
+https://user-images.githubusercontent.com/89838160/169972855-a7605e68-c6b1-4235-af61-a4226bee5b45.mp4
+
+# M365 First Aid x Hackathon 2022
+[![M365 First Aid x Hackathon](https://user-images.githubusercontent.com/89838160/186566847-f6585954-413c-4b46-b39a-29087022f1ae.png)](https://www.youtube.com/watch?v=IBx8SICGFJE)
+
+# M365 First Aid Introduction
+[![IMAGE ALT TEXT HERE](https://user-images.githubusercontent.com/89838160/186567066-16e1338c-4236-40b8-b45d-d3be503ff9f9.PNG)](https://www.youtube.com/watch?v=lA31ikfL8JY)
 
 ## Available features
 
@@ -63,7 +60,8 @@ This feature helps user to diagnose permssion issues (get access denied or 404 w
    This feature helps user compare their profile photo from AAD to SPO user profile.
     
   <IMG src=.\assets\CheckUserProfilePhoto.JPG>
-    [More details](https://github.com/abrcheng/SharePointOnlineQuickAssist/blob/main/Documents/UserPhotoSync.md)
+    
+[More details](https://github.com/abrcheng/SharePointOnlineQuickAssist/blob/main/Documents/UserPhotoSync.md)
     
 * **User Info list sync issue**,
 	User/Group mail haven’t been synced to user info list caused the mail can’t be send to User/Group in user alert, workflow 
@@ -92,7 +90,7 @@ This feature helps user to diagnose permssion issues (get access denied or 404 w
 
 **Please click the link [Deployment Approaches](https://github.com/abrcheng/SharePointOnlineQuickAssist/blob/main/Documents/Installation/ReadMe.md) for checking deployment steps**
 
-## If you want to contribute/customzied this tool, you may try below steps,
+## The following steps show you how to customise and or contribute to this tool,
 	
 To build and start using these projects, you'll need to clone and build the projects.
 
@@ -108,13 +106,11 @@ Navigate to the cloned repository folder which should be the same as the reposit
 cd SharePointOnlineQuickAssist
 ```
 
-To access the webpart use the following command.
+To access the webpart use the following commands.
 
 ```shell
-cd SPFX
-cd SPOQA
+cd SPFX/SPOQA
 ```
-
 
 Now run the following command to install the npm packages:
 

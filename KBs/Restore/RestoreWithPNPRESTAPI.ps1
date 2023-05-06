@@ -1,10 +1,10 @@
 ﻿$StartDate = "2019/01/24 9:00:00"
 $EndDate = "2019/01/25 9:00:00"
-$SiteURL = "https://chengc.sharepoint.com"
+$SiteURL = "https://mykademia.sharepoint.com"
 
 Connect-PnPOnline $SiteURL  
 
-$DeletedCollection = Get-PnPRecyclebinItem -RowLimit 500 | ? { ($_.DeletedByEmail -eq 'UserEmailID') -and ($_.DeletedDate -ge $StartDate) -and ($_.DeletedDate -le $EndDate)}
+$DeletedCollection = Get-PnPRecyclebinItem -RowLimit 500 | ? { ($_.DeletedByEmail -eq 'useremaiID') -and ($_.DeletedDate -ge $StartDate) -and ($_.DeletedDate -le $EndDate)}
                                                                               
  $ctx = Get-PnPContext
  

@@ -1,0 +1,8 @@
+{
+    "editor.unicodeHighlight.allowedLocales": {
+        "_docker": true,
+        "_linux": true
+    },
+    "terminal.integrated.automationProfile.linux": {},
+    "azure.resourceFilter": enableNaturalLanguageSearch
+}

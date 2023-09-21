@@ -1,16 +1,14 @@
 import * as React from 'react';
-import {  
-    PrimaryButton,
-    DefaultButton, 
-    
+import { DateTimePicker,DateConvention, TimeConvention, TimeDisplayControlType} from '@pnp/spfx-controls-react';
+
+import {     
+    DefaultButton,     
     TextField,
     MessageBar,
     MessageBarType,
-    DatePicker,
+    //DatePicker,
     Spinner,
-    Toggle,
-    Label,
-    Sticky
+    Toggle    
   } from 'office-ui-fabric-react/lib/index';
 import RestAPIHelper from '../../../Helpers/RestAPIHelper';
 import SPOQASpinner from '../../../Helpers/SPOQASpinner';
@@ -102,33 +100,35 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
               
               <div className={styles.msrow} id="deleteStartDate_row">
                     <div className={styles.mscol6}>
-                      <DatePicker
-                         allowTextInput={true}
-                         isMonthPickerVisible ={false}  
-                         showWeekNumbers={true}         
+                      
+                      <DateTimePicker 
+                         dateConvention={DateConvention.DateTime}
+                         timeConvention={TimeConvention.Hours24} 
+                         showSeconds= {true}
+                         timeDisplayControlType={TimeDisplayControlType.Dropdown}                           
+                         // isMonthPickerVisible ={false}                              
                           label={strings.RI_StartDate}
-                          placeholder={strings.RI_SelectADate}
-                          ariaLabel={strings.RI_SelectADate} 
+                          placeholder={strings.RI_SelectADate}                          
                           // onChange={(e)=>{let datePicker:any = e.target; this.setState({deleteStartDate:datePicker.value});}}
-                          onSelectDate={(e)=>{ this.setState({deleteStartDate:e});}}
+                          onChange={(e)=>{ this.setState({deleteStartDate:e});}}
                           value={this.state.deleteStartDate}                    
                       />
                     </div>
                     <div className={styles.mscol6}>
-                      <DatePicker
-                          allowTextInput={true}
-                          showWeekNumbers={true}                         
-                          isMonthPickerVisible={false}     
+                      <DateTimePicker
+                         dateConvention={DateConvention.DateTime}
+                         timeConvention={TimeConvention.Hours24}
+                         timeDisplayControlType={TimeDisplayControlType.Dropdown}   
+                         showSeconds= {true}                                             
+                          // isMonthPickerVisible={false}     
                           label={strings.RI_EndDate}
-                          placeholder={strings.RI_SelectADate}
-                          ariaLabel={strings.RI_SelectADate} 
+                          placeholder={strings.RI_SelectADate}                          
                           // onChange={(e)=>{let datePicker:any = e.target; this.setState({deleteEndDate:datePicker.value});}}
-                          onSelectDate={(e)=>{ this.setState({deleteEndDate:e});}}
-                          value={this.state.deleteEndDate}  
-                                                  
+                          onChange={(e)=>{ this.setState({deleteEndDate:e});}}
+                          value={this.state.deleteEndDate}                                                    
                       />
                     </div>
-                </div> 
+                </div>             
               </div>
             </div>
             </div>
@@ -331,8 +331,18 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
     let matched:boolean = true;
     if(this.state.deleteByUser && this.state.deleteByUser.trim().length >0) // check deleteByUser
     {
+      if(!item.DeletedByEmail) // If the DeletedByEmail is null, then set it to empty string 
+      {
+        item.DeletedByEmail="";
+      }
+
+      if(!item.DeletedByName) // If the DeletedByName is null, then set it to empty string 
+      {
+        item.DeletedByName="";
+      }
+
       matched = matched&&((item.DeletedByEmail.toLowerCase().indexOf(this.state.deleteByUser.trim().toLowerCase()) >= 0)||(item.DeletedByName.toLowerCase().indexOf(this.state.deleteByUser.trim().toLowerCase()) >= 0));
-      //matched = matched&&(item.DeletedByEmail.toLowerCase().indexOf(item.DeletedByEmail.trim().toLowerCase()) >= 0);
+      //matched = matched&&(this.state.deleteByUser.trim().toLowerCase() == item.DeletedByEmail.toLowerCase());
     }
 
     if(this.state.pathFilter && this.state.pathFilter.trim().length > 0)
@@ -342,16 +352,26 @@ export default class RestoreItemsQA extends React.Component<ISharePointOnlineQui
 
     if(this.state.deleteStartDate)
     {
-        matched = matched&&(this.state.deleteStartDate <= new Date(item.DeletedDate));
+       let deleteStartDate:Date = new Date(this.state.deleteStartDate);
+       deleteStartDate.setMinutes(deleteStartDate.getMinutes() - deleteStartDate.getTimezoneOffset());
+       matched = matched&&(deleteStartDate <= new Date(item.DeletedDate));
     }
     
     if(this.state.deleteEndDate)
     {
         let deleteEndDate:Date = new Date(this.state.deleteEndDate);
-        deleteEndDate.setDate(deleteEndDate.getDate()+1);
+        deleteEndDate.setMinutes(deleteEndDate.getMinutes() - deleteEndDate.getTimezoneOffset());
+        // deleteEndDate.setDate(deleteEndDate.getDate()+1);
         matched = matched&&(deleteEndDate >= new Date(item.DeletedDate));
     }
-
+   
+    /*
+    const date = new Date();    
+    date.setMinutes(date.getMinutes() - date.getTimezoneOffset())
+    1695308870444
+    date.toGMTString()
+    'Thu, 21 Sep 2023 15:07:50 GMT'
+    */
     return matched;
   }
 

@@ -28,7 +28,7 @@ const wrapperClassName = mergeStyles({
 
 const INITIAL_OPTIONS: IComboBoxOption[] = [
   { key: 'OrganizationSettings', text: strings.OrganizationSettings, itemType: SelectableOptionMenuItemType.Header },
-  { key: 'PeopleInsights', text: strings.PeopleInsights}]
+  { key: 'PeopleInsights', text: strings.PeopleInsights}];
 
 export default class ExoQuickAssist extends React.Component<IExoQuickAssistProps, {}> {
    public state = {

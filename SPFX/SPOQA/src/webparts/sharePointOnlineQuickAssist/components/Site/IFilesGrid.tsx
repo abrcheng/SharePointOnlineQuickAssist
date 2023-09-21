@@ -206,7 +206,7 @@ export default class IFilesGrid extends React.Component<IFiles>
           name:`${delName.key} (${delName.count})`,
           canCheck: true,
           checked:delName.key == filterByDeleteName,
-          onClick:(ev,item) =>{this.filterByDeleteName(item);}
+          onClick:(evt,item) =>{this.filterByDeleteName(item);}
         };
         subItems.push(subItem);
       });
@@ -217,7 +217,7 @@ export default class IFilesGrid extends React.Component<IFiles>
               iconProps: { iconName: 'SortUp' },
               canCheck: true,
               checked: column.isSorted && !column.isSortedDescending,
-              onClick:(ev,item) =>{this.sortByColumn(column, false);}
+              onClick:(evt,item) =>{this.sortByColumn(column, false);}
           },
           {
               key: 'zToA',
@@ -225,7 +225,7 @@ export default class IFilesGrid extends React.Component<IFiles>
               iconProps: { iconName: 'SortDown' },
               canCheck: true,
               checked: column.isSorted && column.isSortedDescending,
-              onClick:(ev,item) =>{this.sortByColumn(column, true);}
+              onClick:(evt,item) =>{this.sortByColumn(column, true);}
           },
           {
             key: 'Filter',

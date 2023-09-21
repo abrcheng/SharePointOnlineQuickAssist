@@ -88,6 +88,8 @@ declare interface ISharePointOnlineQuickAssistWebPartStrings {
   RI_DetectExistingItemsInPath:string;
   RI_DetectExistingResult:string;
   RI_Existing:string;
+  RI_StartTime:string;
+  RI_EndTime:string;
 
   // Strings for Search document
   SD_DocumentPathCanNotBeNull:string;

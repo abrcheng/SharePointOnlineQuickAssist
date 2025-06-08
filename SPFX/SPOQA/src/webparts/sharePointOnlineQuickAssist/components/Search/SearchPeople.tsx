@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {  
-    PrimaryButton    
+    DefaultButton    
   } from 'office-ui-fabric-react/lib/index';
 import { ISharePointOnlineQuickAssistProps } from '../ISharePointOnlineQuickAssistProps';
 
@@ -10,7 +10,7 @@ export default class SearchPeopleQA extends React.Component<ISharePointOnlineQui
     {
         return (
             <div>
-                  <PrimaryButton
+                  <DefaultButton
                       text="Check Search People"
                       style={{ display: 'block', marginTop: '10px' }}
                       onClick={() => {alert("clicked"); }}

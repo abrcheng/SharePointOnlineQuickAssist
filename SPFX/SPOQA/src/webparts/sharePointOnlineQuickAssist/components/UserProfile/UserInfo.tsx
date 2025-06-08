@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {  
-    PrimaryButton,    
+    DefaultButton,    
     TextField,
     Label
   } from 'office-ui-fabric-react/lib/index';
@@ -58,14 +58,14 @@ export default class UserInfoQA extends React.Component<ISharePointOnlineQuickAs
 
                       </div>
                 </div>
-                <PrimaryButton
+                <DefaultButton
                     text={strings.UI_CheckIssueforUser}
                     style={{ display: 'inline', marginTop: '10px' }}
                     onClick={() => {this.Check();}}
                   />
                   
                   { this.state.isNeedFix ? 
-                  <PrimaryButton
+                  <DefaultButton
                     text={strings.UI_FixIssues}
                     style={{ display: 'inline', marginTop: '10px', marginLeft:"20px"}}             
                     onClick={() => {this.Fix();}}

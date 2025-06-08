@@ -207,6 +207,7 @@ declare interface ISharePointOnlineQuickAssistWebPartStrings {
   UI_NonUserListGroup:string;
   UI_FixSuccess:string;
   UI_FixFailed:string;
+  
 
   //Strings for User Profile Department
   UPD_CheckDepartment:string;

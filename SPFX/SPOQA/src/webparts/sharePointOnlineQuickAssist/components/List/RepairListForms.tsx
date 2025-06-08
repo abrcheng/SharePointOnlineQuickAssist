@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {  
-    PrimaryButton,
+    DefaultButton,
     TextField,
     Label,
     ComboBox,
@@ -69,13 +69,13 @@ export default class RepairFormQA extends React.Component<ISharePointOnlineQuick
                                 </div>:null
                             }
                         <div id="CommandButtonsSection">
-                            <PrimaryButton
+                            <DefaultButton
                                 text="Check Issues"
                                 style={{ display: 'inline', marginTop: '10px' }}
                                 onClick={() => {this.state.siteIsVaild? this.CheckListForms():this.LoadLists();}}
                                 />
                             {this.state.isChecked && (this.state.isMissingDisplayForm || this.state.isMissingNewForm || this.state.isMissingEditForm)?
-                                <PrimaryButton
+                                <DefaultButton
                                     text="Fix Issues"
                                     style={{ display: 'inline', marginTop: '10px', marginLeft:"10px"}}
                                     onClick={() => {this.FixIssues();}}

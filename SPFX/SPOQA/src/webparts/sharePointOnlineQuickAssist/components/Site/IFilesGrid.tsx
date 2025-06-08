@@ -152,7 +152,7 @@ export default class IFilesGrid extends React.Component<IFiles>
               items={items}            
               columns={columns}
               selectionMode={SelectionMode.none}            
-              layoutMode={DetailsListLayoutMode.justified}
+              layoutMode={DetailsListLayoutMode.fixedColumns}
               isHeaderVisible={true}                            
             />: "No data"}    
              {this.state.contextualMenuProps && <ContextualMenu {...this.state.contextualMenuProps} />}        

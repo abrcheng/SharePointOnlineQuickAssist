@@ -1,6 +1,5 @@
-
-Last updated \[July 7th, 2022\]
-
+Last updated \[Dec 20th, 2022\]
+* [Microsoft Privacy Statement – Microsoft privacy](https://privacy.microsoft.com/en-us/privacystatement) 
 # AGREEMENT TO TERMS
 
 These Terms of Use constitute a legally binding agreement made between

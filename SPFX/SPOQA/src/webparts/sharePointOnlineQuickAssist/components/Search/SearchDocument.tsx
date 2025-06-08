@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {  
-    PrimaryButton,
+    DefaultButton,
     TextField,
     Label,
     ComboBox,
@@ -42,6 +42,7 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
         remedyStepsShowed:false,
         crawlLogs:[],
         mpPanelOpen:false,
+        clPanelOpen:false,
         managedProperties:[],
         cpPanelOpen:false,
         crawledProperties:[]
@@ -115,18 +116,18 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
                                     <Label>Diagnose result:</Label>                                   
                                     :null}
                                 <div style={{marginLeft:20}} id="SearchDocumentCheckResultDiv" ref={this.resRef}></div>
-                                {this.state.crawlLogs.length >0? <CrawlLogGrid items={this.state.crawlLogs}/>:null}                               
+                                {this.state.crawlLogs.length >0?  <Link onClick={e=>{this.setState({clPanelOpen:true});}}  style={{ display: 'block'}}>{strings.SS_Label_CrawlLogs}</Link>:null}                               
                                 {this.state.managedProperties.length >0? <Link onClick={e=>{this.setState({mpPanelOpen:true});}}  style={{ display: 'block'}}>{strings.SD_ShowManagedProperties}</Link>:null}                               
                                 {this.state.crawledProperties.length >0? <Link onClick={e=>{this.setState({cpPanelOpen:true});}} style={{ display: 'block'}}>{strings.SD_ShowCrawlProperties}</Link>:null}
                             </div>                           
                         <div id="CommandButtonsSection">
-                            <PrimaryButton
+                            <DefaultButton
                                 text={strings.CheckIssues}
                                 style={{ display: 'inline', marginTop: '10px' }}
                                 onClick={() => {this.state.siteIsVaild? this.CheckSearchDocument():this.LoadLists();}}
                                 />
                             {this.state.needRemedy && !this.state.remedyStepsShowed && this.state.siteIsVaild?
-                                <PrimaryButton
+                                <DefaultButton
                                     text={strings.ShowRemedySteps}
                                     style={{ display: 'inline', marginTop: '10px', marginLeft:"10px"}}
                                     onClick={() => {this.ShowRemedySteps();}}
@@ -157,12 +158,27 @@ export default class SearchDocumentQA extends React.Component<ISharePointOnlineQ
                 >
                     <CrawledPropertyGrid items={this.state.crawledProperties}></CrawledPropertyGrid>
                 </Panel> 
+                <Panel
+                    headerText={strings.SS_Label_CrawlLogs}
+                    isOpen={this.state.clPanelOpen}
+                    onDismiss={e=>{this.setState({clPanelOpen:false});}}                   
+                    closeButtonAriaLabel="Close"
+                    customWidth="100%"
+                    type={PanelType.custom}                >
+                    <CrawlLogGrid items={this.state.crawlLogs}/>
+                </Panel> 
             </div>
         );
     }
     
     public async LoadLists()
-    {       
+    {      
+        
+        if(this.state.affectedSite == "" || !this.state.affectedSite || !SPOQAHelper.ValidateUrl(this.state.affectedSite))
+        {
+          SPOQAHelper.ShowMessageBar("Error", strings.UI_NonAffectedSite);          
+          return;
+        }
         try
         {
             var lists:any = await RestAPIHelper.GetLists(this.props.spHttpClient, this.state.affectedSite);

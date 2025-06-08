@@ -186,7 +186,7 @@ define([], function() {
      MF_Ex_FixDispFormError:"Get exception when try fixing the display form with error message",
      MF_Ex_FixNewFormError:"Get exception when try fixing the new form with error message",
      MF_Ex_FixEditFormError:"Get exception when try fixing the edit form with error message",
-     MF_Message_FixedAll:"Fixed all missing forms",
+     MF_Message_FixedAll:"Fixed all missing forms. Please click 'Check Issues' again, if forms are still missing, you will need enable 'Custom Script' for affected site. https://learn.microsoft.com/en-us/sharepoint/allow-or-prevent-custom-script ",
      FC_Label_QuerySite:"Query Site:",
      FC_Lable_ModifedUser:"Modified User:",
      FC_Label_PathFilter:"Path Filter: (e.g. '/Shared Documents/Folder')",

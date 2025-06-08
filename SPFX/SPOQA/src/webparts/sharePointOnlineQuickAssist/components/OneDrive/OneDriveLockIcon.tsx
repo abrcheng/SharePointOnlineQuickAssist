@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {  
-    PrimaryButton,
+    DefaultButton,
     TextField,
     Label,
     ComboBox,
@@ -75,13 +75,13 @@ export default class OneDriveLockIconQA extends React.Component<ISharePointOnlin
                                 <div style={{marginLeft:20}} id="OneDriveSyncDiagnoseResultDiv" ref={this.resRef}></div>
                         </div>
                         <div id="CommandButtonsSection">
-                            <PrimaryButton
+                            <DefaultButton
                                 text={strings.CheckIssues}
                                 style={{ display: 'inline', marginTop: '10px' }}
                                 onClick={() => {this.state.siteIsVaild? this.CheckOneDriveLockIconQAIssues():this.LoadLists();}}
                                 />
                             {this.state.needRemedy && !this.state.remedyStepsShowed && this.state.siteIsVaild?
-                                <PrimaryButton
+                                <DefaultButton
                                     text={strings.ShowRemedySteps}
                                     style={{ display: 'inline', marginTop: '10px', marginLeft:"10px"}}
                                     onClick={() => {this.ShowRemedySteps();}}

@@ -1,6 +1,6 @@
 import { DetailsList, DetailsListLayoutMode, SelectionMode, IColumn } from 'office-ui-fabric-react/lib/DetailsList';
 import {  
-    PrimaryButton,
+    DefaultButton,
     TextField,   
   } from 'office-ui-fabric-react/lib/index';
 import * as React from 'react';
@@ -44,7 +44,7 @@ export default class CrawledPropertyGrid extends React.Component<ICrawledPropert
                                         // onKeyDown={(e)=>{if(e.keyCode ===13){}}}    
                                         style={{ display: 'inline'}}                                    
                                     />
-                                     <PrimaryButton
+                                     <DefaultButton
                                         text= {strings.RI_Export}
                                         style={{ display: 'inline', marginTop: '10px', marginLeft:"10px"}}
                                         onClick={() => {this.DoExport();}}

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {  
-    PrimaryButton,    
+    DefaultButton,    
     TextField,
     Label
   } from 'office-ui-fabric-react/lib/index';
@@ -48,14 +48,14 @@ export default class UserProfileTitleQA extends React.Component<ISharePointOnlin
                         {this.state.aadJobTitle != "" && this.state.userId && this.state.userId !=-1? <Label>{strings.UPT_UserProfileTitle} <span style={this.state.uapJobtitle != this.state.aadJobTitle? {"color":"Red"}:{"color":"Green"}}>{this.state.uapJobtitle}</span></Label>: null}
                         {this.state.aadJobTitle != "" && this.state.userId && this.state.userId !=-1?<Label>{strings.UPT_UserInfoListTitle} <span style={this.state.siteJobTitle != this.state.aadJobTitle? {"color":"Red"}:{"color":"Green"}}>{this.state.siteJobTitle}</span></Label>: null}
 
-                        <PrimaryButton
+                        <DefaultButton
                             text={strings.CheckIssues}
                             style={{ display: 'inline', marginTop: '10px' }}
                             onClick={() => {this.CheckUserProfileTitle();}}
                           />
                           
                           { (this.state.siteJobTitle != this.state.aadJobTitle || this.state.aadJobTitle != this.state.uapJobtitle) && this.state.userId && this.state.userId !=-1 ? 
-                          <PrimaryButton
+                          <DefaultButton
                             text={strings.UI_FixIssues}
                             style={{ display: 'inline', marginTop: '10px', marginLeft:"20px"}}
                             hidden={this.state.siteJobTitle == this.state.aadJobTitle && this.state.uapJobtitle == this.state.aadJobTitle}

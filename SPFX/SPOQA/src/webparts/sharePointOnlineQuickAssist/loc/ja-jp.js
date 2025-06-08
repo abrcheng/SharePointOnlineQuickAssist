@@ -186,7 +186,7 @@ define([], function() {
       MF_Ex_FixDispFormError:"表示フォームを修正する時に例外が発生しました。エラーメッセージ：",
       MF_Ex_FixNewFormError:"新規フォームを修正する時に例外が発生しました。エラーメッセージ：",
       MF_Ex_FixEditFormError:"編集フォームを修正する時に例外が発生しました。エラーメッセージ：",
-      MF_Message_FixedAll:"足りないフォームをすべて修正しました",
+      MF_Message_FixedAll:"欠落しているすべてのフォームを修正しました。クリックしてください '問題の確認' もう一度、フォームがまだ見つからない場合は、影響を受けるサイトの「カスタムスクリプト」を有効にする必要があります.https://learn.microsoft.com/ja-jp/sharepoint/allow-or-prevent-custom-script",
       FC_Label_QuerySite:"クエリ対象サイト：",
       FC_Lable_ModifedUser:"編集者：",
       FC_Label_PathFilter:"パスフィルター： (e.g. '/Shared Documents/Folder')",

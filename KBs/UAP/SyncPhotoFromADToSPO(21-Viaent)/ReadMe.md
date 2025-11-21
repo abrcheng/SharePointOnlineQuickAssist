@@ -1,3 +1,11 @@
+**!!!Important Reminder!!!**
+updated at 11/21/2025 
+
+Due to current PNP issue [discussion link](https://github.com/pnp/powershell/discussions/2155), the script doesn’t work well.
+
+ 
+ 
+ 
  This script is used for syncing user properties from ADD to SharePoint Online user profile.
  
  It will sync below propeties by default,

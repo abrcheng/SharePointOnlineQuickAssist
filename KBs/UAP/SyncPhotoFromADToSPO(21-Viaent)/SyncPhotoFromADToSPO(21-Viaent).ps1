@@ -1,4 +1,8 @@
-﻿param(  
+# 21V auth need to configure by https://pnp.github.io/powershell/articles/authentication.html#authentication-to-gcc-or-national-cloud-environments 
+# https://pnp.github.io/powershell/articles/authentication.html#special-instructions-for-gcc-or-national-cloud-environments 
+ 
+ 
+ param(  
   [Parameter(mandatory=$true)]
   [string]$mySiteHostSiteUrl = "https://chengc-my.sharepoint.com", 
   [Parameter(mandatory=$true)]

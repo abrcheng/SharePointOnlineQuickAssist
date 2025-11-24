@@ -33,12 +33,12 @@ if($updateExo)
 
 # Connect to the for uploading photos and update user profile
 $adminSiteUrl = $mySiteHostSiteUrl.Replace("-my", "-admin")
-$photoFolderUrl = "/User Photos/Profile Pictures/"
+$photoFolderUrl = "/User Photos/个人资料图片/"
 $users = Get-Content $usersListFile
 # Update: Clear cached credential to connect to site
 Connect-PnPOnline $adminSiteUrl -Interactive -ClientId $ClientID -Tenant $TenantID -AzureEnvironment China
 $adminCtx = Get-PnPContext
-$null = Get-PnPUserProfileProperty -Account $users[0] # load Microsoft.SharePoint.Client.UserProfiles
+#$null = Get-PnPUserProfileProperty -Account $users[0] # load Microsoft.SharePoint.Client.UserProfiles
 
 Connect-PnPOnline  $mySiteHostSiteUrl -Interactive -ClientId $ClientID -Tenant $TenantID -AzureEnvironment China
 $ctx = Get-PnPContext
@@ -81,7 +81,8 @@ foreach($user in $users)
         $file = Get-ChildItem -Path $photoPath -Filter "$user*"
         if($file.FullName -ne $empty)
         {
-            $baseFilename = $user.Replace(".", "_").Replace("@","_")
+            $baseFilename = $UserID.Id
+           #$baseFilename = $user.Replace(".", "_").Replace("@","_")
             GeneratetThumbnail -filePath $file.FullName -baseFilename $baseFilename
 
             if($updateExo)

@@ -2,30 +2,28 @@
 # https://pnp.github.io/powershell/articles/authentication.html#special-instructions-for-gcc-or-national-cloud-environments 
  
  
- param(  
-  [Parameter(mandatory=$true)]
-  [string]$mySiteHostSiteUrl = "https://chengc-my.sharepoint.com", 
-  [Parameter(mandatory=$true)]
-  [string]$usersListFile = "D:\files\photos\UsersListFile.txt",
-  [Parameter(mandatory=$true)]
-  [string]$photoPath = "D:\files\photos\Photos",
-  [Parameter(mandatory=$false)]
-  [bool]$updateExo = $false ,
-   [Parameter(mandatory=$true)]
-  [string]$ClientID = "140fc0dd-5f99-4e62-9925-e96c967b52f7", 
-  [Parameter(mandatory=$true)]
-  [string]$TenantID = "aef7fc64-a1e0-4704-affa-d4fca539e508",
-  [Parameter(mandatory=$true)]
-  [string]$CertificateThumbprint = "1DEE9AD4BFC8757A55660110F04CD3EB6087B1E2"
+#OneDrive mysite host URL 
+$mySiteHostSiteUrl = "https://abrcheng-my.sharepoint.cn"
+#user UPNs
+$usersListFile = "c:\files\photos\UsersListFile.txt"
+#Photo folder in local device (blank)
+$photoPath = "c:\files\photos\Photos"
+#Need update for EXO or not
+$updateExo = $false 
 
-)
+# App client ID
+$ClientID = "c4faf394-90e2-4529-a976-845afae3476e"
+$TenantID = "9e658c2c-aa86-44db-9a3f-fb6aa9033ee9"
+ 
 
 # connect AAD for get the users's ThumbnailPhoto by commmand Get-AzureADUserThumbnailPhoto -ObjectId "CVDu@chengc.onmicrosoft.com"
 
 
 # https://pnp.github.io/powershell/articles/authentication.html#authentication-to-gcc-or-national-cloud-environments
 
-Connect-MgGraph -Environment China -AppId $ClientID -TenantId $TenantID -CertificateThumbprint $CertificateThumbprint
+
+#You must register your own applications and use them when connecting to Microsoft Graph. https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-register-app 
+Connect-MgGraph -Environment China -Scopes "User.Read.All", "Group.ReadWrite.All" -ClientId $ClientID -TenantId $TenantID 
 
 # Connect to exchange online
 if($updateExo)
@@ -38,11 +36,11 @@ $adminSiteUrl = $mySiteHostSiteUrl.Replace("-my", "-admin")
 $photoFolderUrl = "/User Photos/Profile Pictures/"
 $users = Get-Content $usersListFile
 # Update: Clear cached credential to connect to site
-Connect-PnPOnline $adminSiteUrl -UseWebLogin 
+Connect-PnPOnline $adminSiteUrl -Interactive -ClientId $ClientID -Tenant $TenantID -AzureEnvironment China
 $adminCtx = Get-PnPContext
 $null = Get-PnPUserProfileProperty -Account $users[0] # load Microsoft.SharePoint.Client.UserProfiles
 
-Connect-PnPOnline $mySiteHostSiteUrl -UseWebLogin 
+Connect-PnPOnline  $mySiteHostSiteUrl -Interactive -ClientId $ClientID -Tenant $TenantID -AzureEnvironment China
 $ctx = Get-PnPContext
 
 $peopleManager = New-Object Microsoft.SharePoint.Client.UserProfiles.PeopleManager($adminCtx)
@@ -74,7 +72,7 @@ foreach($user in $users)
     try
     {
         Write-Host "Processing $user"        
-        #$null = Get-AzureADUserThumbnailPhoto -ObjectId $user -FilePath $photoPath -ErrorAction Stop
+        #$null = Get-EntraUserThumbnailPhoto -ObjectId $user -FilePath $photoPath -ErrorAction Stop
         #$apiUrl = "https://microsoftgraph.chinacloudapi.cn/v1.0/users/$user/photo/`$value"
         #Invoke-RestMethod -Headers @{Authorization = "Bearer $accessToken"} -Uri $apiUrl -Method Get -ContentType image/jpeg -OutFile $photoPath\$user.jpg
         $UserID = Get-MgUser -Filter "startsWith(UserPrincipalName, '$user')" -Top 1|select ID

@@ -1,6 +1,6 @@
 ﻿#Set Parameters
-$SiteURL = "https://xxxxx.sharepoint.com/sites/xxxxx"
-$ListName = "xxxxxxx"
+$SiteURL = "https://mykademia.sharepoint.com/sites/mykademia"
+$ListName = "mykademia"
   
 #Connect to SharePoint Online site
 Connect-PnPOnline -Url $SiteURL  -Interactive
